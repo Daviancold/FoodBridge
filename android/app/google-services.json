@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "709619072889",
+    "project_id": "foodbridge-b1332",
+    "storage_bucket": "foodbridge-b1332.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:709619072889:android:0c930f91d632832d8879a8",
+        "android_client_info": {
+          "package_name": "com.damiwee.foodbridge_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "709619072889-a97hdpasolbnp9sdthdck70dmk63b01r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTWLSq27tVIT7CBzCsT8z36tV03ZmegdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "709619072889-a97hdpasolbnp9sdthdck70dmk63b01r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
