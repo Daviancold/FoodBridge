@@ -4,6 +4,10 @@ FoodBridge
 ## Level Of Achievement
 Apollo
 
+## Aim
+We wish to connect donors with surplus food to recipients who need it through a mobile app. However, due to time constraints, we will be focusing on the Android platform.
+
+
 ## Motivation
 The rising issue of food waste and food insecurity is what motivates us to develop the food donation app, FoodBridge.
 
