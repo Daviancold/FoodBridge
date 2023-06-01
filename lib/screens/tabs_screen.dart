@@ -1,5 +1,6 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodbridge_project/screens/listings_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
 
@@ -21,14 +22,15 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activeScreen = Text('data');
+    Widget activeScreen = ListingsScreen();
     AppBar activeAppBar = AppBar(
+      backgroundColor: Colors.orange,
       title: Container(
         width: 200,
         child: TextField(
           decoration: InputDecoration(
             contentPadding:
-                EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
             hintText: 'search',
             alignLabelWithHint: true,
             border: OutlineInputBorder(
@@ -39,14 +41,23 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       centerTitle: true,
       actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.chat_bubble_outline)),
+        IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.favorite_border),
+        ),
+        IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.chat_bubble_outline,
+          ),
+        ),
       ],
     );
 
     if (_selectedPageIndex == 1) {
       activeScreen = NewListingScreen();
       activeAppBar = AppBar(
+        backgroundColor: Colors.orange,
         title: Text('Add new listing'),
       );
     }
@@ -54,6 +65,7 @@ class _TabsScreenState extends State<TabsScreen> {
     if (_selectedPageIndex == 2) {
       activeScreen = ProfileScreen();
       activeAppBar = AppBar(
+        backgroundColor: Colors.orange,
         title: Text('Your profile'),
       );
     }
