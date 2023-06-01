@@ -1,4 +1,4 @@
-import 'package:foodbridge_project/widgets/login_registration/login_screen.dart';
+import 'package:foodbridge_project/screens/log_in_&_auth/login_screen.dart';
 import 'package:foodbridge_project/widgets/login_registration/registration_screen.dart';
 import 'package:flutter/material.dart';
 

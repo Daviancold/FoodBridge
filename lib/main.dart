@@ -1,5 +1,5 @@
-import 'package:foodbridge_project/widgets/home_page.dart';
-import 'package:foodbridge_project/widgets/login_registration/auth_screen.dart';
+import 'package:foodbridge_project/screens/tabs_screen.dart';
+import 'package:foodbridge_project/screens/log_in_&_auth/auth_screen.dart';
 import 'package:foodbridge_project/widgets/login_registration/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +49,7 @@ class MainPage extends StatelessWidget {
             } else if (snapshot.hasError) {
               return const Center(child: Text('Something went wrong!'));
             } else if (snapshot.hasData) {
-              return HomePage();
+              return TabsScreen();
             } else {
               return AuthPage();
             }
