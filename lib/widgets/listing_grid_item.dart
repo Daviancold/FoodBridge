@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodbridge_project/screens/listing_screen.dart';
 
 import '../models/listing.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +18,12 @@ class ListingGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ListingScreen(listing: listing)),
+          );
+      },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(16),
       child: Container(
