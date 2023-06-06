@@ -11,6 +11,10 @@ class _NewListingScreenState extends State<NewListingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
+        title: Text('new listing'),
+      ),
       body: Text('new listing'),
     );
   }
