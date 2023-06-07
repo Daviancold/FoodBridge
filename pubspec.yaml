@@ -43,6 +43,9 @@ dependencies:
   email_validator: ^2.1.17
   intl: ^0.18.1
   riverpod: ^2.3.6
+  image_picker: ^0.8.7+5
+  location: ^4.4.0
+  http: ^0.13.6
 
 
 dev_dependencies:

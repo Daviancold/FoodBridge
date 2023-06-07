@@ -1,6 +1,7 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/data/dummy_data.dart';
+import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
@@ -16,15 +17,33 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int selectedPageIndex = 0;
+  final List<Listing> _listingItems = [];
   //bool hideNavigationBar = false;
+
+  void addNewListing() async {
+    final newListing = await Navigator.push<Listing>(
+      context,
+      MaterialPageRoute(builder: (context) => NewListingScreen()),
+    );
+    if (newListing == null) {
+      return;
+    }
+    setState(() {
+      _listingItems.add(newListing);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Widget activeScreen = ListingsScreen(
-      toList: availableListings,
+      toList: _listingItems,
       isLikesScreen: false,
     );
     AppBar activeAppBar = HomePageAppBar(context);
+
+    if (_listingItems.isEmpty) {
+      print('empty list');
+    }
 
     if (selectedPageIndex == 2) {
       activeScreen = ProfileScreen();
@@ -37,10 +56,7 @@ class _TabsScreenState extends State<TabsScreen> {
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NewListingScreen()),
-            );
+            addNewListing();
           } else {
             setState(() {
               selectedPageIndex = index;

@@ -20,38 +20,47 @@ class ListingGridItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ListingScreen(listing: listing)),
-          );
+          context,
+          MaterialPageRoute(
+              builder: (context) => ListingScreen(listing: listing)),
+        );
       },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black),
           borderRadius: BorderRadius.circular(16),
-          // gradient:  const LinearGradient(
-          //   colors: [
-          //     Colors.black,
-          //     Colors.grey,
-          //   ],
-          //   begin: Alignment.topLeft,
-          //   end: Alignment.bottomRight,
-          // ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              listing.imageUrl,
-              style: TextStyle(color: Colors.black),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.0,
+                ),
+              ),
+              width: 150,
+              height: 150,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.file(
+                  listing.image,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             Text(
               listing.itemName,
               style: TextStyle(color: Colors.black),
             ),
-            Text(listing.location.name),
+            // Text(listing.location.name),
             Text(formattedDate),
+            Text(listing.userId),
           ],
         ),
       ),
