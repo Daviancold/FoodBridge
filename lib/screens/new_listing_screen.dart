@@ -1,10 +1,13 @@
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/widgets/image_input.dart';
 import 'package:foodbridge_project/widgets/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class NewListingScreen extends StatefulWidget {
   const NewListingScreen({super.key});
@@ -18,16 +21,63 @@ class _NewListingScreenState extends State<NewListingScreen> {
   SubCategory? selectedSubCategory;
   final _formKey = GlobalKey<FormState>();
   TextEditingController dateInputController = TextEditingController();
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
 
   var _itemName;
-  // var _image;
+  var _userId;
   var _chosenMainCategory;
   var _chosenSubCategory;
   var _chosenDietaryOption;
   var _chosenDate;
   var _additionalInfo;
   var _selectedImage;
-  var _chosenLocation;
+  var _isExpired;
+  var _lat;
+  var _lng;
+  var _address;
+
+  Future<String> uploadImage(File file) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    firebase_storage.Reference ref =
+        storage.ref().child('listingImages/$fileName');
+    await ref.putFile(file);
+    String imageUrl = await ref.getDownloadURL();
+    return imageUrl;
+  }
+
+  Future<void> createListing({
+    required String itemName,
+    required String urlLink,
+    required String mainCat,
+    required String subCat,
+    required String dietaryInfo,
+    required String addInfo,
+    required DateTime expDate,
+    required double lat,
+    required double lng,
+    required String address,
+  }) async {
+    final docListing = FirebaseFirestore.instance.collection('Listings').doc();
+
+    final listing = Listing(
+      itemName: itemName,
+      image: urlLink,
+      mainCategory: mainCat,
+      subCategory: subCat,
+      dietaryNeeds: dietaryInfo,
+      additionalNotes: addInfo,
+      expiryDate: expDate,
+      lat: lat,
+      lng: lng,
+      address: address,
+      isExpired: DateTime.now().isAfter(expDate),
+      userId: FirebaseAuth.instance.currentUser!.email.toString(),
+    );
+
+    final json = listing.toJson();
+    await docListing.set(json);
+  }
 
   void _presentDatePicker() async {
     final now = DateTime.now();
@@ -49,22 +99,77 @@ class _NewListingScreenState extends State<NewListingScreen> {
     }
   }
 
-  void _saveItem() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      Navigator.pop(
-        context,
-        Listing(
-          image: _selectedImage,
-          itemName: _itemName,
-          mainCategory: _chosenMainCategory,
-          subCategory: _chosenSubCategory,
-          dietaryNeeds: _chosenDietaryOption,
-          additionalNotes: _additionalInfo,
-          expiryDate: _chosenDate,
-          location: _chosenLocation,
+  void _saveItem() async {
+    if (_selectedImage == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text(
+            'Picture missing',
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            height: 16,
+            width: 32,
+            child: Center(
+              child: const Text('Add a picture'),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('ok'),
+            ),
+          ],
         ),
       );
+      return;
+    }
+    if (_address == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text(
+            'Address missing',
+            textAlign: TextAlign.center,
+          ),
+          content: Container(
+            height: 16,
+            width: 32,
+            child: Center(
+              child: const Text('Click on get address'),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('ok'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    final urlLink = await uploadImage(_selectedImage);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      createListing(
+        itemName: _itemName!,
+        urlLink: urlLink!,
+        mainCat: _chosenMainCategory!,
+        subCat: _chosenSubCategory!,
+        dietaryInfo: _chosenDietaryOption!,
+        addInfo: _additionalInfo!,
+        expDate: _chosenDate!,
+        lat: _lat!,
+        lng: _lng!,
+        address: _address!,
+      );
+      Navigator.pop(context);
     }
   }
 
@@ -84,7 +189,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
               children: [
                 ImageInput(
                   chosenImage: (File image) {
-                    _selectedImage = image;
+                    setState(() {
+                      _selectedImage = image;
+                    });
                   }, //TODO handle if no image taken
                 ), // for selecting image
                 TextFormField(
@@ -129,7 +236,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     }
                   },
                   onSaved: (value) {
-                    _chosenMainCategory = value;
+                    _chosenMainCategory = value.toString();
                   },
                 ),
                 SizedBox(
@@ -160,7 +267,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     }
                   },
                   onSaved: (value) {
-                    _chosenSubCategory = value;
+                    _chosenSubCategory = value.toString();
                   },
                 ),
                 SizedBox(
@@ -182,7 +289,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     }
                   },
                   onSaved: (value) {
-                    _chosenDietaryOption = value;
+                    _chosenDietaryOption = value.toString();
                   },
                 ),
                 Row(
@@ -214,7 +321,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
                 ),
                 LocationInput(
                   chosenLocation: (UserLocation location) {
-                    _chosenLocation = location;
+                    _lat = location.latitude;
+                    _lng = location.longitude;
+                    _address = location.address;
                   },
                 ),
                 SizedBox(

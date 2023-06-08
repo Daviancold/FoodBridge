@@ -26,6 +26,7 @@ class _ImageInputState extends State<ImageInput> {
     }
     setState(() {
       _selectedImage = File(pickedImage.path);
+      //print('dogg $_selectedImage');
       widget.chosenImage(_selectedImage!);
     });
   }
@@ -41,11 +42,14 @@ class _ImageInputState extends State<ImageInput> {
     if (_selectedImage != null) {
       content = GestureDetector(
         onTap: _takePicture,
-        child: Image.file(
-          _selectedImage!,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(
+            _selectedImage!,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
         ),
       );
     }

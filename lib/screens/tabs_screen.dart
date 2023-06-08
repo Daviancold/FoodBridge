@@ -1,10 +1,12 @@
 //import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/data/dummy_data.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
+import 'package:foodbridge_project/screens/testing_firebase.dart';
 import 'package:foodbridge_project/widgets/homepage_appbar.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 
@@ -16,34 +18,28 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
+  Stream<List<Listing>> readListings() => FirebaseFirestore.instance
+        .collection('Listings')
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Listing.fromJson(doc.data())).toList());
+  
   int selectedPageIndex = 0;
-  final List<Listing> _listingItems = [];
-  //bool hideNavigationBar = false;
 
-  void addNewListing() async {
-    final newListing = await Navigator.push<Listing>(
+  void addNewListing() {
+    Navigator.push<Listing>(
       context,
       MaterialPageRoute(builder: (context) => NewListingScreen()),
     );
-    if (newListing == null) {
-      return;
-    }
-    setState(() {
-      _listingItems.add(newListing);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     Widget activeScreen = ListingsScreen(
-      toList: _listingItems,
+      availListings: readListings(),
       isLikesScreen: false,
     );
     AppBar activeAppBar = HomePageAppBar(context);
-
-    if (_listingItems.isEmpty) {
-      print('empty list');
-    }
 
     if (selectedPageIndex == 2) {
       activeScreen = ProfileScreen();

@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum MainCategory {
   babyFood,
@@ -68,11 +66,12 @@ enum SubCategory {
 enum DietaryNeeds {
   halal,
   kosher,
-  lactoseFree,
-  nutFree,
-  shellfishFree,
-  soyFree,
+  containsLactose,
+  containsNuts,
+  containShellfish,
+  containsSoy,
   others,
+  none,
 }
 
 Map<MainCategory, List<SubCategory>> categorySubcategoryMap = {
@@ -140,27 +139,61 @@ class UserLocation {
 }
 
 class Listing {
-
-  Listing({
-    required this.itemName,
-    required this.image,
-    required this.mainCategory,
-    required this.subCategory,
-    required this.dietaryNeeds,
-    required this.additionalNotes,
-    required this.expiryDate,
-    required this.location,
-  })  : isExpired = DateTime.now().isAfter(expiryDate),
-        userId = FirebaseAuth.instance.currentUser!.email.toString();
+  Listing(
+      {required this.itemName,
+      required this.image,
+      required this.mainCategory,
+      required this.subCategory,
+      required this.dietaryNeeds,
+      required this.additionalNotes,
+      required this.expiryDate,
+      required this.lat,
+      required this.lng,
+      required this.address,
+      required this.isExpired,
+      required this.userId});
+  // : isExpired = DateTime.now().isAfter(expiryDate),
+  //       userId = FirebaseAuth.instance.currentUser!.email.toString();
 
   final String userId; //not necessary?
   final String itemName;
-  final File image; //change type
-  final MainCategory mainCategory;
-  final SubCategory subCategory;
-  final DietaryNeeds dietaryNeeds;
+  final String image; //change type //
+  final String mainCategory; //
+  final String subCategory; //
+  final String dietaryNeeds; //
   final String additionalNotes;
   final DateTime expiryDate;
   final bool isExpired;
-  final UserLocation location;
+  final double lat;
+  final double lng;
+  final String address; //
+
+  static Listing fromJson(Map<String, dynamic> json) => Listing(
+      itemName: json['itemName'],
+      userId: json['userId'],
+      image: json['image'],
+      mainCategory: json['mainCategory'],
+      subCategory: json['subCategory'],
+      dietaryNeeds: json['dietaryNeeds'],
+      expiryDate: (json['expiryDate'] as Timestamp).toDate(),
+      isExpired: json['isExpired'],
+      lat: json['lat'],
+      lng: json['lng'],
+      address: json['address'],
+      additionalNotes: json['additionalNotes']);
+
+  Map<String, dynamic> toJson() => {
+    'itemName': itemName,
+    'userId': userId,
+    'image': image,
+    'mainCategory': mainCategory,
+    'subCategory': subCategory,
+    'dietaryNeeds': dietaryNeeds,
+    'additionalNotes': additionalNotes,
+    'expiryDate': expiryDate,
+    'isExpired': isExpired,
+    'lat': lat,
+    'lng': lng,
+    'address': address
+      };
 }

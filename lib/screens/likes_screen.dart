@@ -17,10 +17,10 @@ class _likesScreenState extends State<likesScreen> {
         title: Text('Your likes'),
         backgroundColor: Colors.orange,
       ),
-      body: ListingsScreen(
-        toList: availableListings, //to be used as a consumer to listen for changes in likes
-        isLikesScreen: true,
-      ),
+      // body: ListingsScreen(
+      //   toList: [], //to be used as a consumer to listen for changes in likes
+      //   isLikesScreen: true,
+      // ),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
@@ -66,6 +65,7 @@ class _LocationInputState extends State<LocationInput> {
 
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyBPnh4TzaS8FEO7vnHEdobC0Z6hsJATCoE');
+    print(url);
 
     final response = await http.get(url);
     final resData = json.decode(response.body);
@@ -84,14 +84,42 @@ class _LocationInputState extends State<LocationInput> {
 
   @override
   Widget build(BuildContext context) {
-    Widget previewContent = Text('Display location here placeholder');
+    Widget previewContent = Text('Get location');
 
     if (_pickedLocation != null) {
-      previewContent = Image.network(
-        locationImage,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
+      previewContent = Stack(
+        children: [
+          Container(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                locationImage,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(5.0),
+            alignment: Alignment.bottomCenter,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Colors.black.withAlpha(0),
+                  Colors.black12,
+                  Colors.black45
+                ],
+              ),
+            ),
+            child: Text(
+              _pickedLocation!.address,
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+            ),
+          ),
+        ],
       );
     }
 
@@ -105,7 +133,8 @@ class _LocationInputState extends State<LocationInput> {
           alignment: Alignment.center,
           height: 170,
           width: double.infinity,
-          decoration: BoxDecoration(border: Border.all()),
+          decoration: BoxDecoration(
+              border: Border.all(), borderRadius: BorderRadius.circular(8)),
           child: previewContent,
         ),
         TextButton.icon(
