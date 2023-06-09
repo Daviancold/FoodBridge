@@ -5,27 +5,27 @@ import '../screens/likes_screen.dart';
 import '../screens/notifications_screen.dart';
 
 class HomePageAppBar extends AppBar {
-  HomePageAppBar(BuildContext context)
+  HomePageAppBar(BuildContext context, {super.key})
       : super(
           leading: IconButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => notificationsScreen()),
+                MaterialPageRoute(builder: (context) => const NotificationsScreen()),
               );
             },
-            icon: Icon(Icons.notifications_none),
+            icon: const Icon(Icons.notifications_none),
           ),
           backgroundColor: Colors.orange,
-          title: Container(
+          title:  SizedBox(
             width: 200,
             child: TextField(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding:
-                    EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+                    const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
                 hintText: 'search',
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(
@@ -40,19 +40,19 @@ class HomePageAppBar extends AppBar {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => likesScreen()),
+                  MaterialPageRoute(builder: (context) => const LikesScreen()),
                 );
               },
-              icon: Icon(Icons.favorite_border),
+              icon: const Icon(Icons.favorite_border),
             ),
             IconButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ChatListScreen()),
+                  MaterialPageRoute(builder: (context) => const ChatListScreen()),
                 );
               },
-              icon: Icon(Icons.chat_bubble_outline),
+              icon: const Icon(Icons.chat_bubble_outline),
             ),
           ],
         );

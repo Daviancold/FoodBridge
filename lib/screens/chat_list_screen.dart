@@ -12,7 +12,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your chats'),
+        title: const Text('Your chats'),
         backgroundColor: Colors.orange,
       ),
     );

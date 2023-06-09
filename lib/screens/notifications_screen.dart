@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class notificationsScreen extends StatefulWidget {
-  const notificationsScreen({super.key});
+class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
 
   @override
-  State<notificationsScreen> createState() => _notificationsScreenState();
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _notificationsScreenState extends State<notificationsScreen> {
+class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: const Text('Notifications'),
         backgroundColor: Colors.orange,
       ),
     );

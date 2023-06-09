@@ -1,8 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/screens/listing_screen.dart';
-
 import '../models/listing.dart';
 import 'package:intl/intl.dart';
 
@@ -50,7 +47,7 @@ class ListingGridItem extends StatelessWidget {
             Stack(
               alignment: Alignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 150,
                   height: 150,
                   child: ClipRRect(
@@ -74,7 +71,7 @@ class ListingGridItem extends StatelessWidget {
                             color: Colors.green.shade400,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
+                          child: const Text(
                             'MARKED AS DONATED',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -96,7 +93,7 @@ class ListingGridItem extends StatelessWidget {
                             color: Colors.red.shade400,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
+                          child: const Text(
                             'EXPIRED',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -107,13 +104,13 @@ class ListingGridItem extends StatelessWidget {
                       ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Row(
               children: [
                 DefaultTextStyle(
-                  style: TextStyle(fontSize: 10, color: Colors.black),
+                  style: const TextStyle(fontSize: 10, color: Colors.black),
                   child: Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

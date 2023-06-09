@@ -1,12 +1,10 @@
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
-import 'package:foodbridge_project/screens/testing_firebase.dart';
 import 'package:foodbridge_project/widgets/homepage_appbar.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 
@@ -48,7 +46,7 @@ class _TabsScreenState extends State<TabsScreen> {
     AppBar activeAppBar = HomePageAppBar(context);
 
     if (selectedPageIndex == 2) {
-      activeScreen = ProfileScreen();
+      activeScreen = const ProfileScreen();
       activeAppBar = ProfileAppBar(context);
     }
 

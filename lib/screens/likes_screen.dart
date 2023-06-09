@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/data/dummy_data.dart';
-import 'package:foodbridge_project/screens/listings_list_screen.dart';
 
-class likesScreen extends StatefulWidget {
-  const likesScreen({super.key});
+class LikesScreen extends StatefulWidget {
+  const LikesScreen({super.key});
 
   @override
-  State<likesScreen> createState() => _likesScreenState();
+  State<LikesScreen> createState() => _LikesScreenState();
 }
 
-class _likesScreenState extends State<likesScreen> {
+class _LikesScreenState extends State<LikesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your likes'),
+        title: const Text('Your likes'),
         backgroundColor: Colors.orange,
       ),
       // body: ListingsScreen(

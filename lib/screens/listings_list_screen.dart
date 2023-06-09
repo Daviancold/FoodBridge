@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import '../models/listing.dart';
 import '../widgets/listing_grid_item.dart';
 
@@ -35,19 +33,19 @@ class _ListingsScreenState extends State<ListingsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 16,
               ),
-              Text(
+              const Text(
                 'All Listings',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
               ), //TODO make it dynamic to display filtered results
-              Spacer(),
+              const Spacer(),
               Container(
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 child: ElevatedButton.icon(
                   onPressed: () {
                     showModalBottomSheet<void>(
@@ -73,8 +71,8 @@ class _ListingsScreenState extends State<ListingsScreen> {
                       },
                     );
                   },
-                  icon: Icon(Icons.filter_alt),
-                  label: Text('Filter'),
+                  icon: const Icon(Icons.filter_alt),
+                  label: const Text('Filter'),
                 ),
               ),
             ],
@@ -112,7 +110,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
                   ),
                 );
               } else {
-                return Text('Nothing to show');
+                return const Text('Nothing to show');
               }
             })
       ],

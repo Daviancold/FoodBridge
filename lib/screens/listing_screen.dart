@@ -37,7 +37,7 @@ class ListingScreen extends StatelessWidget {
         backgroundColor: Colors.orange,
         title: Text(
           'LISTING: ${listing.itemName.toUpperCase()}',
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
             fontSize: 24,
@@ -53,7 +53,7 @@ class ListingScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 350,
                   child: ClipRRect(
@@ -83,13 +83,13 @@ class ListingScreen extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(Icons.chat_bubble_outline),
+                        icon: const Icon(Icons.chat_bubble_outline),
                         color: Colors.grey.shade400,
                         iconSize: 32,
                       ),
                       IconButton(
                         onPressed: () {},
-                        icon: Icon(Icons.favorite_border),
+                        icon: const Icon(Icons.favorite_border),
                         color: Colors.grey.shade400,
                         iconSize: 32,
                       ),
@@ -109,7 +109,7 @@ class ListingScreen extends StatelessWidget {
                             color: Colors.green.shade400,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
+                          child: const Text(
                             'MARKED AS DONATED',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -131,7 +131,7 @@ class ListingScreen extends StatelessWidget {
                             color: Colors.red.shade400,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
+                          child: const Text(
                             'EXPIRED',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -159,8 +159,8 @@ class ListingScreen extends StatelessWidget {
                                     content: Container(
                                       height: 16,
                                       width: 16,
-                                      child: Center(
-                                        child: const Text('Mark as donated?'),
+                                      child: const Center(
+                                        child: Text('Mark as donated?'),
                                       ),
                                     ),
                                     actions: [
@@ -182,20 +182,20 @@ class ListingScreen extends StatelessWidget {
                                 );
                               }
                             : null,
-                        icon: Icon(Icons.done),
+                        icon: const Icon(Icons.done),
                         label: listing.isAvailable
                             ? Text('Mark as donated')
                             : Text('Item has been donated'),
                       ),
-                      SizedBox(
+                     const SizedBox(
                         width: 8,
                       ),
                       ElevatedButton.icon(
                         onPressed: () {},
-                        icon: Icon(Icons.edit),
-                        label: Text('Edit listing'),
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit listing'),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       ElevatedButton.icon(
@@ -203,11 +203,11 @@ class ListingScreen extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (ctx) => AlertDialog(
-                              content: Container(
+                              content: const SizedBox(
                                 height: 16,
                                 width: 16,
-                                child: Center(
-                                  child: const Text('Confirm deletion?'),
+                                child:  Center(
+                                  child: Text('Confirm deletion?'),
                                 ),
                               ),
                               actions: [
@@ -228,8 +228,8 @@ class ListingScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: Icon(Icons.delete),
-                        label: Text('Delete listing'),
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Delete listing'),
                       ),
                     ],
                   )
@@ -240,7 +240,7 @@ class ListingScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: DefaultTextStyle(
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,7 +281,7 @@ class ListingScreen extends StatelessWidget {
                         height: 8,
                       ),
                       Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           width: double.infinity,
                           height: 200,
                           decoration: BoxDecoration(

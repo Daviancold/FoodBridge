@@ -61,11 +61,9 @@ class _LocationInputState extends State<LocationInput> {
     if (lat == null || lng == null) {
       return;
     } //TODO add error handling
-    print(lat);
 
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyBPnh4TzaS8FEO7vnHEdobC0Z6hsJATCoE');
-    print(url);
 
     final response = await http.get(url);
     final resData = json.decode(response.body);

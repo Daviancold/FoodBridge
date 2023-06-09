@@ -7,7 +7,6 @@ import 'package:foodbridge_project/widgets/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class NewListingScreen extends StatefulWidget {
   const NewListingScreen({super.key});
@@ -25,14 +24,12 @@ class _NewListingScreenState extends State<NewListingScreen> {
       firebase_storage.FirebaseStorage.instance;
 
   var _itemName;
-  var _userId;
   var _chosenMainCategory;
   var _chosenSubCategory;
   var _chosenDietaryOption;
   var _chosenDate;
   var _additionalInfo;
   var _selectedImage;
-  var _isExpired;
   var _lat;
   var _lng;
   var _address;
@@ -117,8 +114,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
           content: Container(
             height: 16,
             width: 32,
-            child: Center(
-              child: const Text('Add a picture'),
+            child: const Center(
+              child: Text('Add a picture'),
             ),
           ),
           actions: [
@@ -144,8 +141,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
           content: Container(
             height: 16,
             width: 32,
-            child: Center(
-              child: const Text('Click on get address'),
+            child: const Center(
+              child: Text('Click on get address'),
             ),
           ),
           actions: [
@@ -163,7 +160,6 @@ class _NewListingScreenState extends State<NewListingScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isSaving = true;
-        print(_isSaving);
       });
       _formKey.currentState!.save();
       final urlLink = await uploadImage(_selectedImage);
@@ -189,7 +185,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.orange,
-        title: Text(
+        title: const Text(
           'ADD NEW LISTING',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -210,11 +206,11 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     setState(() {
                       _selectedImage = image;
                     });
-                  }, //TODO handle if no image taken
+                  },
                 ), // for selecting image
                 TextFormField(
                   maxLength: 50,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     label: Text('Name of item'),
                   ),
                   validator: (value) {
@@ -228,7 +224,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     _itemName = value;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 DropdownButtonFormField<MainCategory>(
@@ -245,19 +241,19 @@ class _NewListingScreenState extends State<NewListingScreen> {
                       selectedSubCategory = null; // Clear the selected subCat
                     });
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Select main category',
                   ),
                   validator: (value) {
                     if (value == null) {
                       return 'Must select main category';
-                    }
+                    } 
                   },
                   onSaved: (value) {
                     _chosenMainCategory = value.toString();
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 DropdownButtonFormField<SubCategory>(
@@ -276,23 +272,23 @@ class _NewListingScreenState extends State<NewListingScreen> {
                       selectedSubCategory = subCat;
                     });
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Select subcategory',
                   ),
                   validator: (value) {
                     if (value == null) {
                       return 'Must select sub category';
-                    }
+                    } 
                   },
                   onSaved: (value) {
                     _chosenSubCategory = value.toString();
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 DropdownButtonFormField(
-                  hint: Text('Select dietary specifications'),
+                  hint: const Text('Select dietary specifications'),
                   items: [
                     for (final category in DietaryNeeds.values)
                       DropdownMenuItem(
@@ -303,8 +299,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
                   onChanged: (value) {},
                   validator: (value) {
                     if (value == null) {
-                      return 'Must select deitary specifications';
-                    }
+                      return 'Must select dietary specifications';
+                    } 
                   },
                   onSaved: (value) {
                     _chosenDietaryOption = value.toString();
@@ -325,7 +321,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please select a date';
-                          }
+                          } 
                         },
                         onSaved: (value) {
                           _chosenDate = DateTime.tryParse(value!);
@@ -334,7 +330,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 LocationInput(
@@ -344,14 +340,14 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     _address = location.address;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 16,
                 ),
                 TextFormField(
                   maxLines: 5,
                   maxLength: 200,
                   decoration: InputDecoration(
-                    label: Text('Additional details'),
+                    label: const Text('Additional details'),
                     alignLabelWithHint: true,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -362,7 +358,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                         value.trim().length <= 1 ||
                         value.trim().length > 200) {
                       return 'Must be between 1 and 200 characters long';
-                    }
+                    } 
                   },
                   onSaved: (value) {
                     _additionalInfo = value;
@@ -374,20 +370,21 @@ class _NewListingScreenState extends State<NewListingScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.cancel),
-                      label: Text('Cancel'),
+                      icon: const Icon(Icons.cancel),
+                      label: const Text('Cancel'),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     ElevatedButton.icon(
                       onPressed: _isSaving ? null : _saveItem,
                       icon: _isSaving
-                          ? Container(
+                          ? const SizedBox(
                               height: 8,
                               width: 8,
                               child: CircularProgressIndicator(),
                             )
-                          : Icon(Icons.save),
-                      label: _isSaving ? Text('Saving') : Text('Save'),
+                          : const Icon(Icons.save),
+                      label:
+                          _isSaving ? const Text('Saving') : const Text('Save'),
                     ),
                   ],
                 ),
