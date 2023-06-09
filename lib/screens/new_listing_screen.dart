@@ -71,7 +71,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
       lat: lat,
       lng: lng,
       address: address,
-      isExpired: DateTime.now().isAfter(expDate),
+      isAvailable: true,
       userId: FirebaseAuth.instance.currentUser!.email.toString(),
     );
 

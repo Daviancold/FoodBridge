@@ -18,12 +18,17 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  Stream<List<Listing>> readListings() => FirebaseFirestore.instance
+  Stream<List<Listing>> readListings() {
+    DateTime currentDateTime = DateTime.now();
+    return FirebaseFirestore.instance
         .collection('Listings')
+        .where("expiryDate", isGreaterThan: currentDateTime)
+        .where("isAvailable", isEqualTo: true)
         .snapshots()
         .map((snapshot) =>
             snapshot.docs.map((doc) => Listing.fromJson(doc.data())).toList());
-  
+  }
+
   int selectedPageIndex = 0;
 
   void addNewListing() {

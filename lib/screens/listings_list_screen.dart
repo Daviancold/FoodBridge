@@ -63,13 +63,15 @@ class _ListingsScreenState extends State<ListingsScreen> {
             stream: widget.availListings,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
-                return Center(child: Text('Something went wrong'));
+                return const Center(child: Text('Something went wrong'));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-                return Center(child: Text('No available listings', style: TextStyle(color: Colors.black),));
+                return const Center(child: Text('No available listings', style: TextStyle(color: Colors.black),));
               } else if (snapshot.hasData) {
-                final listings = snapshot.data!;
+                final allListings = snapshot.data!;
+                // final filteredListings = allListings.where("isAvailable", isEqualto : true);
+
                 return Expanded(
                   child: GridView(
                     padding: const EdgeInsets.all(16),
@@ -80,7 +82,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                     ),
-                    children: listings.map<Widget>((listing) => buildListing(listing)).toList(),
+                    children: allListings.map<Widget>((listings) => buildListing(listings)).toList(),
                   ),
                 );
               } else {

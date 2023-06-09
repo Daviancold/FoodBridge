@@ -112,7 +112,7 @@ class ListingScreen extends StatelessWidget {
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Expired: ${listing.isExpired.toString()}'),
+                      Text('Available: ${listing.isAvailable.toString()}'),
                       const SizedBox(
                         height: 8,
                       ),

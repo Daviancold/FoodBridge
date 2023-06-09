@@ -150,9 +150,9 @@ class Listing {
       required this.lat,
       required this.lng,
       required this.address,
-      required this.isExpired,
+      required this.isAvailable,
       required this.userId});
-  // : isExpired = DateTime.now().isAfter(expiryDate),
+  // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
 
   final String userId; //not necessary?
@@ -163,7 +163,7 @@ class Listing {
   final String dietaryNeeds; //
   final String additionalNotes;
   final DateTime expiryDate;
-  final bool isExpired;
+  final bool isAvailable;
   final double lat;
   final double lng;
   final String address; //
@@ -176,7 +176,7 @@ class Listing {
       subCategory: json['subCategory'],
       dietaryNeeds: json['dietaryNeeds'],
       expiryDate: (json['expiryDate'] as Timestamp).toDate(),
-      isExpired: json['isExpired'],
+      isAvailable: json['isAvailable'],
       lat: json['lat'],
       lng: json['lng'],
       address: json['address'],
@@ -191,7 +191,7 @@ class Listing {
     'dietaryNeeds': dietaryNeeds,
     'additionalNotes': additionalNotes,
     'expiryDate': expiryDate,
-    'isExpired': isExpired,
+    'isAvailable': isAvailable,
     'lat': lat,
     'lng': lng,
     'address': address
