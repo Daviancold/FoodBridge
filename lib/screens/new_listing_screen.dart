@@ -36,6 +36,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
   var _lat;
   var _lng;
   var _address;
+  bool _isSaving = false;
 
   Future<String> uploadImage(File file) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -81,12 +82,16 @@ class _NewListingScreenState extends State<NewListingScreen> {
 
   void _presentDatePicker() async {
     final now = DateTime.now();
-    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    final firstDate = DateTime(
+      now.year,
+      now.month,
+      now.day + 1,
+    );
     final lastDate = DateTime(now.year + 2, now.month, now.day);
     final pickedDate = await showDatePicker(
       // returned value is a future
       context: context,
-      initialDate: now,
+      initialDate: firstDate,
       firstDate: firstDate,
       lastDate: lastDate,
     );
@@ -154,9 +159,13 @@ class _NewListingScreenState extends State<NewListingScreen> {
       );
       return;
     }
-    final urlLink = await uploadImage(_selectedImage);
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isSaving = true;
+        print(_isSaving);
+      });
       _formKey.currentState!.save();
+      final urlLink = await uploadImage(_selectedImage);
       createListing(
         itemName: _itemName!,
         urlLink: urlLink!,
@@ -361,9 +370,15 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     ),
                     Spacer(),
                     ElevatedButton.icon(
-                      onPressed: _saveItem,
-                      icon: Icon(Icons.save),
-                      label: Text('Save'),
+                      onPressed: _isSaving ? null : _saveItem,
+                      icon: _isSaving
+                          ? Container(
+                              height: 8,
+                              width: 8,
+                              child: CircularProgressIndicator(),
+                            )
+                          : Icon(Icons.save),
+                      label: _isSaving ? Text('Saving') : Text('Save'),
                     ),
                   ],
                 ),

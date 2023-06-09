@@ -4,6 +4,7 @@ import 'package:foodbridge_project/widgets/login_registration/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_app_check/firebase_app_check.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: Color.fromARGB(255, 240, 148, 28),
@@ -11,6 +12,7 @@ var kColorScheme = ColorScheme.fromSeed(
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //await FirebaseAppCheck.instance.activate();
   await Firebase.initializeApp();
 
   runApp(const MyApp());
