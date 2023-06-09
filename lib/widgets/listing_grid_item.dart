@@ -47,16 +47,65 @@ class ListingGridItem extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              width: 150,
-              height: 150,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  data.image,
-                  fit: BoxFit.cover,
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      data.image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
+                data.isAvailable
+                    ? Container()
+                    : Positioned(
+                        bottom: 0,
+                        right: 1,
+                        left: 1,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade400,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'MARKED AS DONATED',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 12),
+                          ),
+                        ),
+                      ),
+                data.expiryDate.isAfter(DateTime.now())
+                    ? Container()
+                    : Positioned(
+                        bottom: 0,
+                        right: 1,
+                        left: 1,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade400,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'EXPIRED',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 12),
+                          ),
+                        ),
+                      ),
+              ],
             ),
             SizedBox(
               height: 8,

@@ -5,12 +5,12 @@ import '../models/listing.dart';
 import '../widgets/listing_grid_item.dart';
 
 class ListingsScreen extends StatefulWidget {
-  const ListingsScreen(
-      {super.key,
-      required this.availListings,
-      required this.isLikesScreenOrProfileScreen,
-      required this.isYourListing,
-      });
+  const ListingsScreen({
+    super.key,
+    required this.availListings,
+    required this.isLikesScreenOrProfileScreen,
+    required this.isYourListing,
+  });
 
   final Stream<List<Listing>> availListings;
   final bool isLikesScreenOrProfileScreen;
@@ -23,7 +23,10 @@ class ListingsScreen extends StatefulWidget {
 class _ListingsScreenState extends State<ListingsScreen> {
   @override
   Widget build(BuildContext context) {
-    Widget buildListing(Listing listing) => ListingGridItem(data: listing, isYourListing: widget.isYourListing,);
+    Widget buildListing(Listing listing) => ListingGridItem(
+          data: listing,
+          isYourListing: widget.isYourListing,
+        );
 
     return Column(
       children: [

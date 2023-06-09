@@ -21,6 +21,7 @@ class HomePageAppBar extends AppBar {
             width: 200,
             child: TextField(
               decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding:

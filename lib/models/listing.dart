@@ -139,22 +139,24 @@ class UserLocation {
 }
 
 class Listing {
-  Listing(
-      {required this.itemName,
-      required this.image,
-      required this.mainCategory,
-      required this.subCategory,
-      required this.dietaryNeeds,
-      required this.additionalNotes,
-      required this.expiryDate,
-      required this.lat,
-      required this.lng,
-      required this.address,
-      required this.isAvailable,
-      required this.userId});
+  Listing({
+    required this.id,
+    required this.itemName,
+    required this.image,
+    required this.mainCategory,
+    required this.subCategory,
+    required this.dietaryNeeds,
+    required this.additionalNotes,
+    required this.expiryDate,
+    required this.lat,
+    required this.lng,
+    required this.address,
+    required this.isAvailable,
+    required this.userId,
+  });
   // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
-
+  final String id;
   final String userId; //not necessary?
   final String itemName;
   final String image; //change type //
@@ -169,6 +171,7 @@ class Listing {
   final String address; //
 
   static Listing fromJson(Map<String, dynamic> json) => Listing(
+      id: json['id'],
       itemName: json['itemName'],
       userId: json['userId'],
       image: json['image'],
@@ -183,17 +186,18 @@ class Listing {
       additionalNotes: json['additionalNotes']);
 
   Map<String, dynamic> toJson() => {
-    'itemName': itemName,
-    'userId': userId,
-    'image': image,
-    'mainCategory': mainCategory,
-    'subCategory': subCategory,
-    'dietaryNeeds': dietaryNeeds,
-    'additionalNotes': additionalNotes,
-    'expiryDate': expiryDate,
-    'isAvailable': isAvailable,
-    'lat': lat,
-    'lng': lng,
-    'address': address
+        'id': id,
+        'itemName': itemName,
+        'userId': userId,
+        'image': image,
+        'mainCategory': mainCategory,
+        'subCategory': subCategory,
+        'dietaryNeeds': dietaryNeeds,
+        'additionalNotes': additionalNotes,
+        'expiryDate': expiryDate,
+        'isAvailable': isAvailable,
+        'lat': lat,
+        'lng': lng,
+        'address': address
       };
 }

@@ -62,6 +62,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
     final docListing = FirebaseFirestore.instance.collection('Listings').doc();
 
     final listing = Listing(
+      id: docListing.id,
       itemName: itemName,
       image: urlLink,
       mainCategory: mainCat,
@@ -186,8 +187,16 @@ class _NewListingScreenState extends State<NewListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.orange,
-        title: Text('Add new listing'),
+        title: Text(
+          'ADD NEW LISTING',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 24,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),

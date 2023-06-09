@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:intl/intl.dart';
@@ -15,12 +16,33 @@ class ListingScreen extends StatelessWidget {
     return formatter.format(listing.expiryDate);
   }
 
+  DocumentReference get docListing {
+    return FirebaseFirestore.instance.collection('Listings').doc(listing.id);
+  }
+
+  void _deleteLisiting() {
+    docListing.delete();
+  }
+
+  void _markDonatedLisiting() {
+    docListing.update({
+      'isAvailable': false,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange,
-        title: Text('Listing: ${listing.itemName}'),
+        title: Text(
+          'LISTING: ${listing.itemName.toUpperCase()}',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 24,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -74,24 +96,144 @@ class ListingScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                listing.isAvailable
+                    ? Container()
+                    : Positioned(
+                        top: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade400,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'MARKED AS DONATED',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 32),
+                          ),
+                        ),
+                      ),
+                listing.expiryDate.isAfter(DateTime.now())
+                    ? Container()
+                    : Positioned(
+                        top: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade400,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'EXPIRED',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 32),
+                          ),
+                        ),
+                      ),
               ],
             ),
             const SizedBox(
               height: 8,
             ),
-            isYourListing ? Row(
-              children: [
-                ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.edit),
-                    label: Text('Edit listing')),
-                    Spacer(),
-                ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: Icon(Icons.delete),
-                    label: Text('Delete listing')),
-              ],
-            ) : Container(),
+            isYourListing
+                ? Wrap(
+                    direction: Axis.horizontal,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: (listing.isAvailable &&
+                                listing.expiryDate.isAfter(DateTime.now()))
+                            ? () {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    content: Container(
+                                      height: 16,
+                                      width: 16,
+                                      child: Center(
+                                        child: const Text('Mark as donated?'),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: const Text('No')),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(ctx);
+                                          _markDonatedLisiting();
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            : null,
+                        icon: Icon(Icons.done),
+                        label: listing.isAvailable
+                            ? Text('Mark as donated')
+                            : Text('Item has been donated'),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () {},
+                        icon: Icon(Icons.edit),
+                        label: Text('Edit listing'),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              content: Container(
+                                height: 16,
+                                width: 16,
+                                child: Center(
+                                  child: const Text('Confirm deletion?'),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                    },
+                                    child: const Text('No')),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                    _deleteLisiting();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.delete),
+                        label: Text('Delete listing'),
+                      ),
+                    ],
+                  )
+                : Container(),
             const SizedBox(
               height: 16,
             ),
