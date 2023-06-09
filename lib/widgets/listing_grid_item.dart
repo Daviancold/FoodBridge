@@ -12,11 +12,11 @@ class ListingGridItem extends StatelessWidget {
   const ListingGridItem({
     super.key,
     required this.data,
-    //required this.subcollectionData,
+    required this.isYourListing,
   });
 
   final Listing data;
-  //final DocumentReference<Map<String, dynamic>> subcollectionData;
+  final bool isYourListing;
 
   String get formattedDate {
     return formatter.format(data.expiryDate);
@@ -31,6 +31,7 @@ class ListingGridItem extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => ListingScreen(
               listing: data,
+              isYourListing: isYourListing,
             ),
           ),
         );

@@ -6,10 +6,15 @@ import '../widgets/listing_grid_item.dart';
 
 class ListingsScreen extends StatefulWidget {
   const ListingsScreen(
-      {super.key, required this.availListings, required this.isLikesScreen});
+      {super.key,
+      required this.availListings,
+      required this.isLikesScreenOrProfileScreen,
+      required this.isYourListing,
+      });
 
   final Stream<List<Listing>> availListings;
-  final bool isLikesScreen;
+  final bool isLikesScreenOrProfileScreen;
+  final bool isYourListing;
 
   @override
   State<ListingsScreen> createState() => _ListingsScreenState();
@@ -18,14 +23,26 @@ class ListingsScreen extends StatefulWidget {
 class _ListingsScreenState extends State<ListingsScreen> {
   @override
   Widget build(BuildContext context) {
-    Widget buildListing(Listing listing) => ListingGridItem(data: listing);
+    Widget buildListing(Listing listing) => ListingGridItem(data: listing, isYourListing: widget.isYourListing,);
 
     return Column(
       children: [
-        if (!widget.isLikesScreen)
+        if (!widget.isLikesScreenOrProfileScreen)
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(
+                width: 16,
+              ),
+              Text(
+                'All Listings',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
+              ), //TODO make it dynamic to display filtered results
+              Spacer(),
               Container(
                 margin: EdgeInsets.all(8),
                 child: ElevatedButton.icon(
@@ -67,7 +84,11 @@ class _ListingsScreenState extends State<ListingsScreen> {
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No available listings', style: TextStyle(color: Colors.black),));
+                return const Center(
+                    child: Text(
+                  'No available listings',
+                  style: TextStyle(color: Colors.black),
+                ));
               } else if (snapshot.hasData) {
                 final allListings = snapshot.data!;
                 // final filteredListings = allListings.where("isAvailable", isEqualto : true);
@@ -82,7 +103,9 @@ class _ListingsScreenState extends State<ListingsScreen> {
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
                     ),
-                    children: allListings.map<Widget>((listings) => buildListing(listings)).toList(),
+                    children: allListings
+                        .map<Widget>((listings) => buildListing(listings))
+                        .toList(),
                   ),
                 );
               } else {

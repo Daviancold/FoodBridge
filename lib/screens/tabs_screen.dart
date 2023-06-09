@@ -42,7 +42,8 @@ class _TabsScreenState extends State<TabsScreen> {
   Widget build(BuildContext context) {
     Widget activeScreen = ListingsScreen(
       availListings: readListings(),
-      isLikesScreen: false,
+      isLikesScreenOrProfileScreen: false,
+      isYourListing: false,
     );
     AppBar activeAppBar = HomePageAppBar(context);
 

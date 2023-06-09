@@ -5,5 +5,6 @@ class ProfileAppBar extends AppBar {
       : super(
         backgroundColor: Colors.orange,
           title: Text('Profile page'),
+          centerTitle: true,
         );
 }

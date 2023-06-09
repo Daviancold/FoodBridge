@@ -5,9 +5,11 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat.yMd();
 
 class ListingScreen extends StatelessWidget {
-  const ListingScreen({super.key, required this.listing});
+  const ListingScreen(
+      {super.key, required this.listing, required this.isYourListing});
 
   final Listing listing;
+  final bool isYourListing;
 
   String get formattedDate {
     return formatter.format(listing.expiryDate);
@@ -74,6 +76,22 @@ class ListingScreen extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 8,
+            ),
+            isYourListing ? Row(
+              children: [
+                ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.edit),
+                    label: Text('Edit listing')),
+                    Spacer(),
+                ElevatedButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.delete),
+                    label: Text('Delete listing')),
+              ],
+            ) : Container(),
             const SizedBox(
               height: 16,
             ),
