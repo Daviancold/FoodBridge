@@ -94,6 +94,7 @@ Map<MainCategory, List<SubCategory>> categorySubcategoryMap = {
     SubCategory.tea,
     SubCategory.juices,
     SubCategory.softDrinks,
+    SubCategory.others
   ],
   MainCategory.pantryEssentials: [
     SubCategory.canned,

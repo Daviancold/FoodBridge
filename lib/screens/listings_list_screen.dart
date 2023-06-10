@@ -6,12 +6,10 @@ class ListingsScreen extends StatefulWidget {
   const ListingsScreen({
     super.key,
     required this.availListings,
-    required this.isLikesScreenOrProfileScreen,
     required this.isYourListing,
   });
 
   final Stream<List<Listing>> availListings;
-  final bool isLikesScreenOrProfileScreen;
   final bool isYourListing;
 
   @override
@@ -28,55 +26,6 @@ class _ListingsScreenState extends State<ListingsScreen> {
 
     return Column(
       children: [
-        if (!widget.isLikesScreenOrProfileScreen)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                width: 16,
-              ),
-              const Text(
-                'All Listings',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ), //TODO make it dynamic to display filtered results
-              const Spacer(),
-              Container(
-                margin: const EdgeInsets.all(8),
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height,
-                          color: Colors.orange,
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Text('Modal BottomSheet'),
-                                ElevatedButton(
-                                  child: const Text('Close BottomSheet'),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  icon: const Icon(Icons.filter_alt),
-                  label: const Text('Filter'),
-                ),
-              ),
-            ],
-          ),
         StreamBuilder(
             stream: widget.availListings,
             builder: (BuildContext context, AsyncSnapshot snapshot) {

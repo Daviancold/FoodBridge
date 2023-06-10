@@ -81,7 +81,6 @@ class ProfileScreen extends StatelessWidget {
           Expanded(
             child: ListingsScreen(
               availListings: readUserListings(),
-              isLikesScreenOrProfileScreen: true,
               isYourListing: true,
             ),
           ),

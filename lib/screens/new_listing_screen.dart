@@ -221,7 +221,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     }
                   },
                   onSaved: (value) {
-                    _itemName = value;
+                    _itemName = value!.trim().toUpperCase();
                   },
                 ),
                 const SizedBox(

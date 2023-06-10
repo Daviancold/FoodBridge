@@ -5,7 +5,7 @@ import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
-import 'package:foodbridge_project/widgets/homepage_appbar.dart';
+//import 'package:foodbridge_project/widgets/homepage_appbar.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import 'chat_list_screen.dart';
 import 'likes_screen.dart';
@@ -21,7 +21,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   String itemName = "";
 
-Stream<List<Listing>> readListings(String searchQuery) {
+  Stream<List<Listing>> readListings(String searchQuery) {
     DateTime currentDateTime = DateTime.now();
     CollectionReference listingsRef =
         FirebaseFirestore.instance.collection('Listings');
@@ -31,7 +31,8 @@ Stream<List<Listing>> readListings(String searchQuery) {
         .where("isAvailable", isEqualTo: true);
 
     if (searchQuery.isNotEmpty) {
-      query = query.where("itemName", isEqualTo: searchQuery);
+      String searchResult = searchQuery.trim().toUpperCase();
+      query = query.where("itemName", isEqualTo: searchResult);
     }
 
     return query.snapshots().map((snapshot) => snapshot.docs
@@ -50,10 +51,85 @@ Stream<List<Listing>> readListings(String searchQuery) {
 
   @override
   Widget build(BuildContext context) {
-    Widget activeScreen = ListingsScreen(
-      availListings: readListings(itemName),
-      isLikesScreenOrProfileScreen: false,
-      isYourListing: false,
+    Widget activeScreen = Column(
+      children: [
+        selectedPageIndex == 0
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        itemName == ''
+                            ? const Text(
+                                'All Listings',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              )
+                            : Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    'Searched for: $itemName',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                  ), //TODO make it dynamic to display filtered results
+                  Container(
+                    margin: const EdgeInsets.all(8),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height,
+                              color: Colors.orange,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Text('Modal BottomSheet'),
+                                    ElevatedButton(
+                                      child: const Text('Close BottomSheet'),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.filter_alt),
+                      label: const Text('Filter'),
+                    ),
+                  ),
+                ],
+              )
+            : Container(),
+        Expanded(
+          child: ListingsScreen(
+            availListings: readListings(itemName),
+            isYourListing: false,
+          ),
+        ),
+      ],
     );
 
     AppBar activeAppBar = AppBar(
