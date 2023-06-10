@@ -81,7 +81,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
             stream: widget.availListings,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
-                return const Center(child: Text('Something went wrong'));
+                return Center(child: Text('Something went wrong, ${snapshot.error}'));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.data == null || snapshot.data!.isEmpty) {

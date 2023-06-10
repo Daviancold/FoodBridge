@@ -7,6 +7,9 @@ import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
 import 'package:foodbridge_project/widgets/homepage_appbar.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
+import 'chat_list_screen.dart';
+import 'likes_screen.dart';
+import 'notifications_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -16,15 +19,24 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  Stream<List<Listing>> readListings() {
+  String itemName = "";
+
+Stream<List<Listing>> readListings(String searchQuery) {
     DateTime currentDateTime = DateTime.now();
-    return FirebaseFirestore.instance
-        .collection('Listings')
+    CollectionReference listingsRef =
+        FirebaseFirestore.instance.collection('Listings');
+
+    Query query = listingsRef
         .where("expiryDate", isGreaterThan: currentDateTime)
-        .where("isAvailable", isEqualTo: true)
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Listing.fromJson(doc.data())).toList());
+        .where("isAvailable", isEqualTo: true);
+
+    if (searchQuery.isNotEmpty) {
+      query = query.where("itemName", isEqualTo: searchQuery);
+    }
+
+    return query.snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => Listing.fromJson(doc.data() as Map<String, dynamic>))
+        .toList());
   }
 
   int selectedPageIndex = 0;
@@ -32,18 +44,74 @@ class _TabsScreenState extends State<TabsScreen> {
   void addNewListing() {
     Navigator.push<Listing>(
       context,
-      MaterialPageRoute(builder: (context) => NewListingScreen()),
+      MaterialPageRoute(builder: (context) => const NewListingScreen()),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     Widget activeScreen = ListingsScreen(
-      availListings: readListings(),
+      availListings: readListings(itemName),
       isLikesScreenOrProfileScreen: false,
       isYourListing: false,
     );
-    AppBar activeAppBar = HomePageAppBar(context);
+
+    AppBar activeAppBar = AppBar(
+      leading: IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const NotificationsScreen()),
+          );
+        },
+        icon: const Icon(Icons.notifications_none),
+      ),
+      backgroundColor: Colors.orange,
+      title: SizedBox(
+        width: 200,
+        child: TextField(
+          onChanged: (val) {
+            setState(() {
+              itemName = val;
+            });
+          },
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+            hintText: 'Search ...',
+            alignLabelWithHint: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LikesScreen()),
+            );
+          },
+          icon: const Icon(Icons.favorite_border),
+        ),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatListScreen()),
+            );
+          },
+          icon: const Icon(Icons.chat_bubble_outline),
+        ),
+      ],
+    );
 
     if (selectedPageIndex == 2) {
       activeScreen = const ProfileScreen();
