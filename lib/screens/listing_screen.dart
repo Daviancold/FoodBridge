@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
+import 'package:foodbridge_project/screens/edit_listing_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -16,11 +18,41 @@ class ListingScreen extends StatelessWidget {
     return formatter.format(listing.expiryDate);
   }
 
+  FirebaseStorage get storage {
+    return FirebaseStorage.instance;
+  }
+
   DocumentReference get docListing {
     return FirebaseFirestore.instance.collection('Listings').doc(listing.id);
   }
 
-  void _deleteLisiting() {
+  Future<void> deleteFileByUrl(String fileUrl) async {
+    try {
+      // Extract the file name from the URL
+      Uri uri = Uri.parse(fileUrl);
+      String filePath = uri.path;
+      String decodedFilePath = Uri.decodeComponent(filePath);
+      String fileName =
+          decodedFilePath.substring(decodedFilePath.lastIndexOf('/') + 1);
+      print(fileName);
+
+      // Delete the file using the file name
+      await deleteFile('listingImages/$fileName');
+
+      print('File deleted successfully');
+    } catch (e) {
+      print('Error deleting file: $e');
+    }
+  }
+
+  Future<void> deleteFile(String filePath) async {
+    Reference ref = storage.ref().child(filePath);
+    await ref.delete();
+  }
+
+  void _deleteLisiting() async {
+    String fileUrl = listing.image;
+    await deleteFileByUrl(fileUrl);
     docListing.delete();
   }
 
@@ -187,11 +219,24 @@ class ListingScreen extends StatelessWidget {
                             ? Text('Mark as donated')
                             : Text('Item has been donated'),
                       ),
-                     const SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: (listing.isAvailable &&
+                                listing.expiryDate.isAfter(DateTime.now()))
+                            ? () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditListingScreen(
+                                            listing: listing,
+                                            storage: storage,
+                                            docListing: docListing,
+                                          )),
+                                );
+                              }
+                            : null,
                         icon: const Icon(Icons.edit),
                         label: const Text('Edit listing'),
                       ),
@@ -206,7 +251,7 @@ class ListingScreen extends StatelessWidget {
                               content: const SizedBox(
                                 height: 16,
                                 width: 16,
-                                child:  Center(
+                                child: Center(
                                   child: Text('Confirm deletion?'),
                                 ),
                               ),
