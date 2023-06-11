@@ -321,7 +321,7 @@ class ListingScreen extends StatelessWidget {
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Donor: ${listing.userId}'),
+                      Text('Donor: ${listing.userName}'),
                       const SizedBox(
                         height: 8,
                       ),

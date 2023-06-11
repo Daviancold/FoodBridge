@@ -132,7 +132,7 @@ class ListingGridItem extends StatelessWidget {
                           maxLines: 1,
                         ),
                         Text(
-                          'Donor: ${data.userId}',
+                          'Donor: ${data.userName}',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),

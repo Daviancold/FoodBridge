@@ -58,6 +58,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
   }) async {
     final docListing = FirebaseFirestore.instance.collection('Listings').doc();
 
+    final user = FirebaseAuth.instance.currentUser!;
+
     final listing = Listing(
       id: docListing.id,
       itemName: itemName,
@@ -71,7 +73,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
       lng: lng,
       address: address,
       isAvailable: true,
-      userId: FirebaseAuth.instance.currentUser!.email.toString(),
+      userId: user.email.toString(),
+      userName: user.displayName.toString(),
     );
 
     final json = listing.toJson();
@@ -247,7 +250,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                   validator: (value) {
                     if (value == null) {
                       return 'Must select main category';
-                    } 
+                    }
                   },
                   onSaved: (value) {
                     _chosenMainCategory = value.toString();
@@ -278,7 +281,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                   validator: (value) {
                     if (value == null) {
                       return 'Must select sub category';
-                    } 
+                    }
                   },
                   onSaved: (value) {
                     _chosenSubCategory = value.toString();
@@ -300,7 +303,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                   validator: (value) {
                     if (value == null) {
                       return 'Must select dietary specifications';
-                    } 
+                    }
                   },
                   onSaved: (value) {
                     _chosenDietaryOption = value.toString();
@@ -321,7 +324,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please select a date';
-                          } 
+                          }
                         },
                         onSaved: (value) {
                           _chosenDate = DateTime.tryParse(value!);
@@ -358,7 +361,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                         value.trim().length <= 1 ||
                         value.trim().length > 200) {
                       return 'Must be between 1 and 200 characters long';
-                    } 
+                    }
                   },
                   onSaved: (value) {
                     _additionalInfo = value;

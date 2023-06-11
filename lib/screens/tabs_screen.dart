@@ -88,7 +88,7 @@ class _TabsScreenState extends State<TabsScreen> {
                               ),
                       ],
                     ),
-                  ), //TODO make it dynamic to display filtered results
+                  ), 
                   Container(
                     margin: const EdgeInsets.all(8),
                     child: ElevatedButton.icon(
@@ -97,7 +97,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return Container(
-                              height: MediaQuery.of(context).size.height,
+                              height: double.infinity,
                               color: Colors.orange,
                               child: Center(
                                 child: Column(

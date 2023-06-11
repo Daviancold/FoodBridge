@@ -22,12 +22,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final usernameController = TextEditingController();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    usernameController.dispose();
 
     super.dispose();
   }
@@ -44,9 +46,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               children: [
                 const SizedBox(height: 40),
                 Image.asset(
-                'assets/Logo FoodBridge.png',
-                width: 300,
-              ),
+                  'assets/Logo FoodBridge.png',
+                  width: 300,
+                ),
                 const SizedBox(height: 20),
                 const Text(
                   'Welcome Back',
@@ -64,6 +66,19 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       email != null && !EmailValidator.validate(email)
                           ? 'Enter a valid email'
                           : null,
+                ),
+                const SizedBox(height: 4),
+                TextFormField(
+                  controller: usernameController,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(labelText: 'Username'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a username';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
@@ -139,6 +154,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      final user = FirebaseAuth.instance.currentUser!;
+      if (user != null) {
+        await user.updateDisplayName(usernameController.text.trim());
+      }
     } on FirebaseAuthException catch (e) {
       print(e);
 

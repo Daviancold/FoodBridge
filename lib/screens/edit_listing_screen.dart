@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/widgets/image_input.dart';
-import 'package:foodbridge_project/widgets/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -37,7 +34,6 @@ class _EditListingScreenState extends State<EditListingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     selectedMainCategory = MainCategory.values.firstWhere(
       (mainCat) => mainCat.toString() == widget.listing.mainCategory,
     );

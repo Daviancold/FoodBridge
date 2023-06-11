@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/listing.dart';
 import 'listings_list_screen.dart';
 
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -34,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
                   backgroundColor: Colors.blue.shade300,
                   radius: 64,
                   child: Text(
-                    user.email!.substring(0, 2).toUpperCase(),
+                    user.displayName!.substring(0, 2).toUpperCase(),
                     style: const TextStyle(fontSize: 40),
                   ),
                 ),
@@ -43,8 +44,13 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Signed in as: ${user.email!}'),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Text('Username: ${user.displayName!}'),
                       const SizedBox(
                         height: 8,
                       ),

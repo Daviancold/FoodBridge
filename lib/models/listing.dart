@@ -154,10 +154,12 @@ class Listing {
     required this.address,
     required this.isAvailable,
     required this.userId,
+    required this.userName,
   });
   // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
   final String id;
+  final String userName;
   final String userId; //not necessary?
   final String itemName;
   final String image; //change type //
@@ -174,6 +176,7 @@ class Listing {
   static Listing fromJson(Map<String, dynamic> json) => Listing(
       id: json['id'],
       itemName: json['itemName'],
+      userName: json['userName'],
       userId: json['userId'],
       image: json['image'],
       mainCategory: json['mainCategory'],
@@ -190,6 +193,7 @@ class Listing {
         'id': id,
         'itemName': itemName,
         'userId': userId,
+        'userName': userName,
         'image': image,
         'mainCategory': mainCategory,
         'subCategory': subCategory,
