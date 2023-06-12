@@ -100,7 +100,8 @@ class _FilterWidgetState extends State<FilterWidget> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  //clear selection
+                  selectedOptions.clear();
+                  setState(() {});
                 },
                 child: Text('Reset'),
               ),
@@ -108,7 +109,6 @@ class _FilterWidgetState extends State<FilterWidget> {
                 onPressed: () {
                   // Save selection, such that the unwanted listings are 'removed'
                   // And close the widget
-
                 },
                 child: Text('Save'),
               ),
