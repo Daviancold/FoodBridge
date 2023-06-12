@@ -10,6 +10,7 @@ import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import 'chat_list_screen.dart';
 import 'likes_screen.dart';
 import 'notifications_screen.dart';
+import 'filter.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -88,7 +89,7 @@ class _TabsScreenState extends State<TabsScreen> {
                               ),
                       ],
                     ),
-                  ), 
+                  ),
                   Container(
                     margin: const EdgeInsets.all(8),
                     child: ElevatedButton.icon(
@@ -96,7 +97,8 @@ class _TabsScreenState extends State<TabsScreen> {
                         showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {
-                            return Container(
+                            return FilterWidget();
+                            /* Container(
                               height: double.infinity,
                               color: Colors.orange,
                               child: Center(
@@ -113,6 +115,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                 ),
                               ),
                             );
+                            */
                           },
                         );
                       },

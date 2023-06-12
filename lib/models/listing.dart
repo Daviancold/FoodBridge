@@ -74,6 +74,11 @@ enum DietaryNeeds {
   none,
 }
 
+enum Filter {
+  yes,
+  no,
+}
+
 Map<MainCategory, List<SubCategory>> categorySubcategoryMap = {
   MainCategory.babyFood: [
     SubCategory.babyFood,
