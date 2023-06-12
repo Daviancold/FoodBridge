@@ -137,8 +137,8 @@ class _LocationInputState extends State<LocationInput> {
         ),
         TextButton.icon(
           onPressed: _getCurrentLocation,
-          icon: Icon(Icons.map),
-          label: Text('Get location'),
+          icon: const Icon(Icons.map),
+          label: const Text('Get location'),
         ),
       ],
     );

@@ -121,7 +121,7 @@ class _EditLocationInputState extends State<EditLocationInput> {
             ),
             child: Text(
               _pickedLocation!.address,
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              style: const TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ),
         ],
@@ -156,7 +156,7 @@ class _EditLocationInputState extends State<EditLocationInput> {
             ),
             child: Text(
               widget.listing.address,
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              style: const TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ),
         ],
@@ -179,8 +179,8 @@ class _EditLocationInputState extends State<EditLocationInput> {
         ),
         TextButton.icon(
           onPressed: _getCurrentLocation,
-          icon: Icon(Icons.map),
-          label: Text('Get location'),
+          icon: const Icon(Icons.map),
+          label: const Text('Get location'),
         ),
       ],
     );

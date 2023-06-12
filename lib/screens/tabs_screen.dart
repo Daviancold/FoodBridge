@@ -5,9 +5,8 @@ import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
-//import 'package:foodbridge_project/widgets/homepage_appbar.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
-import 'chat_list_screen.dart';
+import 'chat/chat_list_screen.dart';
 import 'likes_screen.dart';
 import 'notifications_screen.dart';
 
@@ -20,7 +19,9 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   String itemName = "";
+  int selectedPageIndex = 0;
 
+  //get snapshot from firestore collection "Listings"
   Stream<List<Listing>> readListings(String searchQuery) {
     DateTime currentDateTime = DateTime.now();
     CollectionReference listingsRef =
@@ -40,8 +41,7 @@ class _TabsScreenState extends State<TabsScreen> {
         .toList());
   }
 
-  int selectedPageIndex = 0;
-
+  //push to 'add new listing screen'
   void addNewListing() {
     Navigator.push<Listing>(
       context,
@@ -88,11 +88,12 @@ class _TabsScreenState extends State<TabsScreen> {
                               ),
                       ],
                     ),
-                  ), 
+                  ),
                   Container(
                     margin: const EdgeInsets.all(8),
                     child: ElevatedButton.icon(
                       onPressed: () {
+                        //TODO filter options
                         showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {

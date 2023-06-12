@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_app_check/firebase_app_check.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
-  seedColor: Color.fromARGB(255, 240, 148, 28),
+  seedColor: const Color.fromARGB(255, 240, 148, 28),
 );
 
 Future main() async {
@@ -51,9 +51,9 @@ class MainPage extends StatelessWidget {
             } else if (snapshot.hasError) {
               return const Center(child: Text('Something went wrong!'));
             } else if (snapshot.hasData) {
-              return TabsScreen();
+              return const TabsScreen();
             } else {
-              return AuthPage();
+              return const AuthPage();
             }
           },
         ),

@@ -1,21 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
+import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
 import 'package:foodbridge_project/screens/edit_listing_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 final formatter = DateFormat.yMd();
 
-class ListingScreen extends StatelessWidget {
+class ListingScreen extends StatefulWidget {
   const ListingScreen(
       {super.key, required this.listing, required this.isYourListing});
 
   final Listing listing;
   final bool isYourListing;
 
+  @override
+  State<ListingScreen> createState() => _ListingScreenState();
+}
+
+class _ListingScreenState extends State<ListingScreen> {
+  bool isLoading = false;
   String get formattedDate {
-    return formatter.format(listing.expiryDate);
+    return formatter.format(widget.listing.expiryDate);
   }
 
   FirebaseStorage get storage {
@@ -23,7 +31,7 @@ class ListingScreen extends StatelessWidget {
   }
 
   DocumentReference get docListing {
-    return FirebaseFirestore.instance.collection('Listings').doc(listing.id);
+    return FirebaseFirestore.instance.collection('Listings').doc(widget.listing.id);
   }
 
   Future<void> deleteFileByUrl(String fileUrl) async {
@@ -51,7 +59,7 @@ class ListingScreen extends StatelessWidget {
   }
 
   void _deleteLisiting() async {
-    String fileUrl = listing.image;
+    String fileUrl = widget.listing.image;
     await deleteFileByUrl(fileUrl);
     docListing.delete();
   }
@@ -64,20 +72,73 @@ class ListingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orange,
-        title: Text(
-          'LISTING: ${listing.itemName.toUpperCase()}',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 24,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
+    final user = FirebaseAuth.instance.currentUser!;
+
+    void goToChat() async {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('chat')
+              .where('participants',
+                  isEqualTo: [widget.listing.userId, user.email])
+              .where('listing', isEqualTo: widget.listing.id)
+              .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        print('chat found');
+        setState(() {
+          isLoading = true;
+        });
+        DocumentSnapshot<Map<String, dynamic>> chatDocSnapshot =
+            querySnapshot.docs[0];
+        Map<String, dynamic> chatData = chatDocSnapshot.data()!;
+        String chatId = chatData['chatId'].trim();
+        String listingId = chatData['listing'].trim();
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ChatScreen(
+                    chatId: chatId,
+                    listingId: listingId,
+                  )),
+        );
+      } else {
+        print('No chat found');
+        setState(() {
+          isLoading = true;
+        });
+        Map<String, dynamic> chatData = {
+          'participants': [widget.listing.userId, user.email],
+          'listing': widget.listing.id,
+          'chatId': '',
+        };
+        CollectionReference<Map<String, dynamic>> chatCollection =
+            FirebaseFirestore.instance.collection('chat');
+
+        DocumentReference<Map<String, dynamic>> newChatRef =
+            await chatCollection.add(chatData);
+
+// Retrieve the generated document ID
+        String newChatId = newChatRef.id;
+        await newChatRef.update({'chatId': newChatId});
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ChatScreen(
+                    chatId: newChatId,
+                    listingId: widget.listing.id,
+                  )),
+        );
+      }
+    }
+    Widget content;
+
+    isLoading ? content = CircularProgressIndicator() : content = Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -91,7 +152,7 @@ class ListingScreen extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.network(
-                      listing.image,
+                      widget.listing.image,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -114,7 +175,7 @@ class ListingScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: widget.listing.userId.trim() == user.email ? null : goToChat,
                         icon: const Icon(Icons.chat_bubble_outline),
                         color: Colors.grey.shade400,
                         iconSize: 32,
@@ -128,7 +189,7 @@ class ListingScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                listing.isAvailable
+                widget.listing.isAvailable
                     ? Container()
                     : Positioned(
                         top: 0,
@@ -150,7 +211,7 @@ class ListingScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                listing.expiryDate.isAfter(DateTime.now())
+                widget.listing.expiryDate.isAfter(DateTime.now())
                     ? Container()
                     : Positioned(
                         top: 0,
@@ -177,21 +238,21 @@ class ListingScreen extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            isYourListing
+            widget.isYourListing
                 ? Wrap(
                     direction: Axis.horizontal,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: (listing.isAvailable &&
-                                listing.expiryDate.isAfter(DateTime.now()))
+                        onPressed: (widget.listing.isAvailable &&
+                                widget.listing.expiryDate.isAfter(DateTime.now()))
                             ? () {
                                 showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                    content: Container(
+                                    content: const SizedBox(
                                       height: 16,
                                       width: 16,
-                                      child: const Center(
+                                      child: Center(
                                         child: Text('Mark as donated?'),
                                       ),
                                     ),
@@ -215,22 +276,22 @@ class ListingScreen extends StatelessWidget {
                               }
                             : null,
                         icon: const Icon(Icons.done),
-                        label: listing.isAvailable
-                            ? Text('Mark as donated')
-                            : Text('Item has been donated'),
+                        label: widget.listing.isAvailable
+                            ? const Text('Mark as donated')
+                            : const Text('Item has been donated'),
                       ),
                       const SizedBox(
                         width: 8,
                       ),
                       ElevatedButton.icon(
-                        onPressed: (listing.isAvailable &&
-                                listing.expiryDate.isAfter(DateTime.now()))
+                        onPressed: (widget.listing.isAvailable &&
+                                widget.listing.expiryDate.isAfter(DateTime.now()))
                             ? () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => EditListingScreen(
-                                            listing: listing,
+                                            listing: widget.listing,
                                             storage: storage,
                                             docListing: docListing,
                                           )),
@@ -290,22 +351,22 @@ class ListingScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Item: ${listing.itemName}'),
+                      Text('Item: ${widget.listing.itemName}'),
                       const SizedBox(
                         height: 8,
                       ),
                       Text(
-                          'Main Category: ${listing.mainCategory.split('.').last}'),
+                          'Main Category: ${widget.listing.mainCategory.split('.').last}'),
                       const SizedBox(
                         height: 8,
                       ),
                       Text(
-                          'Sub Category: ${listing.subCategory.split('.').last}'),
+                          'Sub Category: ${widget.listing.subCategory.split('.').last}'),
                       const SizedBox(
                         height: 8,
                       ),
                       Text(
-                          'Dietary specifications: ${listing.dietaryNeeds.split('.').last}'),
+                          'Dietary specifications: ${widget.listing.dietaryNeeds.split('.').last}'),
                       const SizedBox(
                         height: 8,
                       ),
@@ -313,15 +374,15 @@ class ListingScreen extends StatelessWidget {
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Collection address: ${listing.address}'),
+                      Text('Collection address: ${widget.listing.address}'),
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Available: ${listing.isAvailable.toString()}'),
+                      Text('Available: ${widget.listing.isAvailable.toString()}'),
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Donor: ${listing.userName}'),
+                      Text('Donor: ${widget.listing.userName}'),
                       const SizedBox(
                         height: 8,
                       ),
@@ -334,7 +395,7 @@ class ListingScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(
-                              'Additional notes: ${listing.additionalNotes}')),
+                              'Additional notes: ${widget.listing.additionalNotes}')),
                       // Add more widgets as needed
                     ],
                   ),
@@ -343,7 +404,22 @@ class ListingScreen extends StatelessWidget {
             ),
           ],
         ),
+      ) ;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.orange,
+        title: Text(
+          'LISTING: ${widget.listing.itemName.toUpperCase()}',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 24,
+          ),
+        ),
+        centerTitle: true,
       ),
+      body: content,
     );
   }
 }

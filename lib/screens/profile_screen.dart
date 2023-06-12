@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/listing.dart';
 import 'listings_list_screen.dart';
 
-
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -32,11 +31,11 @@ class ProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.blue.shade300,
                   radius: 64,
-                  child: Text(
-                    user.displayName!.substring(0, 2).toUpperCase(),
-                    style: const TextStyle(fontSize: 40),
+                  backgroundColor: Colors.grey,
+                  child: CircleAvatar (
+                    radius: 62,
+                    backgroundImage: NetworkImage(user.photoURL.toString()),
                   ),
                 ),
                 const SizedBox(
