@@ -459,7 +459,3 @@ void _deleteChat(String chatId) async {
     print('Error deleting document: $e');
   }
 }
-
-void goToChatScreen() {
-
-}
