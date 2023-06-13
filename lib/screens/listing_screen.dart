@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
 import 'package:foodbridge_project/screens/edit_listing_screen.dart';
+import 'package:foodbridge_project/widgets/loading.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -138,7 +139,7 @@ class _ListingScreenState extends State<ListingScreen> {
     }
     Widget content;
 
-    isLoading ? content = CircularProgressIndicator() : content = Padding(
+    isLoading ? content = const LoadingCircleScreen() : content = Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
+import 'package:foodbridge_project/widgets/loading.dart';
 
 
 class AllChatList extends StatelessWidget {
@@ -17,9 +18,7 @@ class AllChatList extends StatelessWidget {
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const LoadingCircleScreen();
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -108,7 +107,7 @@ class AllChatList extends StatelessWidget {
                   );
                 }
 
-                return const Text("loading");
+                return Center(child: const CircularProgressIndicator());
               },
             );
           },

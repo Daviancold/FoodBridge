@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:foodbridge_project/api_key.dart';
 
 import '../models/listing.dart';
 
@@ -25,13 +26,13 @@ class _EditLocationInputState extends State<EditLocationInput> {
     }
     final lat = _pickedLocation!.latitude;
     final lng = _pickedLocation!.longitude;
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=AIzaSyBPnh4TzaS8FEO7vnHEdobC0Z6hsJATCoE';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=$googMapsKey';
   }
 
   String get oldLocationImage {
     final oldLat = widget.listing.lat;
     final oldLng = widget.listing.lng;
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=$oldLat,$oldLng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$oldLat,$oldLng&key=AIzaSyBPnh4TzaS8FEO7vnHEdobC0Z6hsJATCoE';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=$oldLat,$oldLng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$oldLat,$oldLng&key=$googMapsKey';
   }
 
   void _getCurrentLocation() async {
