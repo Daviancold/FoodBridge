@@ -32,7 +32,9 @@ class _ListingScreenState extends State<ListingScreen> {
   }
 
   DocumentReference get docListing {
-    return FirebaseFirestore.instance.collection('Listings').doc(widget.listing.id);
+    return FirebaseFirestore.instance
+        .collection('Listings')
+        .doc(widget.listing.id);
   }
 
   Future<void> deleteFileByUrl(String fileUrl) async {
@@ -127,7 +129,7 @@ class _ListingScreenState extends State<ListingScreen> {
         setState(() {
           isLoading = false;
         });
-        Navigator.push(
+        await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => ChatScreen(
@@ -135,277 +137,291 @@ class _ListingScreenState extends State<ListingScreen> {
                     listingId: widget.listing.id,
                   )),
         );
+        bool haveMessages = await _hasMessagesSubcollection(newChatId);
+        if (!haveMessages) {
+          _deleteChat(newChatId);
+        }
       }
     }
+
     Widget content;
 
-    isLoading ? content = const LoadingCircleScreen() : content = Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
+    isLoading
+        ? content = const LoadingCircleScreen()
+        : content = Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: double.infinity,
-                  height: 350,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      widget.listing.image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    height: 80,
-                    width: 128,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 16,
-                  bottom: 16,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: widget.listing.userId.trim() == user.email ? null : goToChat,
-                        icon: const Icon(Icons.chat_bubble_outline),
-                        color: Colors.grey.shade400,
-                        iconSize: 32,
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.favorite_border),
-                        color: Colors.grey.shade400,
-                        iconSize: 32,
-                      ),
-                    ],
-                  ),
-                ),
-                widget.listing.isAvailable
-                    ? Container()
-                    : Positioned(
-                        top: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade400,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text(
-                            'MARKED AS DONATED',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 32),
-                          ),
+                Stack(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      height: 350,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.network(
+                          widget.listing.image,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                widget.listing.expiryDate.isAfter(DateTime.now())
-                    ? Container()
-                    : Positioned(
-                        top: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade400,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text(
-                            'EXPIRED',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 32),
-                          ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        height: 80,
+                        width: 128,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            widget.isYourListing
-                ? Wrap(
-                    direction: Axis.horizontal,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: (widget.listing.isAvailable &&
-                                widget.listing.expiryDate.isAfter(DateTime.now()))
-                            ? () {
-                                showDialog(
-                                  context: context,
-                                  builder: (ctx) => AlertDialog(
-                                    content: const SizedBox(
-                                      height: 16,
-                                      width: 16,
-                                      child: Center(
-                                        child: Text('Mark as donated?'),
+                    ),
+                    Positioned(
+                      right: 16,
+                      bottom: 16,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed:
+                                widget.listing.userId.trim() == user.email
+                                    ? null
+                                    : goToChat,
+                            icon: const Icon(Icons.chat_bubble_outline),
+                            color: Colors.grey.shade400,
+                            iconSize: 32,
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.favorite_border),
+                            color: Colors.grey.shade400,
+                            iconSize: 32,
+                          ),
+                        ],
+                      ),
+                    ),
+                    widget.listing.isAvailable
+                        ? Container()
+                        : Positioned(
+                            top: 0,
+                            right: 0,
+                            left: 0,
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade400,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'MARKED AS DONATED',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 32),
+                              ),
+                            ),
+                          ),
+                    widget.listing.expiryDate.isAfter(DateTime.now())
+                        ? Container()
+                        : Positioned(
+                            top: 0,
+                            right: 0,
+                            left: 0,
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade400,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'EXPIRED',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 32),
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                widget.isYourListing
+                    ? Wrap(
+                        direction: Axis.horizontal,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: (widget.listing.isAvailable &&
+                                    widget.listing.expiryDate
+                                        .isAfter(DateTime.now()))
+                                ? () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        content: const SizedBox(
+                                          height: 16,
+                                          width: 16,
+                                          child: Center(
+                                            child: Text('Mark as donated?'),
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(ctx);
+                                              },
+                                              child: const Text('No')),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                              _markDonatedLisiting();
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
                                       ),
+                                    );
+                                  }
+                                : null,
+                            icon: const Icon(Icons.done),
+                            label: widget.listing.isAvailable
+                                ? const Text('Mark as donated')
+                                : const Text('Item has been donated'),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: (widget.listing.isAvailable &&
+                                    widget.listing.expiryDate
+                                        .isAfter(DateTime.now()))
+                                ? () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditListingScreen(
+                                                listing: widget.listing,
+                                                storage: storage,
+                                                docListing: docListing,
+                                              )),
+                                    );
+                                  }
+                                : null,
+                            icon: const Icon(Icons.edit),
+                            label: const Text('Edit listing'),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  content: const SizedBox(
+                                    height: 16,
+                                    width: 16,
+                                    child: Center(
+                                      child: Text('Confirm deletion?'),
                                     ),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(ctx);
-                                          },
-                                          child: const Text('No')),
-                                      TextButton(
+                                  ),
+                                  actions: [
+                                    TextButton(
                                         onPressed: () {
                                           Navigator.pop(ctx);
-                                          _markDonatedLisiting();
-                                          Navigator.pop(context);
                                         },
-                                        child: const Text('Yes'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            : null,
-                        icon: const Icon(Icons.done),
-                        label: widget.listing.isAvailable
-                            ? const Text('Mark as donated')
-                            : const Text('Item has been donated'),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: (widget.listing.isAvailable &&
-                                widget.listing.expiryDate.isAfter(DateTime.now()))
-                            ? () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditListingScreen(
-                                            listing: widget.listing,
-                                            storage: storage,
-                                            docListing: docListing,
-                                          )),
-                                );
-                              }
-                            : null,
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Edit listing'),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              content: const SizedBox(
-                                height: 16,
-                                width: 16,
-                                child: Center(
-                                  child: Text('Confirm deletion?'),
+                                        child: const Text('No')),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(ctx);
+                                        _deleteLisiting();
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Yes'),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(ctx);
-                                    },
-                                    child: const Text('No')),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(ctx);
-                                    _deleteLisiting();
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Yes'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.delete),
-                        label: const Text('Delete listing'),
-                      ),
-                    ],
-                  )
-                : Container(),
-            const SizedBox(
-              height: 16,
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: DefaultTextStyle(
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Item: ${widget.listing.itemName}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                          'Main Category: ${widget.listing.mainCategory.split('.').last}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                          'Sub Category: ${widget.listing.subCategory.split('.').last}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                          'Dietary specifications: ${widget.listing.dietaryNeeds.split('.').last}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text('Expiry date: $formattedDate'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text('Collection address: ${widget.listing.address}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text('Available: ${widget.listing.isAvailable.toString()}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Text('Donor: ${widget.listing.userName}'),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                          padding: const EdgeInsets.all(8),
-                          width: double.infinity,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(16),
+                              );
+                            },
+                            icon: const Icon(Icons.delete),
+                            label: const Text('Delete listing'),
                           ),
-                          child: Text(
-                              'Additional notes: ${widget.listing.additionalNotes}')),
-                      // Add more widgets as needed
-                    ],
+                        ],
+                      )
+                    : Container(),
+                const SizedBox(
+                  height: 16,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: DefaultTextStyle(
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Item: ${widget.listing.itemName}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                              'Main Category: ${widget.listing.mainCategory.split('.').last}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                              'Sub Category: ${widget.listing.subCategory.split('.').last}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                              'Dietary specifications: ${widget.listing.dietaryNeeds.split('.').last}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text('Expiry date: $formattedDate'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text('Collection address: ${widget.listing.address}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                              'Available: ${widget.listing.isAvailable.toString()}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text('Donor: ${widget.listing.userName}'),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Container(
+                              padding: const EdgeInsets.all(8),
+                              width: double.infinity,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Text(
+                                  'Additional notes: ${widget.listing.additionalNotes}')),
+                          // Add more widgets as needed
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ) ;
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -423,4 +439,27 @@ class _ListingScreenState extends State<ListingScreen> {
       body: content,
     );
   }
+}
+
+Future<bool> _hasMessagesSubcollection(String chatId) async {
+  CollectionReference messagesCollection = FirebaseFirestore.instance
+      .collection('chat')
+      .doc(chatId)
+      .collection('messages');
+
+  QuerySnapshot querySnapshot = await messagesCollection.get();
+  return querySnapshot.docs.isNotEmpty;
+}
+
+void _deleteChat(String chatId) async {
+  try {
+    await FirebaseFirestore.instance.collection('chat').doc(chatId).delete();
+    print('Document with ID $chatId deleted successfully.');
+  } catch (e) {
+    print('Error deleting document: $e');
+  }
+}
+
+void goToChatScreen() {
+
 }

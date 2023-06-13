@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
 import 'package:foodbridge_project/widgets/loading.dart';
 
-
 class AllChatList extends StatelessWidget {
   const AllChatList({Key? key}) : super(key: key);
 
@@ -44,8 +43,28 @@ class AllChatList extends StatelessWidget {
             // Extract the necessary data from messageData to display in the ListTile
             String listingId = messageData['listing'].trim();
             String chatId = messageData['chatId'].trim();
+            String latestMessage = '';
 
             List<dynamic> myArray = messageData['participants'];
+            DocumentReference parentDocRef = messageSnapshot.reference;
+            CollectionReference subcollectionRef =
+                parentDocRef.collection('messages');
+
+            subcollectionRef
+                .orderBy('createdAt', descending: true)
+                .limit(1)
+                .get()
+                .then((subcollectionQuerySnapshot) {
+              if (subcollectionQuerySnapshot.docs.isNotEmpty) {
+                // Process the most recent document from the subcollection here
+                DocumentSnapshot mostRecentDocument =
+                    subcollectionQuerySnapshot.docs.first;
+                latestMessage = mostRecentDocument['text'];
+                // ...
+              } else {
+                print('no messages found');
+              }
+            });
 
             return FutureBuilder<DocumentSnapshot>(
               future: FirebaseFirestore.instance
@@ -82,32 +101,73 @@ class AllChatList extends StatelessWidget {
                         ),
                       ),
                       title: Text(chatPartner),
-                      trailing: imageUrl != null
-                          ? Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            )
-                          : const SizedBox(),
+                      subtitle: Text(
+                        latestMessage,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          imageUrl != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      imageUrl,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                          IconButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    content: const SizedBox(
+                                      height: 16,
+                                      width: 16,
+                                      child: Center(
+                                        child: Text('Delete Chat?'),
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: const Text('No')),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(ctx);
+                                          _deleteChat(chatId);
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.delete))
+                        ],
+                      ),
                       // Customize the appearance and behavior of the ListTile as needed
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  ChatScreen(chatId: chatId, listingId: listingId,)),
+                              builder: (context) => ChatScreen(
+                                    chatId: chatId,
+                                    listingId: listingId,
+                                  )),
                         );
                       },
                     ),
                   );
                 }
 
-                return Center(child: const CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               },
             );
           },
@@ -115,4 +175,16 @@ class AllChatList extends StatelessWidget {
       },
     );
   }
+}
+
+void _deleteChat(String chatId) {
+  FirebaseFirestore.instance
+      .collection('chat')
+      .doc(chatId)
+      .delete()
+      .then((value) {
+    print('Document deleted successfully');
+  }).catchError((error) {
+    print('Failed to delete document: $error');
+  });
 }
