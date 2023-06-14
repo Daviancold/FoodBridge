@@ -126,6 +126,7 @@ class _ListingScreenState extends State<ListingScreen> {
           'participants': [widget.listing.userId, user.email],
           'listing': widget.listing.id,
           'chatId': '',
+          'hasMessages': false,
         };
         CollectionReference<Map<String, dynamic>> chatCollection =
             FirebaseFirestore.instance.collection('chat');

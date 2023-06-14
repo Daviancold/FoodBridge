@@ -44,6 +44,11 @@ class _NewMessageState extends State<NewMessage> {
       'userName': user.displayName,
       'userImage': user.photoURL,
     });
+
+    FirebaseFirestore.instance
+        .collection('chat')
+        .doc(widget.chatId)
+        .update({'hasMessages': true});
   }
 
   @override

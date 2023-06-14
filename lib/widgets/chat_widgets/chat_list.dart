@@ -15,6 +15,7 @@ class AllChatList extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('chat')
           .where('participants', arrayContains: user.email)
+          .where('hasMessages', isEqualTo: true)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
