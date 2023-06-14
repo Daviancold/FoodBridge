@@ -1,6 +1,6 @@
 import 'package:foodbridge_project/screens/tabs_screen.dart';
 import 'package:foodbridge_project/screens/log_in_&_auth/auth_screen.dart';
-import 'package:foodbridge_project/widgets/login_registration/utils.dart';
+import 'package:foodbridge_project/widgets/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';

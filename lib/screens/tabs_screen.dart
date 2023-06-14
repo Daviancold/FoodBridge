@@ -1,4 +1,3 @@
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
@@ -6,6 +5,7 @@ import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screen.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
+import '../widgets/listings_column.dart';
 import 'chat/chat_list_screen.dart';
 import 'likes_screen.dart';
 import 'notifications_screen.dart';
@@ -21,7 +21,11 @@ class _TabsScreenState extends State<TabsScreen> {
   String itemName = "";
   int selectedPageIndex = 0;
 
-  //get snapshot from firestore collection "Listings"
+  //Get snapshot from Firestore collection "Listings".
+  //Filters documents by expiration date and availability, converts snapshots to lists, 
+  //then displays it on screen.
+  //If user has searched for something, it also filters out items that have an exact 
+  //match for item name.
   Stream<List<Listing>> readListings(String searchQuery) {
     DateTime currentDateTime = DateTime.now();
     CollectionReference listingsRef =
@@ -41,7 +45,7 @@ class _TabsScreenState extends State<TabsScreen> {
         .toList());
   }
 
-  //push to 'add new listing screen'
+  //push 'add new listing screen' on top
   void addNewListing() {
     Navigator.push<Listing>(
       context,
@@ -51,88 +55,16 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activeScreen = Column(
-      children: [
-        selectedPageIndex == 0
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        itemName == ''
-                            ? const Text(
-                                'All Listings',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              )
-                            : Expanded(
-                                child: Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    'Searched for: $itemName',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(8),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        //TODO filter options
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                              height: double.infinity,
-                              color: Colors.orange,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Text('Modal BottomSheet'),
-                                    ElevatedButton(
-                                      child: const Text('Close BottomSheet'),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      icon: const Icon(Icons.filter_alt),
-                      label: const Text('Filter'),
-                    ),
-                  ),
-                ],
-              )
-            : Container(),
-        Expanded(
-          child: ListingsScreen(
-            availListings: readListings(itemName),
-            isYourListing: false,
-          ),
-        ),
-      ],
+    //By default, active screen on opening the app is set to index 0
+    //Displays the home page, where all listings will be shown
+    Widget activeScreen = ListingsColumn(
+      selectedPageIndex: selectedPageIndex,
+      itemName: itemName,
+      addNewListing: addNewListing,
+      readListings: readListings,
     );
 
+    //By default, active app bar is the app bar for home page
     AppBar activeAppBar = AppBar(
       leading: IconButton(
         onPressed: () {
@@ -190,6 +122,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ],
     );
 
+    //checks the page selected in navigation bar
     if (selectedPageIndex == 2) {
       activeScreen = const ProfileScreen();
       activeAppBar = ProfileAppBar(context);

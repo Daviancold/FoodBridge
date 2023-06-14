@@ -4,7 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:foodbridge_project/main.dart';
-import 'package:foodbridge_project/widgets/login_registration/utils.dart';
+import 'package:foodbridge_project/widgets/utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 

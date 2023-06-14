@@ -11,6 +11,7 @@ class AllChatList extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
     return StreamBuilder<QuerySnapshot>(
+      //Filter chats that belong to current user
       stream: FirebaseFirestore.instance
           .collection('chat')
           .where('participants', arrayContains: user.email)
@@ -31,7 +32,12 @@ class AllChatList extends StatelessWidget {
             child: Text('Something went wrong...'),
           );
         }
-        final loadedMessagesList = snapshot.data!.docs;
+        final documents = snapshot.data!.docs;
+
+        // Filter the documents that have the 'messages' subcollection
+        final loadedMessagesList = documents.where((doc) =>
+            doc.reference.collection('messages').snapshots().isBroadcast).toList();
+
         return ListView.builder(
           //padding: const EdgeInsets.all(8),
           itemCount: loadedMessagesList.length,
@@ -40,11 +46,13 @@ class AllChatList extends StatelessWidget {
             Map<String, dynamic> messageData =
                 messageSnapshot.data() as Map<String, dynamic>;
 
-            // Extract the necessary data from messageData to display in the ListTile
+            // Extract the necessary IDs from messageData for referencing
             String listingId = messageData['listing'].trim();
             String chatId = messageData['chatId'].trim();
-            String latestMessage = '';
 
+            // Extract data from messageData to display on list
+            //of chat cards 
+            String latestMessage = '';
             List<dynamic> myArray = messageData['participants'];
             DocumentReference parentDocRef = messageSnapshot.reference;
             CollectionReference subcollectionRef =
@@ -66,6 +74,7 @@ class AllChatList extends StatelessWidget {
               }
             });
 
+            //Building each chat card
             return FutureBuilder<DocumentSnapshot>(
               future: FirebaseFirestore.instance
                   .collection('Listings')
@@ -177,6 +186,7 @@ class AllChatList extends StatelessWidget {
   }
 }
 
+//delete chat document with doc id == chatId from firestore
 void _deleteChat(String chatId) {
   FirebaseFirestore.instance
       .collection('chat')

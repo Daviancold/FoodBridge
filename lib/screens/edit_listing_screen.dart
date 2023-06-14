@@ -7,6 +7,7 @@ import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/edit_image_input.dart';
 import '../widgets/edit_location_input.dart';
+import '../widgets/utils.dart';
 
 class EditListingScreen extends StatefulWidget {
   const EditListingScreen(
@@ -31,6 +32,15 @@ class _EditListingScreenState extends State<EditListingScreen> {
   MainCategory? selectedMainCategory;
   SubCategory? selectedSubCategory;
 
+  @override
+  void dispose() {
+    dateInputController.dispose();
+    super.dispose();
+  }
+
+  //initialize fields to original values. In the event that 
+  //user does not make any edits, the original values
+  //will be retained in the database.
   @override
   void initState() {
     selectedMainCategory = MainCategory.values.firstWhere(
@@ -128,6 +138,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
   var _urlLink;
   bool _isSaving = false;
 
+  //upload new image to storage
   Future<String> uploadImage(File file) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     firebase_storage.Reference ref =
@@ -137,6 +148,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     return imageUrl;
   }
 
+  //If user uploads new photo, delete old photo in storage
   Future<void> deleteFileByUrl(String fileUrl) async {
     try {
       // Extract the file name from the URL
@@ -161,6 +173,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     await ref.delete();
   }
 
+  //save updates made by user, if any
   void _saveItem() async {
     if (_editedSelectedImage == null) {
       showDialog(
@@ -170,10 +183,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
             'Picture missing',
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: const SizedBox(
             height: 16,
             width: 32,
-            child: const Center(
+            child: Center(
               child: Text('Add a picture'),
             ),
           ),
@@ -197,10 +210,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
             'Address missing',
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: const SizedBox(
             height: 16,
             width: 32,
-            child: const Center(
+            child: Center(
               child: Text('Click on get address'),
             ),
           ),
@@ -221,6 +234,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
         _isSaving = true;
       });
       _formKey.currentState!.save();
+      try {
       if (_editedSelectedImage == _image) {
         _urlLink = _editedSelectedImage;
       } else {
@@ -246,11 +260,15 @@ class _EditListingScreenState extends State<EditListingScreen> {
           content: Text('Edits are saved'),
         ),
       );
+      } catch (e) {
+        Utils.showSnackBar('error: $e');
+      }
       Navigator.pop(context);
       Navigator.pop(context);
     }
   }
 
+  //date picker, formatted
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(

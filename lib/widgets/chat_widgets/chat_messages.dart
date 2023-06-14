@@ -14,6 +14,8 @@ class ChatMessages extends StatelessWidget {
     final authenticatedUser = FirebaseAuth.instance.currentUser!;
 
     return StreamBuilder(
+      //goes to subcollection 'messages' and
+      //retrieves all messages
       stream: FirebaseFirestore.instance
           .collection('chat')
           .doc(chatId)

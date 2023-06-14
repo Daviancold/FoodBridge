@@ -7,7 +7,8 @@ import 'package:foodbridge_project/api_key.dart';
 import '../models/listing.dart';
 
 class EditLocationInput extends StatefulWidget {
-  const EditLocationInput({super.key, required this.chosenLocation, required this.listing});
+  const EditLocationInput(
+      {super.key, required this.chosenLocation, required this.listing});
 
   final Listing listing;
   final void Function(UserLocation location) chosenLocation;
@@ -20,6 +21,7 @@ class _EditLocationInputState extends State<EditLocationInput> {
   UserLocation? _pickedLocation;
   var _isGettingLocation = false;
 
+  //Use reverse geocoding to get snapshot image of map
   String get newLocationImage {
     if (_pickedLocation == null) {
       return '';
@@ -35,6 +37,8 @@ class _EditLocationInputState extends State<EditLocationInput> {
     return 'https://maps.googleapis.com/maps/api/staticmap?center=$oldLat,$oldLng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$oldLat,$oldLng&key=$googMapsKey';
   }
 
+  //Check for user permission to access location
+  //Retrieves latitude and longitude of current location
   void _getCurrentLocation() async {
     Location location = Location();
 
@@ -68,7 +72,7 @@ class _EditLocationInputState extends State<EditLocationInput> {
 
     if (lat == null || lng == null) {
       return;
-    } //TODO add error handling
+    } 
 
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyBPnh4TzaS8FEO7vnHEdobC0Z6hsJATCoE');
@@ -95,15 +99,13 @@ class _EditLocationInputState extends State<EditLocationInput> {
     if (_pickedLocation != null) {
       previewContent = Stack(
         children: [
-          Container(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                newLocationImage,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              newLocationImage,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
           Container(

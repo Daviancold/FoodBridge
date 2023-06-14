@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:foodbridge_project/api_key.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-
 import '../models/listing.dart';
 
 class LocationInput extends StatefulWidget {
@@ -16,9 +15,11 @@ class LocationInput extends StatefulWidget {
 }
 
 class _LocationInputState extends State<LocationInput> {
+  Widget previewContent = const Text('Get location');
   UserLocation? _pickedLocation;
   var _isGettingLocation = false;
 
+  //Use reverse geocoding to get snapshot image of map
   String get locationImage {
     if (_pickedLocation == null) {
       return '';
@@ -28,6 +29,8 @@ class _LocationInputState extends State<LocationInput> {
     return 'https://maps.googleapis.com/maps/api/staticmap?center=$lat,$lng=&zoom=16&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C$lat,$lng&key=$googMapsKey';
   }
 
+  //Check for user permission to access location
+  //Retrieves latitude and longitude of current location
   void _getCurrentLocation() async {
     Location location = Location();
 
@@ -54,14 +57,14 @@ class _LocationInputState extends State<LocationInput> {
     setState(() {
       _isGettingLocation = true;
     });
-
+    
     locationData = await location.getLocation();
     final lat = locationData.latitude;
     final lng = locationData.longitude;
 
     if (lat == null || lng == null) {
       return;
-    } //TODO add error handling
+    }
 
     final url = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=$googMapsKey');
@@ -83,20 +86,17 @@ class _LocationInputState extends State<LocationInput> {
 
   @override
   Widget build(BuildContext context) {
-    Widget previewContent = Text('Get location');
-
+    
     if (_pickedLocation != null) {
       previewContent = Stack(
         children: [
-          Container(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                locationImage,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              locationImage,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
           Container(
@@ -115,7 +115,7 @@ class _LocationInputState extends State<LocationInput> {
             ),
             child: Text(
               _pickedLocation!.address,
-              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              style: const TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ),
         ],

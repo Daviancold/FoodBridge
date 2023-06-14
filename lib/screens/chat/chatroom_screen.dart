@@ -12,6 +12,7 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Retrieves information about listing
     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       future: FirebaseFirestore.instance
           .collection('Listings')
@@ -38,6 +39,8 @@ class ChatScreen extends StatelessWidget {
           ),
           body: Column(
             children: [
+              //Brief summary of listing details 
+              //displayed at the top of chatroom
               Card(
                 margin: const EdgeInsets.all(16),
                 elevation: 4,
@@ -50,7 +53,7 @@ class ChatScreen extends StatelessWidget {
                     children: [
                       Container(
                         height: 120,
-                        width: 90,
+                        width: 120,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
@@ -94,6 +97,11 @@ class ChatScreen extends StatelessWidget {
                               'Available: ${listing['isAvailable'].toString()}',
                               style: const TextStyle(fontSize: 12),
                             ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Donor: ${listing['userName'].toString()}',
+                              style: const TextStyle(fontSize: 12),
+                            ),
                           ],
                         ),
                       )
@@ -101,11 +109,14 @@ class ChatScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              //All text messages/ text bubbles
               Expanded(
                 child: ChatMessages(
                   chatId: chatId,
                 ),
               ),
+              //text field to key in new
+              //message or text
               NewMessage(
                 chatId: chatId,
               ),

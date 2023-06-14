@@ -14,7 +14,7 @@ class NewMessage extends StatefulWidget {
 }
 
 class _NewMessageState extends State<NewMessage> {
-  var _messageController = TextEditingController();
+  final _messageController = TextEditingController();
   final user = FirebaseAuth.instance.currentUser!;
 
   @override

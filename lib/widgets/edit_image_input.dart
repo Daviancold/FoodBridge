@@ -19,6 +19,10 @@ class EditImageInput extends StatefulWidget {
 class _ImageInputState extends State<EditImageInput> {
   File? _selectedImage;
 
+  //take picture from camera.
+  //if users returns without taking a picture, return
+  //if users takes a picture, display that picture as a
+  //preview on screen and updates parent widget.
   void _takePicture() async {
     final imagePicker = ImagePicker();
     final pickedImage = await imagePicker.pickImage(
@@ -30,7 +34,6 @@ class _ImageInputState extends State<EditImageInput> {
     }
     setState(() {
       _selectedImage = File(pickedImage.path);
-      //print('dogg $_selectedImage');
       widget.chosenImage(_selectedImage!);
     });
   }
@@ -39,6 +42,8 @@ class _ImageInputState extends State<EditImageInput> {
   Widget build(BuildContext context) {
     Widget content;
 
+    //Allows user to retake photo
+    //if they wish to
     if (_selectedImage != null) {
       content = GestureDetector(
         onTap: _takePicture,

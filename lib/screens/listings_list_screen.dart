@@ -41,8 +41,7 @@ class _ListingsScreenState extends State<ListingsScreen> {
                 ));
               } else if (snapshot.hasData) {
                 final allListings = snapshot.data!;
-                // final filteredListings = allListings.where("isAvailable", isEqualto : true);
-    
+                
                 return Expanded(
                   child: GridView(
                     padding: const EdgeInsets.all(16),

@@ -37,6 +37,7 @@ class _ListingScreenState extends State<ListingScreen> {
         .doc(widget.listing.id);
   }
 
+  //Deletes image in firebase
   Future<void> deleteFileByUrl(String fileUrl) async {
     try {
       // Extract the file name from the URL
@@ -61,12 +62,14 @@ class _ListingScreenState extends State<ListingScreen> {
     await ref.delete();
   }
 
+  //Deletes listing in firestore
   void _deleteLisiting() async {
     String fileUrl = widget.listing.image;
     await deleteFileByUrl(fileUrl);
     docListing.delete();
   }
 
+  //updates listing isAvailable field to true in firestore
   void _markDonatedLisiting() {
     docListing.update({
       'isAvailable': false,
@@ -77,6 +80,13 @@ class _ListingScreenState extends State<ListingScreen> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
 
+    //Navigates to chatroom. Create new chatroom if it doesn't
+    //yet exist between 2 specified people for a specific
+    //listing. Else, go to existing chatroom.
+    //If user leaves the new chatroom created
+    //and there are no messages,
+    //delete the chatroom doc from firestore.
+    //Else, save it in firestore.
     void goToChat() async {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await FirebaseFirestore.instance
@@ -144,8 +154,11 @@ class _ListingScreenState extends State<ListingScreen> {
       }
     }
 
+    //Placeholder to display on screen
     Widget content;
 
+    //If content is loading, display a loading screen,
+    //else, display the details of the listing
     isLoading
         ? content = const LoadingCircleScreen()
         : content = Padding(
@@ -156,6 +169,7 @@ class _ListingScreenState extends State<ListingScreen> {
               children: [
                 Stack(
                   children: [
+                    //Listing image
                     SizedBox(
                       width: double.infinity,
                       height: 350,
@@ -179,6 +193,7 @@ class _ListingScreenState extends State<ListingScreen> {
                         ),
                       ),
                     ),
+                    //Chat button and favorites button
                     Positioned(
                       right: 16,
                       bottom: 16,
@@ -202,6 +217,8 @@ class _ListingScreenState extends State<ListingScreen> {
                         ],
                       ),
                     ),
+                    //Visibly indicate if listing is available 
+                    //for donation using a green label
                     widget.listing.isAvailable
                         ? Container()
                         : Positioned(
@@ -224,6 +241,8 @@ class _ListingScreenState extends State<ListingScreen> {
                               ),
                             ),
                           ),
+                    //Visibly indicate if listing has expired 
+                    //using a red label
                     widget.listing.expiryDate.isAfter(DateTime.now())
                         ? Container()
                         : Positioned(
@@ -251,6 +270,9 @@ class _ListingScreenState extends State<ListingScreen> {
                 const SizedBox(
                   height: 8,
                 ),
+                //If you are the owner of the listing,
+                //you will get options to edit/update/delete
+                //the listing
                 widget.isYourListing
                     ? Wrap(
                         direction: Axis.horizontal,
@@ -359,6 +381,8 @@ class _ListingScreenState extends State<ListingScreen> {
                 const SizedBox(
                   height: 16,
                 ),
+                //Display all details of listing
+                //in scrollable list
                 Expanded(
                   child: SingleChildScrollView(
                     child: DefaultTextStyle(
@@ -441,6 +465,7 @@ class _ListingScreenState extends State<ListingScreen> {
   }
 }
 
+//Checks if the chatroom has any messages
 Future<bool> _hasMessagesSubcollection(String chatId) async {
   CollectionReference messagesCollection = FirebaseFirestore.instance
       .collection('chat')
@@ -451,6 +476,7 @@ Future<bool> _hasMessagesSubcollection(String chatId) async {
   return querySnapshot.docs.isNotEmpty;
 }
 
+//Deletes chatroom, aka delete chat doc in firestore
 void _deleteChat(String chatId) async {
   try {
     await FirebaseFirestore.instance.collection('chat').doc(chatId).delete();

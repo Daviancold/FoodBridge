@@ -19,6 +19,8 @@ class ListingGridItem extends StatelessWidget {
     return formatter.format(data.expiryDate);
   }
 
+  //UI layout for each grid item
+  //that is used for grid view
   @override
   Widget build(BuildContext context) {
     return InkWell(
