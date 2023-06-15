@@ -30,10 +30,15 @@ class _TabsScreenState extends State<TabsScreen> {
     Query query = listingsRef
         .where("expiryDate", isGreaterThan: currentDateTime)
         .where("isAvailable", isEqualTo: true);
+    //.where("subCategory", whereIn: selectedOptions);
 
     if (searchQuery.isNotEmpty) {
       String searchResult = searchQuery.trim().toUpperCase();
       query = query.where("itemName", isEqualTo: searchResult);
+    }
+
+    if (selectedOptions.isNotEmpty) {
+      query = query.where('subCategory', whereIn: selectedOptions);
     }
 
     return query.snapshots().map((snapshot) => snapshot.docs

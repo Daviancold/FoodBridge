@@ -41,7 +41,7 @@ class _FilterWidgetState extends State<FilterWidget> {
         Subcategory('Pantry Essentials', [
           'Canned',
           'Rice',
-          'Pasta',
+          'pasta',
           'noodles',
           'Cereal',
           'Condiments',
