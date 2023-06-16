@@ -33,13 +33,14 @@ class ChatScreen extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Chat'),
-            centerTitle: true,
-            backgroundColor: Colors.orange,
+            title: Text(
+              'Chat',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
           body: Column(
             children: [
-              //Brief summary of listing details 
+              //Brief summary of listing details
               //displayed at the top of chatroom
               Card(
                 margin: const EdgeInsets.all(16),
@@ -81,7 +82,7 @@ class ChatScreen extends StatelessWidget {
                               'Main category: ${listing['mainCategory'].split('.').last}',
                               style: const TextStyle(fontSize: 12),
                             ),
-                           const SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
                               'Subcategory: ${listing['subCategory'].split('.').last}',
                               style: const TextStyle(fontSize: 12),

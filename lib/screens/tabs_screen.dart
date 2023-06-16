@@ -7,7 +7,7 @@ import 'package:foodbridge_project/screens/profile_screen.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import '../widgets/listings_column.dart';
 import 'chat/chat_list_screen.dart';
-import 'likes_screen.dart';
+import 'favorites_screen.dart';
 import 'notifications_screen.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -76,7 +76,6 @@ class _TabsScreenState extends State<TabsScreen> {
         },
         icon: const Icon(Icons.notifications_none),
       ),
-      backgroundColor: Colors.orange,
       title: SizedBox(
         width: 200,
         child: TextField(

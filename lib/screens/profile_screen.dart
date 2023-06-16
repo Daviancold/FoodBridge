@@ -11,7 +11,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(currentUser);
+    final user = FirebaseAuth.instance.currentUser!;
 
     Stream<List<Listing>> readUserListings() {
       return FirebaseFirestore.instance
