@@ -1,15 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodbridge_project/providers/current_user_provider.dart';
 import '../models/listing.dart';
 import 'listings_list_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUser);
 
     Stream<List<Listing>> readUserListings() {
       return FirebaseFirestore.instance

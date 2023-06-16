@@ -2,22 +2,24 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/widgets/image_input.dart';
-import 'package:foodbridge_project/widgets/location_input.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foodbridge_project/widgets/image_input/image_input.dart';
+import 'package:foodbridge_project/widgets/location_input/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../providers/current_user_provider.dart';
 import '../widgets/utils.dart';
 
-class NewListingScreen extends StatefulWidget {
+class NewListingScreen extends ConsumerStatefulWidget {
   const NewListingScreen({super.key});
 
   @override
-  State<NewListingScreen> createState() => _NewListingScreenState();
+  ConsumerState<NewListingScreen> createState() => _NewListingScreenState();
 }
 
-class _NewListingScreenState extends State<NewListingScreen> {
+class _NewListingScreenState extends ConsumerState<NewListingScreen> {
   MainCategory? selectedMainCategory;
   SubCategory? selectedSubCategory;
   final _formKey = GlobalKey<FormState>();
@@ -46,11 +48,11 @@ class _NewListingScreenState extends State<NewListingScreen> {
   // ignore: prefer_typing_uninitialized_variables
   var _selectedImage;
   // ignore: prefer_typing_uninitialized_variables
-  var _lat;
-  // ignore: prefer_typing_uninitialized_variables
-  var _lng;
-  // ignore: prefer_typing_uninitialized_variables
-  var _address;
+  double? _lat;
+  double? _lng;
+  String? _address;
+  String? _addressImageUrl;
+
   bool _isSaving = false;
 
   //takes an image file, upload it to firebase storage and returns url
@@ -84,10 +86,11 @@ class _NewListingScreenState extends State<NewListingScreen> {
     required double lat,
     required double lng,
     required String address,
+    required String email,
+    required String userName,
+    required String addressImageUrl,
   }) async {
     final docListing = FirebaseFirestore.instance.collection('Listings').doc();
-
-    final user = FirebaseAuth.instance.currentUser!;
 
     final listing = Listing(
       id: docListing.id,
@@ -102,8 +105,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
       lng: lng,
       address: address,
       isAvailable: true,
-      userId: user.email.toString(),
-      userName: user.displayName.toString(),
+      userId: email,
+      userName: userName,
+      addressImageUrl: addressImageUrl,
     );
 
     final json = listing.toJson();
@@ -142,7 +146,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
   //Validates user input first.
   //If validation fails, prompt user to check entries.
   //If validation passes, create new listing on firestore
-  void _saveItem() async {
+  void _saveItem(String email, String userName) async {
     if (_selectedImage == null) {
       showDialog(
         context: context,
@@ -216,6 +220,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
           lat: _lat!,
           lng: _lng!,
           address: _address!,
+          email: email,
+          userName: userName,
+          addressImageUrl: _addressImageUrl!
         );
       } catch (e) {
         Utils.showSnackBar('error: $e');
@@ -226,6 +233,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(currentUser);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -290,7 +298,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     });
                   },
                   decoration: const InputDecoration(
-                    hintText: 'Select main category',
+                    label: Text('Main category'),
                   ),
                   validator: (value) {
                     if (value == null) {
@@ -322,7 +330,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     });
                   },
                   decoration: const InputDecoration(
-                    hintText: 'Select subcategory',
+                    label: Text('Sub category'),
                   ),
                   validator: (value) {
                     if (value == null) {
@@ -338,7 +346,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
                 ),
                 //dietary specifications
                 DropdownButtonFormField(
-                  hint: const Text('Select dietary specifications'),
+                  decoration: const InputDecoration(
+                    label: Text('Dietary specifications'),
+                  ),
                   items: [
                     for (final category in DietaryNeeds.values)
                       DropdownMenuItem(
@@ -357,39 +367,33 @@ class _NewListingScreenState extends State<NewListingScreen> {
                   },
                 ),
                 //Expiry date
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Select expiry date',
-                        ),
-                        controller: dateInputController,
-                        onTap: _presentDatePicker,
-                        readOnly: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a date';
-                          }
-                        },
-                        onSaved: (value) {
-                          _chosenDate = DateTime.tryParse(value!);
-                        },
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  decoration: const InputDecoration(
+                    label: Text('Expiry date'),
+                  ),
+                  controller: dateInputController,
+                  onTap: _presentDatePicker,
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a date';
+                    }
+                  },
+                  onSaved: (value) {
+                    _chosenDate = DateTime.tryParse(value!);
+                  },
                 ),
                 const SizedBox(
                   height: 16,
                 ),
                 //Retrieving location
                 LocationInput(
-                  chosenLocation: (UserLocation location) {
-                    _lat = location.latitude;
-                    _lng = location.longitude;
-                    _address = location.address;
+                  chosenLocation: (UserLocation? location) {
+                    _lat = location?.latitude;
+                    _lng = location?.longitude;
+                    _address = location?.address;
+                    _addressImageUrl = location?.addressImageUrl;
+                    print('hello $_addressImageUrl');
                   },
                 ),
                 const SizedBox(
@@ -429,7 +433,14 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     ),
                     const Spacer(),
                     ElevatedButton.icon(
-                      onPressed: _isSaving ? null : _saveItem,
+                      onPressed: _isSaving
+                          ? null
+                          : () {
+                              _saveItem(
+                                user.email!,
+                                user.displayName!,
+                              );
+                            },
                       icon: _isSaving
                           ? const SizedBox(
                               height: 8,
