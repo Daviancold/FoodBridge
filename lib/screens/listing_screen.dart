@@ -163,8 +163,8 @@ class _ListingScreenState extends State<ListingScreen> {
     isLoading
         ? content = const LoadingCircleScreen()
         : content = Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,46 +384,269 @@ class _ListingScreenState extends State<ListingScreen> {
                     height: 16,
                   ),
                   //Display all details of listing
-                  //in scrollable list
-                  Text('Item: ${widget.listing.itemName}'),
-                  const SizedBox(
-                    height: 8,
-                  ),
                   Text(
-                      'Main Category: ${widget.listing.mainCategory.split('.').last}'),
+                    'Item:',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontSize: 20),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text('${widget.listing.itemName}'),
                   const SizedBox(
                     height: 8,
                   ),
-                  Text(
-                      'Sub Category: ${widget.listing.subCategory.split('.').last}'),
+
+                  Wrap(
+                    direction: Axis.horizontal,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Main Category',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(color: Colors.white, shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Adjust the shadow color and opacity
+                                  offset: const Offset(
+                                      1, 1), // Adjust the shadow offset
+                                  blurRadius:
+                                      3, // Adjust the shadow blur radius
+                                ),
+                              ]),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              '${widget.listing.mainCategory.split('.').last}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Colors.white, shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Adjust the shadow color and opacity
+                                  offset: const Offset(
+                                      1, 1), // Adjust the shadow offset
+                                  blurRadius:
+                                      3, // Adjust the shadow blur radius
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color:
+                              Theme.of(context).colorScheme.tertiaryContainer,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Sub Category',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(color: Colors.white, shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Adjust the shadow color and opacity
+                                  offset: const Offset(
+                                      1, 1), // Adjust the shadow offset
+                                  blurRadius:
+                                      3, // Adjust the shadow blur radius
+                                ),
+                              ]),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              widget.listing.subCategory.split('.').last,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Colors.white, shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Adjust the shadow color and opacity
+                                  offset: const Offset(
+                                      1, 1), // Adjust the shadow offset
+                                  blurRadius:
+                                      3, // Adjust the shadow blur radius
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Dietary Specifications',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(color: Colors.white, shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Adjust the shadow color and opacity
+                                  offset: const Offset(
+                                      1, 1), // Adjust the shadow offset
+                                  blurRadius:
+                                      3, // Adjust the shadow blur radius
+                                ),
+                              ]),
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text(
+                              widget.listing.dietaryNeeds.split('.').last,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Colors.white, shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(
+                                      0.5), // Adjust the shadow color and opacity
+                                  offset: const Offset(
+                                      1, 1), // Adjust the shadow offset
+                                  blurRadius:
+                                      3, // Adjust the shadow blur radius
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
-                  Text(
-                      'Dietary specifications: ${widget.listing.dietaryNeeds.split('.').last}'),
+                  Row(
+                    children: [
+                      const Icon(Icons.person),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        'Donor:',
+                        style: Theme.of(context).textTheme.titleMedium!,
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(widget.listing.userName)
+                    ],
+                  ),
                   const SizedBox(
                     height: 8,
                   ),
-                  Text('Expiry date: $formattedDate'),
+                  Row(
+                    children: [
+                      const Icon(Icons.calendar_month_outlined),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        'Expiry Date:',
+                        style: Theme.of(context).textTheme.titleMedium!,
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(formattedDate),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      widget.listing.isAvailable
+                          ? const Icon(Icons.check)
+                          : const Icon(Icons.close),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        'Available:',
+                        style: Theme.of(context).textTheme.titleMedium!,
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      widget.listing.isAvailable
+                          ? const Text('Yes')
+                          : const Text('No'),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        'Collection/ Meetup point:',
+                        style: Theme.of(context).textTheme.titleMedium!,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(widget.listing.address),
                   const SizedBox(
                     height: 8,
                   ),
-                  Text('Collection address: ${widget.listing.address}'),
-                  const SizedBox(
-                    height: 8,
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Image.network(widget.listing.addressImageUrl),
                   ),
-                  Image.network(widget.listing.addressImageUrl),
+
                   const SizedBox(
-                    height: 8,
+                    height: 16,
                   ),
-                  Text('Available: ${widget.listing.isAvailable.toString()}'),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text('Donor: ${widget.listing.userName}'),
-                  const SizedBox(
-                    height: 8,
-                  ),
+
                   Container(
                       padding: const EdgeInsets.all(8),
                       width: double.infinity,
@@ -432,25 +655,31 @@ class _ListingScreenState extends State<ListingScreen> {
                         border: Border.all(),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Text(
-                          'Additional notes: ${widget.listing.additionalNotes}')),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Additional notes:',
+                            style: Theme.of(context).textTheme.titleMedium!,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(widget.listing.additionalNotes),
+                        ],
+                      )),
                 ],
               ),
             ),
-        );
+          );
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange,
         title: Text(
-          'LISTING: ${widget.listing.itemName.toUpperCase()}',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 24,
-          ),
+          'Listing: ${widget.listing.itemName.toUpperCase()}',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
-        centerTitle: true,
       ),
       body: content,
     );

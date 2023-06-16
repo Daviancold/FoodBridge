@@ -146,7 +146,7 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
   //Validates user input first.
   //If validation fails, prompt user to check entries.
   //If validation passes, create new listing on firestore
-  void _saveItem(String email, String userName) async {
+  void _saveItem() async {
     if (_selectedImage == null) {
       showDialog(
         context: context,
@@ -208,22 +208,22 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
       _formKey.currentState!.save();
       try {
         final urlLink = await uploadImage(_selectedImage);
+        final user = FirebaseAuth.instance.currentUser!;
 
         createListing(
-          itemName: _itemName!,
-          urlLink: urlLink!,
-          mainCat: _chosenMainCategory!,
-          subCat: _chosenSubCategory!,
-          dietaryInfo: _chosenDietaryOption!,
-          addInfo: _additionalInfo!,
-          expDate: _chosenDate!,
-          lat: _lat!,
-          lng: _lng!,
-          address: _address!,
-          email: email,
-          userName: userName,
-          addressImageUrl: _addressImageUrl!
-        );
+            itemName: _itemName!,
+            urlLink: urlLink!,
+            mainCat: _chosenMainCategory!,
+            subCat: _chosenSubCategory!,
+            dietaryInfo: _chosenDietaryOption!,
+            addInfo: _additionalInfo!,
+            expDate: _chosenDate!,
+            lat: _lat!,
+            lng: _lng!,
+            address: _address!,
+            email: user.email!,
+            userName: user.displayName!,
+            addressImageUrl: _addressImageUrl!);
       } catch (e) {
         Utils.showSnackBar('error: $e');
       }
@@ -233,18 +233,11 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(currentUser);
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.orange,
-        title: const Text(
-          'ADD NEW LISTING',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 24,
-          ),
+        title: Text(
+          'Add New Listing',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       body: Padding(
@@ -433,14 +426,7 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
                     ),
                     const Spacer(),
                     ElevatedButton.icon(
-                      onPressed: _isSaving
-                          ? null
-                          : () {
-                              _saveItem(
-                                user.email!,
-                                user.displayName!,
-                              );
-                            },
+                      onPressed: _isSaving ? null : _saveItem,
                       icon: _isSaving
                           ? const SizedBox(
                               height: 8,
