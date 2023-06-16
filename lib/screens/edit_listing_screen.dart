@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widgets/edit_image_input.dart';
-import '../widgets/edit_location_input.dart';
+import '../widgets/image_input/edit_image_input.dart';
+import '../widgets/location_input/edit_location_input.dart';
 import '../widgets/utils.dart';
 
 class EditListingScreen extends StatefulWidget {

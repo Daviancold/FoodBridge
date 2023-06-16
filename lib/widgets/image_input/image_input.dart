@@ -3,20 +3,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../models/listing.dart';
-
-class EditImageInput extends StatefulWidget {
-  const EditImageInput(
-      {super.key, required this.chosenImage, required this.listing});
+class ImageInput extends StatefulWidget {
+  const ImageInput({
+    super.key,
+    required this.chosenImage,
+  });
 
   final void Function(File image) chosenImage;
-  final Listing listing;
 
   @override
-  State<EditImageInput> createState() => _ImageInputState();
+  State<ImageInput> createState() => _ImageInputState();
 }
 
-class _ImageInputState extends State<EditImageInput> {
+class _ImageInputState extends State<ImageInput> {
+  //Stores currently selected image
   File? _selectedImage;
 
   //take picture from camera.
@@ -38,6 +38,9 @@ class _ImageInputState extends State<EditImageInput> {
     });
   }
 
+  //Show dialog on screen and
+  //prompt user if he wants to retake
+  //photo from gallery or camera
   void _promptRetakePhoto() {
     showDialog(
       context: context,
@@ -74,7 +77,28 @@ class _ImageInputState extends State<EditImageInput> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
+    Widget content = Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton.icon(
+          icon: const Icon(Icons.camera),
+          label: const Text('Select from camera'),
+          onPressed: () {
+            _takePicture(ImageSource.camera);
+          },
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        TextButton.icon(
+          icon: const Icon(Icons.image),
+          label: const Text('Select from gallery'),
+          onPressed: () {
+            _takePicture(ImageSource.gallery);
+          },
+        ),
+      ],
+    );
 
     //Allows user to retake photo
     //if they wish to
@@ -91,21 +115,7 @@ class _ImageInputState extends State<EditImageInput> {
           ),
         ),
       );
-    } else {
-      content = GestureDetector(
-        onTap: _promptRetakePhoto,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            widget.listing.image,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-        ),
-      );
     }
-
     return Container(
       decoration: BoxDecoration(
         border: Border.all(),
