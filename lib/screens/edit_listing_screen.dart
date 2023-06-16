@@ -110,6 +110,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
     return widget.listing.lng;
   }
 
+  String get _addressImageUrl {
+    return widget.listing.addressImageUrl;
+  }
+
   String get _mainCategory {
     return widget.listing.mainCategory;
   }
@@ -129,9 +133,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
   var _editedChosenDate;
   var _editedAdditionalInfo;
   var _editedSelectedImage;
-  var _editedLat;
-  var _editedLng;
-  var _editedAddress;
+  double? _editedLat;
+  double? _editedLng;
+  String? _editedAddress;
+  String? _editedAddressImageUrl;
   var _unchangedId;
   var _unchangeduserId;
   var _unchangedIsAvailable;
@@ -250,6 +255,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
         'itemName': _editedItemName,
         'lat': _editedLat,
         'lng': _editedLng,
+        'addressImageUrl' :_editedAddressImageUrl,
         'mainCategory': _editedChosenMainCategory,
         'subCategory': _editedChosenSubCategory,
       });
@@ -457,10 +463,11 @@ class _EditListingScreenState extends State<EditListingScreen> {
               ),
               EditLocationInput(
                 listing: widget.listing,
-                chosenLocation: (UserLocation location) {
-                  _editedLat = location.latitude;
-                  _editedLng = location.longitude;
-                  _editedAddress = location.address;
+                chosenLocation: (UserLocation? location) {
+                  _editedLat = location?.latitude;
+                  _editedLng = location?.longitude;
+                  _editedAddress = location?.address;
+                  _editedAddressImageUrl = location?.addressImageUrl;
                 },
               ),
               const SizedBox(

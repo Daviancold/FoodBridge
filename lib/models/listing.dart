@@ -132,11 +132,13 @@ class UserLocation {
     required this.latitude,
     required this.longitude,
     required this.address,
+    required this.addressImageUrl,
   });
 
   final double latitude;
   final double longitude;
   final String address;
+  final String addressImageUrl;
 }
 
 class Listing {
@@ -155,6 +157,7 @@ class Listing {
     required this.isAvailable,
     required this.userId,
     required this.userName,
+    required this.addressImageUrl,
   });
   // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
@@ -171,23 +174,26 @@ class Listing {
   final bool isAvailable;
   final double lat;
   final double lng;
-  final String address; //
+  final String address;
+  final String addressImageUrl; //
 
   static Listing fromJson(Map<String, dynamic> json) => Listing(
-      id: json['id'],
-      itemName: json['itemName'],
-      userName: json['userName'],
-      userId: json['userId'],
-      image: json['image'],
-      mainCategory: json['mainCategory'],
-      subCategory: json['subCategory'],
-      dietaryNeeds: json['dietaryNeeds'],
-      expiryDate: (json['expiryDate'] as Timestamp).toDate(),
-      isAvailable: json['isAvailable'],
-      lat: json['lat'],
-      lng: json['lng'],
-      address: json['address'],
-      additionalNotes: json['additionalNotes']);
+        id: json['id'],
+        itemName: json['itemName'],
+        userName: json['userName'],
+        userId: json['userId'],
+        image: json['image'],
+        mainCategory: json['mainCategory'],
+        subCategory: json['subCategory'],
+        dietaryNeeds: json['dietaryNeeds'],
+        expiryDate: (json['expiryDate'] as Timestamp).toDate(),
+        isAvailable: json['isAvailable'],
+        lat: json['lat'],
+        lng: json['lng'],
+        address: json['address'],
+        addressImageUrl: json['addressImageUrl'],
+        additionalNotes: json['additionalNotes'],
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -203,6 +209,7 @@ class Listing {
         'isAvailable': isAvailable,
         'lat': lat,
         'lng': lng,
-        'address': address
+        'address': address,
+        'addressImageUrl': addressImageUrl,
       };
 }

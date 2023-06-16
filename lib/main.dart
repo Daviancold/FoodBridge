@@ -4,7 +4,7 @@ import 'package:foodbridge_project/widgets/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 240, 148, 28),
@@ -15,7 +15,11 @@ Future main() async {
   //await FirebaseAppCheck.instance.activate();
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: kColorScheme,
         ),
-        home:const MainPage(),
+        home: const MainPage(),
       );
 }
 

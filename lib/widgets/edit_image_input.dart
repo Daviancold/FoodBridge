@@ -23,10 +23,10 @@ class _ImageInputState extends State<EditImageInput> {
   //if users returns without taking a picture, return
   //if users takes a picture, display that picture as a
   //preview on screen and updates parent widget.
-  void _takePicture() async {
+  void _takePicture(ImageSource source) async {
     final imagePicker = ImagePicker();
     final pickedImage = await imagePicker.pickImage(
-      source: ImageSource.camera,
+      source: source,
       maxWidth: 600,
     );
     if (pickedImage == null) {
@@ -38,6 +38,40 @@ class _ImageInputState extends State<EditImageInput> {
     });
   }
 
+  void _promptRetakePhoto() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Retake Photo"),
+          content: const Text(
+              "Do you want to retake the photo from the gallery or the camera?"),
+          actions: [
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  child: const Text('Gallery'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _takePicture(ImageSource.gallery);
+                  },
+                ),
+                TextButton(
+                  child: const Text('Camera'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _takePicture(ImageSource.camera);
+                  },
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content;
@@ -46,7 +80,7 @@ class _ImageInputState extends State<EditImageInput> {
     //if they wish to
     if (_selectedImage != null) {
       content = GestureDetector(
-        onTap: _takePicture,
+        onTap: _promptRetakePhoto,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.file(
@@ -59,7 +93,7 @@ class _ImageInputState extends State<EditImageInput> {
       );
     } else {
       content = GestureDetector(
-        onTap: _takePicture,
+        onTap: _promptRetakePhoto,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.network(
