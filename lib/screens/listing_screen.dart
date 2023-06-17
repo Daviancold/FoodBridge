@@ -67,8 +67,29 @@ class _ListingScreenState extends State<ListingScreen> {
   void _deleteLisiting() async {
     String fileUrl = widget.listing.image;
     await deleteFileByUrl(fileUrl);
+    String listingId = widget.listing.id;
+    deleteChatDocuments(listingId);
     docListing.delete();
   }
+
+void deleteChatDocuments(String listingId) async {
+  // Get a reference to the 'chat' collection
+  CollectionReference chatCollection = FirebaseFirestore.instance.collection('chat');
+
+  // Query the collection to find the documents with the specified listingId
+  QuerySnapshot snapshot = await chatCollection.where('listing', isEqualTo: listingId).get();
+
+  // Loop through each document and delete it
+  for (DocumentSnapshot doc in snapshot.docs) {
+    // Get the document reference
+    DocumentReference documentRef = doc.reference;
+
+    // Delete the document
+    await documentRef.delete();
+  }
+}
+
+
 
   //updates listing isAvailable field to true in firestore
   void _markDonatedLisiting() {
