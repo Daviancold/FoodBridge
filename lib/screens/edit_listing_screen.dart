@@ -57,6 +57,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     _editedAddress = _address;
     _editedLng = _lng;
     _editedLat = _lat;
+    _editedAddressImageUrl = _addressImageUrl;
     _editedSelectedImage = _image;
     _editedChosenDate = _expiryDate;
     _editedChosenMainCategory = _mainCategory;
@@ -303,15 +304,9 @@ class _EditListingScreenState extends State<EditListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.orange,
-        title: const Text(
-          'EDIT LISTING',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 24,
-          ),
+        title: Text(
+          'Edit Listing',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       body: Padding(

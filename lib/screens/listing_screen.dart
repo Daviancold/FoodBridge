@@ -219,30 +219,6 @@ class _ListingScreenState extends State<ListingScreen> {
                           ],
                         ),
                       ),
-                      //Visibly indicate if listing is available
-                      //for donation using a green label
-                      widget.listing.isAvailable
-                          ? Container()
-                          : Positioned(
-                              top: 0,
-                              right: 0,
-                              left: 0,
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 64,
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade400,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Text(
-                                  'MARKED AS DONATED',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 32),
-                                ),
-                              ),
-                            ),
                       //Visibly indicate if listing has expired
                       //using a red label
                       widget.listing.expiryDate.isAfter(DateTime.now())
@@ -260,6 +236,30 @@ class _ListingScreenState extends State<ListingScreen> {
                                 ),
                                 child: const Text(
                                   'EXPIRED',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 32),
+                                ),
+                              ),
+                            ),
+                      //Visibly indicate if listing is available
+                      //for donation using a green label
+                      widget.listing.isAvailable
+                          ? Container()
+                          : Positioned(
+                              top: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade400,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  'MARKED AS DONATED',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,

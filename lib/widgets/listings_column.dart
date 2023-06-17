@@ -65,14 +65,20 @@ class ListingsColumn extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return Container(
-                              height: double.infinity,
-                              color: Colors.orange,
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
-                                    const Text('Modal BottomSheet'),
+                                    Text(
+                                      'Modal BottomSheet',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                            color: Colors.white,
+                                          ),
+                                    ),
                                     ElevatedButton(
                                       child: const Text('Close BottomSheet'),
                                       onPressed: () => Navigator.pop(context),

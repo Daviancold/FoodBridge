@@ -17,6 +17,8 @@ class ProfileScreen extends ConsumerWidget {
       return FirebaseFirestore.instance
           .collection('Listings')
           .where("userId", isEqualTo: user.email)
+          .orderBy("expiryDate", descending: true)
+          .orderBy("isAvailable", descending: true)
           .snapshots()
           .map((snapshot) => snapshot.docs
               .map((doc) => Listing.fromJson(doc.data()))
@@ -47,11 +49,23 @@ class ProfileScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Signed in as: ${user.email!}'),
+                      Row(
+                        children: [
+                          Text('Signed in as:', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 14),),
+                          const SizedBox(width: 4),
+                          Text(user.email!, style: Theme.of(context).textTheme.bodyMedium!),
+                        ],
+                      ),
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Username: ${user.displayName!}'),
+                      Row(
+                        children: [
+                          Text('Username:', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 14),),
+                          const SizedBox(width: 4),
+                          Text(user.displayName!, style: Theme.of(context).textTheme.bodyMedium!),
+                        ],
+                      ),
                       const SizedBox(
                         height: 8,
                       ),
