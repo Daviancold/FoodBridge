@@ -89,6 +89,7 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
     required String email,
     required String userName,
     required String addressImageUrl,
+    required String userPhoto,
   }) async {
     final docListing = FirebaseFirestore.instance.collection('Listings').doc();
 
@@ -108,6 +109,7 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
       userId: email,
       userName: userName,
       addressImageUrl: addressImageUrl,
+      userPhoto: userPhoto,
     );
 
     final json = listing.toJson();
@@ -223,6 +225,7 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
             address: _address!,
             email: user.email!,
             userName: user.displayName!,
+            userPhoto: user.photoURL!,
             addressImageUrl: _addressImageUrl!);
       } catch (e) {
         Utils.showSnackBar('error: $e');

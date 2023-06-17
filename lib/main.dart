@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
-  seedColor: Color.fromARGB(255, 255, 0, 255),
+  seedColor: Color.fromARGB(255, 192, 94, 19),
 );
 
 Future main() async {
@@ -35,43 +35,46 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: title,
         theme: ThemeData().copyWith(
-          useMaterial3: true,
-          colorScheme: kColorScheme,
-          appBarTheme: const AppBarTheme().copyWith(
-            centerTitle: true,
-            backgroundColor: kColorScheme.onPrimaryContainer,
-            foregroundColor: kColorScheme.primaryContainer,
-          ),
-          cardTheme: const CardTheme().copyWith(
-            color: kColorScheme.secondaryContainer,
-            margin: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 5,
+            useMaterial3: true,
+            colorScheme: kColorScheme,
+            appBarTheme: const AppBarTheme().copyWith(
+              centerTitle: true,
+              backgroundColor: kColorScheme.onPrimaryContainer,
+              foregroundColor: kColorScheme.primaryContainer,
             ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kColorScheme.primaryContainer,
-            ),
-          ),
-          textTheme: ThemeData().textTheme.copyWith(
-                titleLarge: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-                titleMedium: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
-                bodyMedium: const TextStyle(
-                  fontWeight: FontWeight.normal,
-                  color: Colors.black,
-                  fontSize: 14,
-                ),
+            cardTheme: const CardTheme().copyWith(
+              color: kColorScheme.secondaryContainer,
+              margin: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 5,
               ),
-        ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kColorScheme.primaryContainer,
+              ),
+            ),
+            textTheme: ThemeData().textTheme.copyWith(
+                  titleLarge: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                  titleMedium: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
+                  bodyMedium: const TextStyle(
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+            bottomSheetTheme: const BottomSheetThemeData().copyWith(
+              backgroundColor: kColorScheme.onPrimaryContainer,
+              //modalBackgroundColor: kColorScheme.onSecondaryContainer,
+            )),
         home: const MainPage(),
       );
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
 import 'package:foodbridge_project/screens/edit_listing_screen.dart';
+import 'package:foodbridge_project/screens/profile_screens/others_profile_screen.dart';
 import 'package:foodbridge_project/widgets/loading.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -219,30 +220,6 @@ class _ListingScreenState extends State<ListingScreen> {
                           ],
                         ),
                       ),
-                      //Visibly indicate if listing is available
-                      //for donation using a green label
-                      widget.listing.isAvailable
-                          ? Container()
-                          : Positioned(
-                              top: 0,
-                              right: 0,
-                              left: 0,
-                              child: Container(
-                                alignment: Alignment.center,
-                                height: 64,
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade400,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Text(
-                                  'MARKED AS DONATED',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontSize: 32),
-                                ),
-                              ),
-                            ),
                       //Visibly indicate if listing has expired
                       //using a red label
                       widget.listing.expiryDate.isAfter(DateTime.now())
@@ -260,6 +237,30 @@ class _ListingScreenState extends State<ListingScreen> {
                                 ),
                                 child: const Text(
                                   'EXPIRED',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 32),
+                                ),
+                              ),
+                            ),
+                      //Visibly indicate if listing is available
+                      //for donation using a green label
+                      widget.listing.isAvailable
+                          ? Container()
+                          : Positioned(
+                              top: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  color: Colors.green.shade400,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Text(
+                                  'MARKED AS DONATED',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
@@ -569,7 +570,29 @@ class _ListingScreenState extends State<ListingScreen> {
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(widget.listing.userName)
+                      user.email == widget.listing.userId
+                          ? Text(widget.listing.userName)
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OthersProfileScreen(
+                                            userId: widget.listing.userId,
+                                            userName: widget.listing.userName,
+                                            userPhoto: widget.listing.userPhoto,
+                                          )),
+                                );
+                              },
+                              child: Text(
+                                widget.listing.userName,
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
                     ],
                   ),
                   const SizedBox(

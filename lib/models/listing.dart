@@ -157,15 +157,17 @@ class Listing {
     required this.isAvailable,
     required this.userId,
     required this.userName,
+    required this.userPhoto,
     required this.addressImageUrl,
   });
   // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
   final String id;
   final String userName;
-  final String userId; //not necessary?
+  final String userId;
+  final String userPhoto;
   final String itemName;
-  final String image; //change type //
+  final String image; 
   final String mainCategory; //
   final String subCategory; //
   final String dietaryNeeds; //
@@ -182,6 +184,7 @@ class Listing {
         itemName: json['itemName'],
         userName: json['userName'],
         userId: json['userId'],
+        userPhoto: json['userPhoto'],
         image: json['image'],
         mainCategory: json['mainCategory'],
         subCategory: json['subCategory'],
@@ -211,5 +214,6 @@ class Listing {
         'lng': lng,
         'address': address,
         'addressImageUrl': addressImageUrl,
+        'userPhoto' : userPhoto,
       };
 }
