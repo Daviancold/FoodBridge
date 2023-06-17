@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/listings_list_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
-import 'package:foodbridge_project/screens/profile_screen.dart';
+import 'package:foodbridge_project/screens/profile_screens/own_profile_screen.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import '../widgets/listings_column.dart';
 import 'chat/chat_list_screen.dart';

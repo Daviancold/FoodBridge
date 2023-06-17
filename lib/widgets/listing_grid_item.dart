@@ -64,8 +64,8 @@ class ListingGridItem extends StatelessWidget {
                     ? Container()
                     : Positioned(
                         bottom: 0,
-                        right: 1,
-                        left: 1,
+                        right: 0,
+                        left: 0,
                         child: Container(
                           alignment: Alignment.center,
                           height: 32,
@@ -86,8 +86,8 @@ class ListingGridItem extends StatelessWidget {
                     ? Container()
                     : Positioned(
                         bottom: 0,
-                        right: 1,
-                        left: 1,
+                        right: 0,
+                        left: 0,
                         child: Container(
                           alignment: Alignment.center,
                           height: 32,

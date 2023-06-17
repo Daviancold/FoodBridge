@@ -1,13 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:foodbridge_project/providers/current_user_provider.dart';
-import '../models/listing.dart';
-import 'listings_list_screen.dart';
+import 'package:foodbridge_project/widgets/profile_appbar.dart';
+import '../../models/listing.dart';
+import '../listings_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileScreen extends ConsumerWidget {
-  const ProfileScreen({super.key});
+class OthersProfileScreen extends ConsumerWidget {
+  const OthersProfileScreen({
+    super.key,
+    required this.userId,
+    required this.userName,
+    required this.userPhoto,
+  });
+
+  final String userId;
+  final String userName;
+  final String userPhoto;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +25,7 @@ class ProfileScreen extends ConsumerWidget {
     Stream<List<Listing>> readUserListings() {
       return FirebaseFirestore.instance
           .collection('Listings')
-          .where("userId", isEqualTo: user.email)
+          .where("userId", isEqualTo: userId)
           .orderBy("expiryDate", descending: true)
           .orderBy("isAvailable", descending: true)
           .snapshots()
@@ -26,6 +35,7 @@ class ProfileScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      appBar: ProfileAppBar(context),
       body: Column(
         children: [
           Container(
@@ -37,9 +47,9 @@ class ProfileScreen extends ConsumerWidget {
                 CircleAvatar(
                   radius: 64,
                   backgroundColor: Colors.grey,
-                  child: CircleAvatar (
+                  child: CircleAvatar(
                     radius: 62,
-                    backgroundImage: NetworkImage(user.photoURL.toString()),
+                    backgroundImage: NetworkImage(userPhoto),
                   ),
                 ),
                 const SizedBox(
@@ -51,19 +61,16 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Text('Signed in as:', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 14),),
+                          Text(
+                            'Username:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontSize: 14),
+                          ),
                           const SizedBox(width: 4),
-                          Text(user.email!, style: Theme.of(context).textTheme.bodyMedium!),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        children: [
-                          Text('Username:', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 14),),
-                          const SizedBox(width: 4),
-                          Text(user.displayName!, style: Theme.of(context).textTheme.bodyMedium!),
+                          Text(userName,
+                              style: Theme.of(context).textTheme.bodyMedium!),
                         ],
                       ),
                       const SizedBox(
@@ -73,13 +80,13 @@ class ProfileScreen extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
                         ),
-                        icon: const Icon(Icons.arrow_back, size: 32),
+                        icon: const Icon(Icons.warning, size: 32),
                         label: const Text(
-                          'Sign Out',
+                          'Report',
                           style: TextStyle(fontSize: 24),
                         ),
-                        onPressed: () => FirebaseAuth.instance.signOut(),
-                      ),
+                        onPressed: () {},
+                      )
                     ],
                   ),
                 ),
@@ -89,9 +96,9 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(
             height: 8,
           ),
-          const Text(
-            'Your Listings',
-            style: TextStyle(
+          Text(
+            '${userName}\'s Listings',
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
             ),
@@ -102,7 +109,7 @@ class ProfileScreen extends ConsumerWidget {
           Expanded(
             child: ListingsScreen(
               availListings: readUserListings(),
-              isYourListing: true,
+              isYourListing: false,
             ),
           ),
         ],

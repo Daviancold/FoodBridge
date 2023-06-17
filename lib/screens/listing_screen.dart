@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
 import 'package:foodbridge_project/screens/edit_listing_screen.dart';
+import 'package:foodbridge_project/screens/profile_screens/others_profile_screen.dart';
 import 'package:foodbridge_project/widgets/loading.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -569,7 +570,29 @@ class _ListingScreenState extends State<ListingScreen> {
                       const SizedBox(
                         width: 8,
                       ),
-                      Text(widget.listing.userName)
+                      user.email == widget.listing.userId
+                          ? Text(widget.listing.userName)
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => OthersProfileScreen(
+                                            userId: widget.listing.userId,
+                                            userName: widget.listing.userName,
+                                            userPhoto: widget.listing.userPhoto,
+                                          )),
+                                );
+                              },
+                              child: Text(
+                                widget.listing.userName,
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
                     ],
                   ),
                   const SizedBox(
