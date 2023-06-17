@@ -64,7 +64,7 @@ class _ListingScreenState extends State<ListingScreen> {
   }
 
   //Deletes listing in firestore
-  void _deleteLisiting() async {
+  void _deleteListing() async {
     String fileUrl = widget.listing.image;
     await deleteFileByUrl(fileUrl);
     String listingId = widget.listing.id;
@@ -72,24 +72,24 @@ class _ListingScreenState extends State<ListingScreen> {
     docListing.delete();
   }
 
-void deleteChatDocuments(String listingId) async {
-  // Get a reference to the 'chat' collection
-  CollectionReference chatCollection = FirebaseFirestore.instance.collection('chat');
+  void deleteChatDocuments(String listingId) async {
+    // Get a reference to the 'chat' collection
+    CollectionReference chatCollection =
+        FirebaseFirestore.instance.collection('chat');
 
-  // Query the collection to find the documents with the specified listingId
-  QuerySnapshot snapshot = await chatCollection.where('listing', isEqualTo: listingId).get();
+    // Query the collection to find the documents with the specified listingId
+    QuerySnapshot snapshot =
+        await chatCollection.where('listing', isEqualTo: listingId).get();
 
-  // Loop through each document and delete it
-  for (DocumentSnapshot doc in snapshot.docs) {
-    // Get the document reference
-    DocumentReference documentRef = doc.reference;
+    // Loop through each document and delete it
+    for (DocumentSnapshot doc in snapshot.docs) {
+      // Get the document reference
+      DocumentReference documentRef = doc.reference;
 
-    // Delete the document
-    await documentRef.delete();
+      // Delete the document
+      await documentRef.delete();
+    }
   }
-}
-
-
 
   //updates listing isAvailable field to true in firestore
   void _markDonatedLisiting() {
@@ -309,27 +309,52 @@ void deleteChatDocuments(String listingId) async {
                                       showDialog(
                                         context: context,
                                         builder: (ctx) => AlertDialog(
-                                          content: const SizedBox(
-                                            height: 16,
-                                            width: 16,
+                                          content: SizedBox(
+                                            height: 70,
+                                            width: double.minPositive,
                                             child: Center(
-                                              child: Text('Mark as donated?'),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'Mark as donated?',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge!
+                                                        .copyWith(
+                                                          color: Colors.black,
+                                                        ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  const Text(
+                                                    'You will not be able to undo this action once you click yes',
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                           actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(ctx);
-                                                },
-                                                child: const Text('No')),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(ctx);
-                                                _markDonatedLisiting();
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Yes'),
-                                            ),
+                                            ButtonBar(
+                                              alignment: MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(ctx);
+                                                    },
+                                                    child: const Text('No')),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(ctx);
+                                                    _markDonatedLisiting();
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Yes'),
+                                                ),
+                                              ],
+                                            )
                                           ],
                                         ),
                                       );
@@ -371,26 +396,49 @@ void deleteChatDocuments(String listingId) async {
                                 showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                    content: const SizedBox(
-                                      height: 16,
-                                      width: 16,
+                                    content: SizedBox(
+                                      height: 70,
+                                      width: double.minPositive,
                                       child: Center(
-                                        child: Text('Confirm deletion?'),
+                                        child: Column(
+                                          children: [
+                                            Text('Confirm deletion?',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge!
+                                                    .copyWith(
+                                                        color: Colors.black)),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            const Text(
+                                              'All chats associated with this listing will be deleted too',
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(ctx);
-                                          },
-                                          child: const Text('No')),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(ctx);
-                                          _deleteLisiting();
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Yes'),
+                                      ButtonBar(
+                                        alignment: MainAxisAlignment
+                                            .spaceBetween, // Align buttons to the ends
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                            },
+                                            child: const Text('No'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                              _deleteListing();
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -609,7 +657,8 @@ void deleteChatDocuments(String listingId) async {
                                 widget.listing.userName,
                                 style: TextStyle(
                                   decoration: TextDecoration.underline,
-                                  color: Theme.of(context).colorScheme.secondary,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
                                   fontSize: 16,
                                 ),
                               ),
