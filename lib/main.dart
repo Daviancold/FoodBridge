@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: kColorScheme,
         ),
-        home:const MainPage(),
+        home: const MainPage(),
       );
 }
 

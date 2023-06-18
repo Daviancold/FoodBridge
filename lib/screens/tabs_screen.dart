@@ -38,6 +38,11 @@ class _TabsScreenState extends State<TabsScreen> {
     }
 
     if (selectedOptions.isNotEmpty) {
+      for (int i = 0; i < selectedOptions.length; i += 1) {
+        selectedOptions[i] =
+            selectedOptions[i].toLowerCase().replaceAll(' ', '');
+        selectedOptions[i] = 'SubCategory.${selectedOptions[i]}';
+      }
       query = query.where('subCategory', whereIn: selectedOptions);
     }
 
@@ -102,7 +107,7 @@ class _TabsScreenState extends State<TabsScreen> {
                         showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {
-                            return FilterWidget();
+                            return const FilterWidget();
                             /* Container(
                               height: double.infinity,
                               color: Colors.orange,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
+import 'package:foodbridge_project/screens/tabs_screen.dart';
 
 List<String> selectedOptions = []; // Stores selection
 
@@ -41,7 +42,7 @@ class _FilterWidgetState extends State<FilterWidget> {
         Subcategory('Pantry Essentials', [
           'Canned',
           'Rice',
-          'pasta',
+          'Pasta',
           'noodles',
           'Cereal',
           'Condiments',
@@ -72,48 +73,51 @@ class _FilterWidgetState extends State<FilterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        ListView.builder(
-          itemCount: categories.length,
-          itemBuilder: (context, categoryIndex) {
-            return ExpansionTile(
-              title: Text(categories[categoryIndex].name),
-              children:
-                  categories[categoryIndex].subcategories.map((subcategory) {
-                if (subcategory.options != null &&
-                    subcategory.options!.isNotEmpty) {
-                  return _buildExpandableSubcategoryTile(subcategory);
-                } else {
-                  return _buildCheckboxSubcategoryTile(subcategory);
-                }
-              }).toList(),
-            );
-          },
-        ),
-        Container(
-          alignment: Alignment.bottomCenter,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  selectedOptions.clear();
-                  setState(() {});
-                },
-                child: Text('Reset'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Save selection, such that the unwanted listings are 'removed'
-                  // And close the widget
-                },
-                child: Text('Save'),
-              ),
-            ],
+        Expanded(
+          child: ListView.builder(
+            itemCount: categories.length,
+            itemBuilder: (context, categoryIndex) {
+              return ExpansionTile(
+                title: Text(categories[categoryIndex].name),
+                children:
+                    categories[categoryIndex].subcategories.map((subcategory) {
+                  if (subcategory.options != null &&
+                      subcategory.options!.isNotEmpty) {
+                    return _buildExpandableSubcategoryTile(subcategory);
+                  } else {
+                    return _buildCheckboxSubcategoryTile(subcategory);
+                  }
+                }).toList(),
+              );
+            },
           ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                selectedOptions.clear();
+                setState(() {});
+              },
+              child: Text('Clear'),
+            ),
+            const SizedBox(
+              width: 30,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+                setState(() {
+                  const TabsScreen();
+                });
+              },
+              child: Text('Save'),
+            ),
+          ],
         ),
       ],
     );
