@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:foodbridge_project/main.dart';
-import 'package:foodbridge_project/widgets/login_registration/utils.dart';
+import 'package:foodbridge_project/widgets/utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import '../../widgets/login_registration/user_image_picker.dart';
 
 class SignUpWidget extends StatefulWidget {
   final Function() onClickedSignIn;
@@ -23,6 +28,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final usernameController = TextEditingController();
+  File? _selectedImage;
 
   @override
   void dispose() {
@@ -56,6 +62,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 30),
+                UserImagePicker(
+                  onPickImage: (pickedImage) {
+                    _selectedImage = pickedImage;
+                  },
+                ),
                 TextFormField(
                   controller: emailController,
                   cursorColor: const Color.fromARGB(255, 0, 0, 0),
@@ -95,7 +106,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 TextFormField(
                   controller: confirmPasswordController,
                   textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(labelText: 'Confirm Password'),
+                  decoration: const InputDecoration(labelText: 'Confirm Password'),
                   obscureText: true,
                   validator: (value) =>
                       passwordController.text != confirmPasswordController.text
@@ -143,6 +154,27 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
+    if (_selectedImage == null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('No Image Selected'),
+            content: const Text('Please select an profile image.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -156,9 +188,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       );
 
       final user = FirebaseAuth.instance.currentUser!;
-      if (user != null) {
-        await user.updateDisplayName(usernameController.text.trim());
-      }
+
+      await user.updateDisplayName(usernameController.text.trim());
+      final storageRef =
+          FirebaseStorage.instance.ref().child('profile_pictures/${user.uid}');
+      await storageRef.putFile(_selectedImage!);
+      final imageUrl = await storageRef.getDownloadURL();
+      await user.updatePhotoURL(imageUrl);
     } on FirebaseAuthException catch (e) {
       print(e);
 

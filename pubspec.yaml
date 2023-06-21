@@ -42,12 +42,15 @@ dependencies:
   cloud_firestore: ^4.6.0
   email_validator: ^2.1.17
   intl: ^0.18.1
-  riverpod: ^2.3.6
   image_picker: ^0.8.7+5
   location: ^4.4.0
   http: ^0.13.6
   firebase_storage: ^11.2.2
   firebase_app_check: ^0.1.4+2
+  flutter_riverpod: ^2.3.6
+  google_maps_flutter: ^2.3.0
+  flutter_google_places: ^0.3.0
+  google_maps_webservice: ^0.0.20-nullsafety.5
 
 
 dev_dependencies:
