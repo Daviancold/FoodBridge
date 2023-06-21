@@ -12,8 +12,10 @@ class _LikesScreenState extends State<LikesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your likes'),
-        backgroundColor: Colors.orange,
+        title: Text(
+          'Favorites',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
       // body: ListingsScreen(
       //   toList: [], //to be used as a consumer to listen for changes in likes

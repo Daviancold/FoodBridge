@@ -1,29 +1,17 @@
-<<<<<<< Updated upstream
-//import 'package:firebase_auth/firebase_auth.dart';
-=======
 import 'dart:ffi';
 
->>>>>>> Stashed changes
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
-<<<<<<< Updated upstream
-import 'package:foodbridge_project/screens/profile_screen.dart';
-//import 'package:foodbridge_project/widgets/homepage_appbar.dart';
-=======
 import 'package:foodbridge_project/screens/profile_screens/own_profile_screen.dart';
 import 'package:foodbridge_project/widgets/filter_mapping.dart';
->>>>>>> Stashed changes
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
-import 'chat_list_screen.dart';
-import 'likes_screen.dart';
+import '../widgets/listings_column.dart';
+import 'chat/chat_list_screen.dart';
+import 'favorites_screen.dart';
 import 'notifications_screen.dart';
-<<<<<<< Updated upstream
-import 'filter.dart';
-=======
 import '../widgets/filter.dart';
->>>>>>> Stashed changes
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -33,9 +21,6 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   String itemName = "";
-<<<<<<< Updated upstream
-
-=======
   int selectedPageIndex = 0;
   List<String> editedFoodTypes = [];
   String editedDietaryNeeds = '';
@@ -44,7 +29,11 @@ class _TabsScreenState extends State<TabsScreen> {
   //then displays it on screen.
   //If user has searched for something, it also filters out items that have an exact
   //match for item name.
->>>>>>> Stashed changes
+  //Get snapshot from Firestore collection "Listings".
+  //Filters documents by expiration date and availability, converts snapshots to lists, 
+  //then displays it on screen.
+  //If user has searched for something, it also filters out items that have an exact 
+  //match for item name.
   Stream<List<Listing>> readListings(String searchQuery) {
     DateTime currentDateTime = DateTime.now();
     CollectionReference listingsRef =
@@ -60,15 +49,6 @@ class _TabsScreenState extends State<TabsScreen> {
       query = query.where("itemName", isEqualTo: searchResult);
     }
 
-<<<<<<< Updated upstream
-    if (selectedOptions.isNotEmpty) {
-      for (int i = 0; i < selectedOptions.length; i += 1) {
-        selectedOptions[i] =
-            selectedOptions[i].toLowerCase().replaceAll(' ', '');
-        selectedOptions[i] = 'SubCategory.${selectedOptions[i]}';
-      }
-      query = query.where('subCategory', whereIn: selectedOptions);
-=======
     if (selectedFoodTypes.isNotEmpty) {
       editedFoodTypes = [];
       for (int i = 0; i < selectedFoodTypes.length; i += 1) {
@@ -83,7 +63,6 @@ class _TabsScreenState extends State<TabsScreen> {
         editedDietaryNeeds = filterMap[selectedDietaryNeeds[i]]!;
       }
       query = query.where('dietaryNeeds', isEqualTo: editedDietaryNeeds);
->>>>>>> Stashed changes
     }
 
     return query.snapshots().map((snapshot) => snapshot.docs
@@ -91,8 +70,7 @@ class _TabsScreenState extends State<TabsScreen> {
         .toList());
   }
 
-  int selectedPageIndex = 0;
-
+  //push 'add new listing screen' on top
   void addNewListing() {
     Navigator.push<Listing>(
       context,
@@ -185,6 +163,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ],
     );
 
+    //By default, active app bar is the app bar for home page
     AppBar activeAppBar = AppBar(
       leading: IconButton(
         onPressed: () {
@@ -196,7 +175,6 @@ class _TabsScreenState extends State<TabsScreen> {
         },
         icon: const Icon(Icons.notifications_none),
       ),
-      backgroundColor: Colors.orange,
       title: SizedBox(
         width: 200,
         child: TextField(
@@ -242,6 +220,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ],
     );
 
+    //checks the page selected in navigation bar
     if (selectedPageIndex == 2) {
       activeScreen = const ProfileScreen();
       activeAppBar = ProfileAppBar(context);

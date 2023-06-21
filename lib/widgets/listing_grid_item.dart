@@ -19,6 +19,8 @@ class ListingGridItem extends StatelessWidget {
     return formatter.format(data.expiryDate);
   }
 
+  //UI layout for each grid item
+  //that is used for grid view
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -58,34 +60,12 @@ class ListingGridItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                data.isAvailable
-                    ? Container()
-                    : Positioned(
-                        bottom: 0,
-                        right: 1,
-                        left: 1,
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade400,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Text(
-                            'MARKED AS DONATED',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: 12),
-                          ),
-                        ),
-                      ),
                 data.expiryDate.isAfter(DateTime.now())
                     ? Container()
                     : Positioned(
                         bottom: 0,
-                        right: 1,
-                        left: 1,
+                        right: 0,
+                        left: 0,
                         child: Container(
                           alignment: Alignment.center,
                           height: 32,
@@ -95,6 +75,28 @@ class ListingGridItem extends StatelessWidget {
                           ),
                           child: const Text(
                             'EXPIRED',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 12),
+                          ),
+                        ),
+                      ),
+                data.isAvailable
+                    ? Container()
+                    : Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade400,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            'MARKED AS DONATED',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,

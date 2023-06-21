@@ -2,20 +2,24 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/widgets/image_input.dart';
-import 'package:foodbridge_project/widgets/location_input.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:foodbridge_project/widgets/image_input/image_input.dart';
+import 'package:foodbridge_project/widgets/location_input/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class NewListingScreen extends StatefulWidget {
+import '../providers/current_user_provider.dart';
+import '../widgets/utils.dart';
+
+class NewListingScreen extends ConsumerStatefulWidget {
   const NewListingScreen({super.key});
 
   @override
-  State<NewListingScreen> createState() => _NewListingScreenState();
+  ConsumerState<NewListingScreen> createState() => _NewListingScreenState();
 }
 
-class _NewListingScreenState extends State<NewListingScreen> {
+class _NewListingScreenState extends ConsumerState<NewListingScreen> {
   MainCategory? selectedMainCategory;
   SubCategory? selectedSubCategory;
   final _formKey = GlobalKey<FormState>();
@@ -23,27 +27,54 @@ class _NewListingScreenState extends State<NewListingScreen> {
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
+  @override
+  void dispose() {
+    dateInputController.dispose();
+    super.dispose();
+  }
+
+  // ignore: prefer_typing_uninitialized_variables
   var _itemName;
+  // ignore: prefer_typing_uninitialized_variables
   var _chosenMainCategory;
+  // ignore: prefer_typing_uninitialized_variables
   var _chosenSubCategory;
+  // ignore: prefer_typing_uninitialized_variables
   var _chosenDietaryOption;
+  // ignore: prefer_typing_uninitialized_variables
   var _chosenDate;
+  // ignore: prefer_typing_uninitialized_variables
   var _additionalInfo;
+  // ignore: prefer_typing_uninitialized_variables
   var _selectedImage;
-  var _lat;
-  var _lng;
-  var _address;
+  // ignore: prefer_typing_uninitialized_variables
+  double? _lat;
+  double? _lng;
+  String? _address;
+  String? _addressImageUrl;
+
   bool _isSaving = false;
 
+  //takes an image file, upload it to firebase storage and returns url
   Future<String> uploadImage(File file) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    firebase_storage.Reference ref =
-        storage.ref().child('listingImages/$fileName');
+
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('listingImages/$fileName');
+
     await ref.putFile(file);
+
     String imageUrl = await ref.getDownloadURL();
     return imageUrl;
   }
 
+  //Goes to firestore collection 'Listings'.
+  //Create new document and retrieve doc id.
+  //Put the doc id inside the doc as a field for future references
+  //Converts listing data to json format.
+  //Overwrite any data inside that document with listing data (should
+  //be empty in the first place by right).
   Future<void> createListing({
     required String itemName,
     required String urlLink,
@@ -55,10 +86,12 @@ class _NewListingScreenState extends State<NewListingScreen> {
     required double lat,
     required double lng,
     required String address,
+    required String email,
+    required String userName,
+    required String addressImageUrl,
+    required String userPhoto,
   }) async {
     final docListing = FirebaseFirestore.instance.collection('Listings').doc();
-
-    final user = FirebaseAuth.instance.currentUser!;
 
     final listing = Listing(
       id: docListing.id,
@@ -73,14 +106,21 @@ class _NewListingScreenState extends State<NewListingScreen> {
       lng: lng,
       address: address,
       isAvailable: true,
-      userId: user.email.toString(),
-      userName: user.displayName.toString(),
+      userId: email,
+      userName: userName,
+      addressImageUrl: addressImageUrl,
+      userPhoto: userPhoto,
     );
 
     final json = listing.toJson();
     await docListing.set(json);
   }
 
+  //Pops up date picker to pick expiry date
+  //Users can only select dates 1 day after the date
+  //at time of selecting. For example, today's date is
+  //22/05/2023, then you can only select 23/05/2023 onwards
+  //with maximum difference of 2 years.
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(
@@ -105,6 +145,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
     }
   }
 
+  //Validates user input first.
+  //If validation fails, prompt user to check entries.
+  //If validation passes, create new listing on firestore
   void _saveItem() async {
     if (_selectedImage == null) {
       showDialog(
@@ -114,10 +157,10 @@ class _NewListingScreenState extends State<NewListingScreen> {
             'Picture missing',
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: const SizedBox(
             height: 16,
             width: 32,
-            child: const Center(
+            child: Center(
               child: Text('Add a picture'),
             ),
           ),
@@ -141,10 +184,10 @@ class _NewListingScreenState extends State<NewListingScreen> {
             'Address missing',
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: const SizedBox(
             height: 16,
             width: 32,
-            child: const Center(
+            child: Center(
               child: Text('Click on get address'),
             ),
           ),
@@ -165,19 +208,28 @@ class _NewListingScreenState extends State<NewListingScreen> {
         _isSaving = true;
       });
       _formKey.currentState!.save();
-      final urlLink = await uploadImage(_selectedImage);
-      createListing(
-        itemName: _itemName!,
-        urlLink: urlLink!,
-        mainCat: _chosenMainCategory!,
-        subCat: _chosenSubCategory!,
-        dietaryInfo: _chosenDietaryOption!,
-        addInfo: _additionalInfo!,
-        expDate: _chosenDate!,
-        lat: _lat!,
-        lng: _lng!,
-        address: _address!,
-      );
+      try {
+        final urlLink = await uploadImage(_selectedImage);
+        final user = FirebaseAuth.instance.currentUser!;
+
+        createListing(
+            itemName: _itemName!,
+            urlLink: urlLink!,
+            mainCat: _chosenMainCategory!,
+            subCat: _chosenSubCategory!,
+            dietaryInfo: _chosenDietaryOption!,
+            addInfo: _additionalInfo!,
+            expDate: _chosenDate!,
+            lat: _lat!,
+            lng: _lng!,
+            address: _address!,
+            email: user.email!,
+            userName: user.displayName!,
+            userPhoto: user.photoURL!,
+            addressImageUrl: _addressImageUrl!);
+      } catch (e) {
+        Utils.showSnackBar('error: $e');
+      }
       Navigator.pop(context);
     }
   }
@@ -186,15 +238,9 @@ class _NewListingScreenState extends State<NewListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.orange,
-        title: const Text(
-          'ADD NEW LISTING',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 24,
-          ),
+        title: Text(
+          'Add New Listing',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       body: Padding(
@@ -204,13 +250,15 @@ class _NewListingScreenState extends State<NewListingScreen> {
             key: _formKey,
             child: Column(
               children: [
+                //For selecting image
                 ImageInput(
                   chosenImage: (File image) {
                     setState(() {
                       _selectedImage = image;
                     });
                   },
-                ), // for selecting image
+                ),
+                //Item name
                 TextFormField(
                   maxLength: 50,
                   decoration: const InputDecoration(
@@ -230,6 +278,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                 const SizedBox(
                   height: 8,
                 ),
+                //Main category
                 DropdownButtonFormField<MainCategory>(
                   value: selectedMainCategory,
                   items: MainCategory.values.map((mainCat) {
@@ -245,7 +294,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     });
                   },
                   decoration: const InputDecoration(
-                    hintText: 'Select main category',
+                    label: Text('Main category'),
                   ),
                   validator: (value) {
                     if (value == null) {
@@ -259,6 +308,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                 const SizedBox(
                   height: 8,
                 ),
+                //Subcategory
                 DropdownButtonFormField<SubCategory>(
                   value: selectedSubCategory,
                   items: selectedMainCategory != null
@@ -276,7 +326,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     });
                   },
                   decoration: const InputDecoration(
-                    hintText: 'Select subcategory',
+                    label: Text('Sub category'),
                   ),
                   validator: (value) {
                     if (value == null) {
@@ -290,8 +340,11 @@ class _NewListingScreenState extends State<NewListingScreen> {
                 const SizedBox(
                   height: 8,
                 ),
+                //dietary specifications
                 DropdownButtonFormField(
-                  hint: const Text('Select dietary specifications'),
+                  decoration: const InputDecoration(
+                    label: Text('Dietary specifications'),
+                  ),
                   items: [
                     for (final category in DietaryNeeds.values)
                       DropdownMenuItem(
@@ -309,43 +362,40 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     _chosenDietaryOption = value.toString();
                   },
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Select expiry date',
-                        ),
-                        controller: dateInputController,
-                        onTap: _presentDatePicker,
-                        readOnly: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a date';
-                          }
-                        },
-                        onSaved: (value) {
-                          _chosenDate = DateTime.tryParse(value!);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                LocationInput(
-                  chosenLocation: (UserLocation location) {
-                    _lat = location.latitude;
-                    _lng = location.longitude;
-                    _address = location.address;
+                //Expiry date
+                TextFormField(
+                  decoration: const InputDecoration(
+                    label: Text('Expiry date'),
+                  ),
+                  controller: dateInputController,
+                  onTap: _presentDatePicker,
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a date';
+                    }
+                  },
+                  onSaved: (value) {
+                    _chosenDate = DateTime.tryParse(value!);
                   },
                 ),
                 const SizedBox(
                   height: 16,
                 ),
+                //Retrieving location
+                LocationInput(
+                  chosenLocation: (UserLocation? location) {
+                    _lat = location?.latitude;
+                    _lng = location?.longitude;
+                    _address = location?.address;
+                    _addressImageUrl = location?.addressImageUrl;
+                    print('hello $_addressImageUrl');
+                  },
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                //Additional details
                 TextFormField(
                   maxLines: 5,
                   maxLength: 200,
@@ -367,6 +417,7 @@ class _NewListingScreenState extends State<NewListingScreen> {
                     _additionalInfo = value;
                   },
                 ),
+                //cancel and save button
                 Row(
                   children: [
                     ElevatedButton.icon(

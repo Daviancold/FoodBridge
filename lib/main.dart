@@ -1,13 +1,13 @@
 import 'package:foodbridge_project/screens/tabs_screen.dart';
 import 'package:foodbridge_project/screens/log_in_&_auth/auth_screen.dart';
-import 'package:foodbridge_project/widgets/login_registration/utils.dart';
+import 'package:foodbridge_project/widgets/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
-  seedColor: Color.fromARGB(255, 240, 148, 28),
+  seedColor: Color.fromARGB(255, 192, 94, 19),
 );
 
 Future main() async {
@@ -15,7 +15,11 @@ Future main() async {
   //await FirebaseAppCheck.instance.activate();
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -51,9 +55,9 @@ class MainPage extends StatelessWidget {
             } else if (snapshot.hasError) {
               return const Center(child: Text('Something went wrong!'));
             } else if (snapshot.hasData) {
-              return TabsScreen();
+              return const TabsScreen();
             } else {
-              return AuthPage();
+              return const AuthPage();
             }
           },
         ),

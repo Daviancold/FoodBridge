@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodbridge_project/widgets/chat_widgets/chat_list.dart';
 
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
@@ -8,13 +9,17 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your chats'),
-        backgroundColor: Colors.orange,
+        title: Text(
+          'Chats',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
+      body: const AllChatList(),
     );
   }
 }

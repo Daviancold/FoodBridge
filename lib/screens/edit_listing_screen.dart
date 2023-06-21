@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../widgets/edit_image_input.dart';
-import '../widgets/edit_location_input.dart';
+import '../widgets/image_input/edit_image_input.dart';
+import '../widgets/location_input/edit_location_input.dart';
+import '../widgets/utils.dart';
 
 class EditListingScreen extends StatefulWidget {
   const EditListingScreen(
@@ -33,6 +33,15 @@ class _EditListingScreenState extends State<EditListingScreen> {
   SubCategory? selectedSubCategory;
 
   @override
+  void dispose() {
+    dateInputController.dispose();
+    super.dispose();
+  }
+
+  //initialize fields to original values. In the event that 
+  //user does not make any edits, the original values
+  //will be retained in the database.
+  @override
   void initState() {
     selectedMainCategory = MainCategory.values.firstWhere(
       (mainCat) => mainCat.toString() == widget.listing.mainCategory,
@@ -48,6 +57,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     _editedAddress = _address;
     _editedLng = _lng;
     _editedLat = _lat;
+    _editedAddressImageUrl = _addressImageUrl;
     _editedSelectedImage = _image;
     _editedChosenDate = _expiryDate;
     _editedChosenMainCategory = _mainCategory;
@@ -101,6 +111,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
     return widget.listing.lng;
   }
 
+  String get _addressImageUrl {
+    return widget.listing.addressImageUrl;
+  }
+
   String get _mainCategory {
     return widget.listing.mainCategory;
   }
@@ -120,15 +134,17 @@ class _EditListingScreenState extends State<EditListingScreen> {
   var _editedChosenDate;
   var _editedAdditionalInfo;
   var _editedSelectedImage;
-  var _editedLat;
-  var _editedLng;
-  var _editedAddress;
+  double? _editedLat;
+  double? _editedLng;
+  String? _editedAddress;
+  String? _editedAddressImageUrl;
   var _unchangedId;
   var _unchangeduserId;
   var _unchangedIsAvailable;
   var _urlLink;
   bool _isSaving = false;
 
+  //upload new image to storage
   Future<String> uploadImage(File file) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     firebase_storage.Reference ref =
@@ -138,6 +154,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     return imageUrl;
   }
 
+  //If user uploads new photo, delete old photo in storage
   Future<void> deleteFileByUrl(String fileUrl) async {
     try {
       // Extract the file name from the URL
@@ -162,6 +179,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     await ref.delete();
   }
 
+  //save updates made by user, if any
   void _saveItem() async {
     if (_editedSelectedImage == null) {
       showDialog(
@@ -171,10 +189,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
             'Picture missing',
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: const SizedBox(
             height: 16,
             width: 32,
-            child: const Center(
+            child: Center(
               child: Text('Add a picture'),
             ),
           ),
@@ -198,10 +216,10 @@ class _EditListingScreenState extends State<EditListingScreen> {
             'Address missing',
             textAlign: TextAlign.center,
           ),
-          content: Container(
+          content: const SizedBox(
             height: 16,
             width: 32,
-            child: const Center(
+            child: Center(
               child: Text('Click on get address'),
             ),
           ),
@@ -222,6 +240,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
         _isSaving = true;
       });
       _formKey.currentState!.save();
+      try {
       if (_editedSelectedImage == _image) {
         _urlLink = _editedSelectedImage;
       } else {
@@ -237,6 +256,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
         'itemName': _editedItemName,
         'lat': _editedLat,
         'lng': _editedLng,
+        'addressImageUrl' :_editedAddressImageUrl,
         'mainCategory': _editedChosenMainCategory,
         'subCategory': _editedChosenSubCategory,
       });
@@ -247,11 +267,15 @@ class _EditListingScreenState extends State<EditListingScreen> {
           content: Text('Edits are saved'),
         ),
       );
+      } catch (e) {
+        Utils.showSnackBar('error: $e');
+      }
       Navigator.pop(context);
       Navigator.pop(context);
     }
   }
 
+  //date picker, formatted
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(
@@ -280,15 +304,9 @@ class _EditListingScreenState extends State<EditListingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.orange,
-        title: const Text(
-          'EDIT LISTING',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 24,
-          ),
+        title: Text(
+          'Edit Listing',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ),
       body: Padding(
@@ -440,10 +458,11 @@ class _EditListingScreenState extends State<EditListingScreen> {
               ),
               EditLocationInput(
                 listing: widget.listing,
-                chosenLocation: (UserLocation location) {
-                  _editedLat = location.latitude;
-                  _editedLng = location.longitude;
-                  _editedAddress = location.address;
+                chosenLocation: (UserLocation? location) {
+                  _editedLat = location?.latitude;
+                  _editedLng = location?.longitude;
+                  _editedAddress = location?.address;
+                  _editedAddressImageUrl = location?.addressImageUrl;
                 },
               ),
               const SizedBox(
