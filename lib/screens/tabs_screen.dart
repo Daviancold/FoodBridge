@@ -8,6 +8,7 @@ import 'package:foodbridge_project/screens/profile_screens/own_profile_screen.da
 import 'package:foodbridge_project/widgets/filter_mapping.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import '../widgets/listings_column.dart';
+import 'listings_list_screen.dart';
 import 'chat/chat_list_screen.dart';
 import 'favorites_screen.dart';
 import 'notifications_screen.dart';
@@ -30,9 +31,9 @@ class _TabsScreenState extends State<TabsScreen> {
   //If user has searched for something, it also filters out items that have an exact
   //match for item name.
   //Get snapshot from Firestore collection "Listings".
-  //Filters documents by expiration date and availability, converts snapshots to lists, 
+  //Filters documents by expiration date and availability, converts snapshots to lists,
   //then displays it on screen.
-  //If user has searched for something, it also filters out items that have an exact 
+  //If user has searched for something, it also filters out items that have an exact
   //match for item name.
   Stream<List<Listing>> readListings(String searchQuery) {
     DateTime currentDateTime = DateTime.now();

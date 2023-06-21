@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
-  seedColor: Color.fromARGB(255, 192, 94, 19),
+  seedColor: const Color.fromARGB(255, 192, 94, 19),
 );
 
 Future main() async {
