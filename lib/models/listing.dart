@@ -70,7 +70,6 @@ enum DietaryNeeds {
   containsNuts,
   containShellfish,
   containsSoy,
-  others,
   none,
 }
 
@@ -114,7 +113,7 @@ Map<MainCategory, List<SubCategory>> categorySubcategoryMap = {
   MainCategory.frozen: [
     SubCategory.desserts,
     SubCategory.meat,
-    SubCategory.seafood,
+    SubCategory.seafoods,
   ],
   MainCategory.fruitsAndVegetables: [
     SubCategory.fruits,
