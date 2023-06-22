@@ -5,7 +5,11 @@ import 'package:foodbridge_project/screens/tabs_screen.dart';
 List<String> selectedOptions = []; // Stores selection
 
 class FilterWidget extends StatefulWidget {
-  const FilterWidget({super.key});
+  const FilterWidget({
+    super.key,
+  });
+
+
   @override
   State<FilterWidget> createState() {
     return _FilterWidgetState();
@@ -71,6 +75,44 @@ class _FilterWidgetState extends State<FilterWidget> {
     ),
   ];
 
+  
+  Widget _buildExpandableSubcategoryTile(Subcategory subcategory) {
+    return ExpansionTile(
+      title: Text(subcategory.name),
+      children: subcategory.options!.map((option) {
+        return CheckboxListTile(
+          title: Text(option),
+          value: selectedOptions.contains(option),
+          onChanged: (value) {
+            setState(() {
+              if (value != null && value) {
+                selectedOptions.add(option);
+              } else {
+                selectedOptions.remove(option);
+              }
+            });
+          },
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildCheckboxSubcategoryTile(Subcategory subcategory) {
+    return CheckboxListTile(
+      title: Text(subcategory.name),
+      value: selectedOptions.contains(subcategory.name),
+      onChanged: (value) {
+        setState(() {
+          if (value != null && value) {
+            selectedOptions.add(subcategory.name);
+          } else {
+            selectedOptions.remove(subcategory.name);
+          }
+        });
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -111,52 +153,12 @@ class _FilterWidgetState extends State<FilterWidget> {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                setState(() {
-                  const TabsScreen();
-                });
               },
               child: Text('Save'),
             ),
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildExpandableSubcategoryTile(Subcategory subcategory) {
-    return ExpansionTile(
-      title: Text(subcategory.name),
-      children: subcategory.options!.map((option) {
-        return CheckboxListTile(
-          title: Text(option),
-          value: selectedOptions.contains(option),
-          onChanged: (value) {
-            setState(() {
-              if (value != null && value) {
-                selectedOptions.add(option);
-              } else {
-                selectedOptions.remove(option);
-              }
-            });
-          },
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildCheckboxSubcategoryTile(Subcategory subcategory) {
-    return CheckboxListTile(
-      title: Text(subcategory.name),
-      value: selectedOptions.contains(subcategory.name),
-      onChanged: (value) {
-        setState(() {
-          if (value != null && value) {
-            selectedOptions.add(subcategory.name);
-          } else {
-            selectedOptions.remove(subcategory.name);
-          }
-        });
-      },
     );
   }
 }

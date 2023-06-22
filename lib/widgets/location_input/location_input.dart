@@ -220,6 +220,7 @@ class _LocationInputState extends State<LocationInput> {
     return Column(
       children: [
         Container(
+          key: Key("Image placeholder"),
           alignment: Alignment.center,
           height: 170,
           width: double.infinity,
@@ -228,6 +229,7 @@ class _LocationInputState extends State<LocationInput> {
           child: previewContent,
         ),
         TextField(
+          key: const Key("Type location"),
           readOnly: true,
           controller: _addressController,
           decoration: InputDecoration(
@@ -252,6 +254,7 @@ class _LocationInputState extends State<LocationInput> {
           },
         ),
         TextButton.icon(
+          key: const Key("Get location button"),
           onPressed: _getCurrentLocation,
           icon: const Icon(Icons.map),
           label: const Text('Get location'),

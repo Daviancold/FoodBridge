@@ -36,7 +36,7 @@ class ProfileScreen extends ConsumerWidget {
                 CircleAvatar(
                   radius: 64,
                   backgroundColor: Colors.grey,
-                  child: CircleAvatar (
+                  child: CircleAvatar(
                     radius: 62,
                     backgroundImage: NetworkImage(user.photoURL.toString()),
                   ),
@@ -50,9 +50,22 @@ class ProfileScreen extends ConsumerWidget {
                     children: [
                       Row(
                         children: [
-                          Text('Signed in as:', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 14),),
+                          Text(
+                            'Signed in as:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontSize: 14),
+                          ),
                           const SizedBox(width: 4),
-                          Text(user.email!, style: Theme.of(context).textTheme.bodyMedium!),
+                          Expanded(
+                            child: Text(
+                              user.email!,
+                              overflow: TextOverflow.ellipsis,                            
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.bodyMedium!,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -60,9 +73,20 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                       Row(
                         children: [
-                          Text('Username:', style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 14),),
+                          Text(
+                            'Username:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontSize: 14),
+                          ),
                           const SizedBox(width: 4),
-                          Text(user.displayName!, style: Theme.of(context).textTheme.bodyMedium!),
+                          Expanded(
+                            child: Text(user.displayName!,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: Theme.of(context).textTheme.bodyMedium!),
+                          ),
                         ],
                       ),
                       const SizedBox(

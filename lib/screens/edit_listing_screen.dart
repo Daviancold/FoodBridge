@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/image_input/edit_image_input.dart';
+import '../widgets/firestore_service.dart';
 import '../widgets/location_input/edit_location_input.dart';
+import '../widgets/firebase_storage_service.dart';
 import '../widgets/utils.dart';
 
 class EditListingScreen extends StatefulWidget {
@@ -38,7 +40,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
     super.dispose();
   }
 
-  //initialize fields to original values. In the event that 
+  //initialize fields to original values. In the event that
   //user does not make any edits, the original values
   //will be retained in the database.
   @override
@@ -145,39 +147,35 @@ class _EditListingScreenState extends State<EditListingScreen> {
   bool _isSaving = false;
 
   //upload new image to storage
-  Future<String> uploadImage(File file) async {
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    firebase_storage.Reference ref =
-        storage.ref().child('listingImages/$fileName');
-    await ref.putFile(file);
-    String imageUrl = await ref.getDownloadURL();
-    return imageUrl;
-  }
+  // Future<String> uploadImage(File file) async {
+  //   String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  //   firebase_storage.Reference ref =
+  //       storage.ref().child('listingImages/$fileName');
+  //   await ref.putFile(file);
+  //   String imageUrl = await ref.getDownloadURL();
+  //   return imageUrl;
+  // }
 
-  //If user uploads new photo, delete old photo in storage
-  Future<void> deleteFileByUrl(String fileUrl) async {
-    try {
-      // Extract the file name from the URL
-      Uri uri = Uri.parse(fileUrl);
-      String filePath = uri.path;
-      String decodedFilePath = Uri.decodeComponent(filePath);
-      String fileName =
-          decodedFilePath.substring(decodedFilePath.lastIndexOf('/') + 1);
-      print(fileName);
+  // //If user uploads new photo, delete old photo in storage
+  // Future<void> deleteFileByUrl(String fileUrl) async {
+  //     // Extract the file name from the URL
+  //     Uri uri = Uri.parse(fileUrl);
+  //     String filePath = uri.path;
+  //     String decodedFilePath = Uri.decodeComponent(filePath);
+  //     String fileName =
+  //         decodedFilePath.substring(decodedFilePath.lastIndexOf('/') + 1);
+  //     print(fileName);
 
-      // Delete the file using the file name
-      await deleteFile('listingImages/$fileName');
+  //     // Delete the file using the file name
+  //     await deleteFile('listingImages/$fileName');
 
-      print('File deleted successfully');
-    } catch (e) {
-      print('Error deleting file: $e');
-    }
-  }
+  //     print('File deleted successfully');
+  // }
 
-  Future<void> deleteFile(String filePath) async {
-    Reference ref = storage.ref().child(filePath);
-    await ref.delete();
-  }
+  // Future<void> deleteFile(String filePath) async {
+  //   Reference ref = storage.ref().child(filePath);
+  //   await ref.delete();
+  // }
 
   //save updates made by user, if any
   void _saveItem() async {
@@ -241,32 +239,36 @@ class _EditListingScreenState extends State<EditListingScreen> {
       });
       _formKey.currentState!.save();
       try {
-      if (_editedSelectedImage == _image) {
-        _urlLink = _editedSelectedImage;
-      } else {
-        await deleteFileByUrl(_image);
-        _urlLink = await uploadImage(_editedSelectedImage);
-      }
-      widget.docListing.update({
-        'additionalNotes': _editedAdditionalInfo,
-        'address': _editedAddress,
-        'dietaryNeeds': _editedChosenDietaryOption,
-        'expiryDate': _editedChosenDate,
-        'image': _urlLink,
-        'itemName': _editedItemName,
-        'lat': _editedLat,
-        'lng': _editedLng,
-        'addressImageUrl' :_editedAddressImageUrl,
-        'mainCategory': _editedChosenMainCategory,
-        'subCategory': _editedChosenSubCategory,
-      });
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          duration: Duration(seconds: 5),
-          content: Text('Edits are saved'),
-        ),
-      );
+        if (_editedSelectedImage == _image) {
+          _urlLink = _editedSelectedImage;
+        } else {
+          await FirebaseStorageService.deleteFileByUrl(_image);
+          _urlLink =
+              await FirebaseStorageService.uploadImage(_editedSelectedImage);
+        }
+        final data = {
+          'additionalNotes': _editedAdditionalInfo,
+          'address': _editedAddress,
+          'dietaryNeeds': _editedChosenDietaryOption,
+          'expiryDate': _editedChosenDate,
+          'image': _urlLink,
+          'itemName': _editedItemName,
+          'lat': _editedLat,
+          'lng': _editedLng,
+          'addressImageUrl': _editedAddressImageUrl,
+          'mainCategory': _editedChosenMainCategory,
+          'subCategory': _editedChosenSubCategory,
+        };
+
+        await FirestoreService.updateListing(data, widget.docListing.id);
+
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 5),
+            content: Text('Edits are saved'),
+          ),
+        );
       } catch (e) {
         Utils.showSnackBar('error: $e');
       }

@@ -18,6 +18,10 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
+  void refreshScreen() {
+    setState(() {});
+  }
+
   String itemName = "";
   int selectedPageIndex = 0;
   List<String> editedFoodTypes = [];
@@ -123,27 +127,13 @@ class _TabsScreenState extends State<TabsScreen> {
                         showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {
-                            return const FilterWidget();
-                            /* Container(
-                              height: double.infinity,
-                              color: Colors.orange,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Text('Modal BottomSheet'),
-                                    ElevatedButton(
-                                      child: const Text('Close BottomSheet'),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                            */
+                            return FilterWidget();
                           },
-                        );
+                        ).whenComplete(() {
+                          setState(() {
+                            // refresh screen
+                          });
+                        });
                       },
                       icon: const Icon(Icons.filter_alt),
                       label: const Text('Filter'),

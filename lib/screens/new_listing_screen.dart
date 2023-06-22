@@ -10,6 +10,8 @@ import 'package:foodbridge_project/models/listing.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../providers/current_user_provider.dart';
+import '../widgets/firestore_service.dart';
+import '../widgets/firebase_storage_service.dart';
 import '../widgets/utils.dart';
 
 class NewListingScreen extends ConsumerStatefulWidget {
@@ -55,19 +57,19 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
 
   bool _isSaving = false;
 
-  //takes an image file, upload it to firebase storage and returns url
-  Future<String> uploadImage(File file) async {
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  // //takes an image file, upload it to firebase storage and returns url
+  // Future<String> uploadImage(File file) async {
+  //   String fileName = DateTime.now().millisecondsSinceEpoch.toString();
 
-    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
-        .ref()
-        .child('listingImages/$fileName');
+  //   firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+  //       .ref()
+  //       .child('listingImages/$fileName');
 
-    await ref.putFile(file);
+  //   await ref.putFile(file);
 
-    String imageUrl = await ref.getDownloadURL();
-    return imageUrl;
-  }
+  //   String imageUrl = await ref.getDownloadURL();
+  //   return imageUrl;
+  // }
 
   //Goes to firestore collection 'Listings'.
   //Create new document and retrieve doc id.
@@ -75,46 +77,46 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
   //Converts listing data to json format.
   //Overwrite any data inside that document with listing data (should
   //be empty in the first place by right).
-  Future<void> createListing({
-    required String itemName,
-    required String urlLink,
-    required String mainCat,
-    required String subCat,
-    required String dietaryInfo,
-    required String addInfo,
-    required DateTime expDate,
-    required double lat,
-    required double lng,
-    required String address,
-    required String email,
-    required String userName,
-    required String addressImageUrl,
-    required String userPhoto,
-  }) async {
-    final docListing = FirebaseFirestore.instance.collection('Listings').doc();
+  // Future<void> createListing({
+  //   required String itemName,
+  //   required String urlLink,
+  //   required String mainCat,
+  //   required String subCat,
+  //   required String dietaryInfo,
+  //   required String addInfo,
+  //   required DateTime expDate,
+  //   required double lat,
+  //   required double lng,
+  //   required String address,
+  //   required String email,
+  //   required String userName,
+  //   required String addressImageUrl,
+  //   required String userPhoto,
+  // }) async {
+  //   final docListing = FirebaseFirestore.instance.collection('Listings').doc();
 
-    final listing = Listing(
-      id: docListing.id,
-      itemName: itemName,
-      image: urlLink,
-      mainCategory: mainCat,
-      subCategory: subCat,
-      dietaryNeeds: dietaryInfo,
-      additionalNotes: addInfo,
-      expiryDate: expDate,
-      lat: lat,
-      lng: lng,
-      address: address,
-      isAvailable: true,
-      userId: email,
-      userName: userName,
-      addressImageUrl: addressImageUrl,
-      userPhoto: userPhoto,
-    );
+  //   final listing = Listing(
+  //     id: docListing.id,
+  //     itemName: itemName,
+  //     image: urlLink,
+  //     mainCategory: mainCat,
+  //     subCategory: subCat,
+  //     dietaryNeeds: dietaryInfo,
+  //     additionalNotes: addInfo,
+  //     expiryDate: expDate,
+  //     lat: lat,
+  //     lng: lng,
+  //     address: address,
+  //     isAvailable: true,
+  //     userId: email,
+  //     userName: userName,
+  //     addressImageUrl: addressImageUrl,
+  //     userPhoto: userPhoto,
+  //   );
 
-    final json = listing.toJson();
-    await docListing.set(json);
-  }
+  //   final json = listing.toJson();
+  //   await docListing.set(json);
+  // }
 
   //Pops up date picker to pick expiry date
   //Users can only select dates 1 day after the date
@@ -209,10 +211,11 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
       });
       _formKey.currentState!.save();
       try {
-        final urlLink = await uploadImage(_selectedImage);
+        final urlLink = await FirebaseStorageService.uploadImage(_selectedImage);
         final user = FirebaseAuth.instance.currentUser!;
 
-        createListing(
+        FirestoreService listingService = FirestoreService();
+        await listingService.createListing(
             itemName: _itemName!,
             urlLink: urlLink!,
             mainCat: _chosenMainCategory!,

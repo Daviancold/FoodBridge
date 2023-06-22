@@ -81,6 +81,7 @@ class _ImageInputState extends State<ImageInput> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextButton.icon(
+          key: const Key('Select from camera button'),
           icon: const Icon(Icons.camera),
           label: const Text('Select from camera'),
           onPressed: () {
@@ -91,6 +92,7 @@ class _ImageInputState extends State<ImageInput> {
           height: 8,
         ),
         TextButton.icon(
+          key: const Key('Select from gallery button'),
           icon: const Icon(Icons.image),
           label: const Text('Select from gallery'),
           onPressed: () {
