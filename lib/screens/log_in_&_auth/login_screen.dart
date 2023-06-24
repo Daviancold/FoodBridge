@@ -4,6 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:foodbridge_project/widgets/utils.dart';
 
+class FirebaseAuthWrapper {
+  static FirebaseAuth _instance = FirebaseAuth.instance;
+
+  static FirebaseAuth get instance => _instance;
+
+  static set instance(FirebaseAuth auth) {
+    _instance = auth;
+  }
+}
+
 class LoginWidget extends StatefulWidget {
   final VoidCallback onClickedSignUp;
 
@@ -34,6 +44,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         child: Container(
           margin: const EdgeInsets.all(20),
           child: Column(
+            key: const Key('Login info'),
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
@@ -49,6 +60,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
               const SizedBox(height: 30),
               TextField(
+                key: const Key('EmailSignIn'),
                 controller: emailController,
                 cursorColor: Colors.white,
                 textInputAction: TextInputAction.next,
@@ -56,6 +68,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
               const SizedBox(height: 4),
               TextField(
+                key: const Key('PasswordSignIn'),
                 controller: passwordController,
                 textInputAction: TextInputAction.done,
                 decoration: const InputDecoration(labelText: 'Password'),
@@ -68,6 +81,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
                 icon: const Icon(Icons.lock_open, size: 32),
                 label: const Text(
+                  key: Key('Sign In Button'),
                   'Sign In',
                   style: TextStyle(fontSize: 24),
                 ),

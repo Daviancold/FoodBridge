@@ -68,6 +68,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   },
                 ),
                 TextFormField(
+                  key: const Key('EmailKey'),
                   controller: emailController,
                   cursorColor: const Color.fromARGB(255, 0, 0, 0),
                   textInputAction: TextInputAction.next,
@@ -80,6 +81,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
+                  key: const Key('UsernameKey'),
                   controller: usernameController,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(labelText: 'Username'),
@@ -93,6 +95,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
+                  key: const Key('PasswordKey'),
                   controller: passwordController,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(labelText: 'Password'),
@@ -104,6 +107,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ),
                 const SizedBox(height: 4),
                 TextFormField(
+                  key: const Key('ConfirmPasswordKey'),
                   controller: confirmPasswordController,
                   textInputAction: TextInputAction.done,
                   decoration: const InputDecoration(labelText: 'Confirm Password'),
