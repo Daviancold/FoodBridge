@@ -63,6 +63,7 @@ void main() {
         lng: -122.4194,
         address: '123 Main St',
         addressImageUrl: 'path/to/address/image.jpg',
+        isExpired: false,
       );
 
       final json = listing.toJson();

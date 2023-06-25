@@ -163,6 +163,7 @@ class Listing {
     required this.userName,
     required this.userPhoto,
     required this.addressImageUrl,
+    required this.isExpired,
   });
   // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
@@ -177,6 +178,7 @@ class Listing {
   final String dietaryNeeds; //
   final String additionalNotes;
   final DateTime expiryDate;
+  final bool isExpired;
   final bool isAvailable;
   final double lat;
   final double lng;
@@ -195,6 +197,7 @@ class Listing {
         dietaryNeeds: json['dietaryNeeds'],
         expiryDate: (json['expiryDate'] as Timestamp).toDate(),
         isAvailable: json['isAvailable'],
+        isExpired: json['isExpired'],
         lat: json['lat'],
         lng: json['lng'],
         address: json['address'],
@@ -214,6 +217,7 @@ class Listing {
         'additionalNotes': additionalNotes,
         'expiryDate': expiryDate,
         'isAvailable': isAvailable,
+        'isExpired': isExpired,
         'lat': lat,
         'lng': lng,
         'address': address,

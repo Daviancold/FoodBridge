@@ -13,15 +13,27 @@ class ProfileScreen extends ConsumerWidget {
     final user = FirebaseAuth.instance.currentUser!;
 
     Stream<List<Listing>> readUserListings() {
+      final now = DateTime.now();
+      final user = FirebaseAuth.instance.currentUser;
+
       return FirebaseFirestore.instance
           .collection('Listings')
-          .where("userId", isEqualTo: user.email)
-          .orderBy("expiryDate", descending: true)
-          .orderBy("isAvailable", descending: true)
+          .where('userId', isEqualTo: user!.email)
+          .orderBy('isExpired', descending: false)
+          .orderBy('isAvailable', descending: true)
           .snapshots()
-          .map((snapshot) => snapshot.docs
-              .map((doc) => Listing.fromJson(doc.data()))
-              .toList());
+          .map((snapshot) => snapshot.docs.map((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                final expiryDate = data['expiryDate'] as Timestamp;
+                final isExpired = expiryDate.toDate().isBefore(now);
+
+                // Update the 'isExpired' field in the document if necessary
+                if (isExpired != data['isExpired']) {
+                  doc.reference.update({'isExpired': isExpired});
+                }
+
+                return Listing.fromJson(data);
+              }).toList());
     }
 
     return Scaffold(
@@ -61,7 +73,7 @@ class ProfileScreen extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               user.email!,
-                              overflow: TextOverflow.ellipsis,                            
+                              overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: Theme.of(context).textTheme.bodyMedium!,
                             ),

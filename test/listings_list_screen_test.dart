@@ -75,7 +75,9 @@ void main() {
           userId: 'userId',
           userName: 'userName',
           userPhoto: 'userPhoto',
-          addressImageUrl: 'addressImageUrl'),
+          addressImageUrl: 'addressImageUrl',
+          isExpired: false,
+          ),
       Listing(
           id: '2',
           itemName: 'itemName',
@@ -92,7 +94,9 @@ void main() {
           userId: 'userId',
           userName: 'userName',
           userPhoto: 'userPhoto',
-          addressImageUrl: 'addressImageUrl'),
+          addressImageUrl: 'addressImageUrl',
+          isExpired: false,
+          ),
       Listing(
           id: '3',
           itemName: 'itemName',
@@ -109,7 +113,9 @@ void main() {
           userId: 'userId',
           userName: 'userName',
           userPhoto: 'userPhoto',
-          addressImageUrl: 'addressImageUrl'),
+          addressImageUrl: 'addressImageUrl',
+          isExpired: false,
+          ),
     ];
 
     Stream<List<Listing>> mockFetchListings(){

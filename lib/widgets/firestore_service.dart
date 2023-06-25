@@ -41,6 +41,7 @@ class FirestoreService {
       userName: userName,
       addressImageUrl: addressImageUrl,
       userPhoto: userPhoto,
+      isExpired: false,
     );
 
     final json = listing.toJson();
