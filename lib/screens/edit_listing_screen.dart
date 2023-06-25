@@ -8,7 +8,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../widgets/image_input/edit_image_input.dart';
 import '../widgets/firestore_service.dart';
 import '../widgets/location_input/edit_location_input.dart';
-import '../widgets/firebase_storage_service.dart';
 import '../widgets/utils.dart';
 
 class EditListingScreen extends StatefulWidget {
@@ -239,12 +238,13 @@ class _EditListingScreenState extends State<EditListingScreen> {
       });
       _formKey.currentState!.save();
       try {
+        FirebaseStorageService imageService = FirebaseStorageService();
         if (_editedSelectedImage == _image) {
           _urlLink = _editedSelectedImage;
         } else {
-          await FirebaseStorageService.deleteFileByUrl(_image);
+          await imageService.deleteFileByUrl(_image);
           _urlLink =
-              await FirebaseStorageService.uploadImage(_editedSelectedImage);
+              await imageService.uploadImage(_editedSelectedImage);
         }
         final data = {
           'additionalNotes': _editedAdditionalInfo,

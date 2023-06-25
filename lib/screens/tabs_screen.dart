@@ -127,7 +127,7 @@ class _TabsScreenState extends State<TabsScreen> {
                         showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {
-                            return FilterWidget();
+                            return const FilterWidget();
                           },
                         ).whenComplete(() {
                           setState(() {

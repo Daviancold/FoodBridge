@@ -2,26 +2,21 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:foodbridge_project/widgets/image_input/image_input.dart';
 import 'package:foodbridge_project/widgets/location_input/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../providers/current_user_provider.dart';
 import '../widgets/firestore_service.dart';
-import '../widgets/firebase_storage_service.dart';
 import '../widgets/utils.dart';
 
-class NewListingScreen extends ConsumerStatefulWidget {
+class NewListingScreen extends StatefulWidget {
   const NewListingScreen({super.key});
 
   @override
-  ConsumerState<NewListingScreen> createState() => _NewListingScreenState();
+  State<NewListingScreen> createState() => _NewListingScreenState();
 }
 
-class _NewListingScreenState extends ConsumerState<NewListingScreen> {
+class _NewListingScreenState extends State<NewListingScreen> {
   MainCategory? selectedMainCategory;
   SubCategory? selectedSubCategory;
   final _formKey = GlobalKey<FormState>();
@@ -150,7 +145,7 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
   //Validates user input first.
   //If validation fails, prompt user to check entries.
   //If validation passes, create new listing on firestore
-  void _saveItem() async {
+  void saveItem() async {
     if (_selectedImage == null) {
       showDialog(
         context: context,
@@ -210,30 +205,46 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
         _isSaving = true;
       });
       _formKey.currentState!.save();
-      try {
-        final urlLink = await FirebaseStorageService.uploadImage(_selectedImage);
-        final user = FirebaseAuth.instance.currentUser!;
-
-        FirestoreService listingService = FirestoreService();
-        await listingService.createListing(
-            itemName: _itemName!,
-            urlLink: urlLink!,
-            mainCat: _chosenMainCategory!,
-            subCat: _chosenSubCategory!,
-            dietaryInfo: _chosenDietaryOption!,
-            addInfo: _additionalInfo!,
-            expDate: _chosenDate!,
-            lat: _lat!,
-            lng: _lng!,
-            address: _address!,
-            email: user.email!,
-            userName: user.displayName!,
-            userPhoto: user.photoURL!,
-            addressImageUrl: _addressImageUrl!);
-      } catch (e) {
-        Utils.showSnackBar('error: $e');
-      }
+      ListingService listingService = ListingService();
+      await listingService.uploadListing(
+        itemName: _itemName,
+        selectedImage: _selectedImage,
+        mainCat: _chosenMainCategory,
+        subCat: _chosenSubCategory,
+        dietaryInfo: _chosenDietaryOption,
+        addInfo: _additionalInfo,
+        expDate: _chosenDate,
+        lat: _lat!,
+        lng: _lng!,
+        address: _address!,
+        addressImageUrl: _addressImageUrl!,
+      );
       Navigator.pop(context);
+      // try {
+      //   FirebaseStorageService imageService = FirebaseStorageService();
+      //   final urlLink =
+      //       await imageService.uploadImage(_selectedImage);
+      //   final user = FirebaseAuth.instance.currentUser!;
+
+      //   FirestoreService listingService = FirestoreService();
+      //   await listingService.createListing(
+      //       itemName: _itemName!,
+      //       urlLink: urlLink!,
+      //       mainCat: _chosenMainCategory!,
+      //       subCat: _chosenSubCategory!,
+      //       dietaryInfo: _chosenDietaryOption!,
+      //       addInfo: _additionalInfo!,
+      //       expDate: _chosenDate!,
+      //       lat: _lat!,
+      //       lng: _lng!,
+      //       address: _address!,
+      //       email: user.email!,
+      //       userName: user.displayName!,
+      //       userPhoto: user.photoURL!,
+      //       addressImageUrl: _addressImageUrl!);
+      // } catch (e) {
+      //   Utils.showSnackBar('error: $e');
+      // }
     }
   }
 
@@ -432,7 +443,11 @@ class _NewListingScreenState extends ConsumerState<NewListingScreen> {
                     ),
                     const Spacer(),
                     ElevatedButton.icon(
-                      onPressed: _isSaving ? null : _saveItem,
+                      onPressed: _isSaving
+                          ? null
+                          : () {
+                              saveItem();
+                            },
                       icon: _isSaving
                           ? const SizedBox(
                               height: 8,

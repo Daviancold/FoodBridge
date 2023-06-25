@@ -52,6 +52,7 @@ dependencies:
   flutter_google_places: ^0.3.0
   google_maps_webservice: ^0.0.20-nullsafety.5
   mockito: ^5.4.2
+  mocktail: ^0.3.0
 
 
 dev_dependencies:

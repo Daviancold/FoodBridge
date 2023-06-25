@@ -30,7 +30,11 @@ class _ListingsScreenState extends State<ListingsScreen> {
             stream: widget.availListings,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
-                return Center(child: Text('Something went wrong, ${snapshot.error}'));
+                return Center(
+                    child: Text(
+                  'Something went wrong, ${snapshot.error}',
+                  key: const Key('error message'),
+                ));
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.data == null || snapshot.data!.isEmpty) {
@@ -38,12 +42,14 @@ class _ListingsScreenState extends State<ListingsScreen> {
                     child: Text(
                   'No available listings',
                   style: TextStyle(color: Colors.black),
+                  key: Key('No available listings text'),
                 ));
               } else if (snapshot.hasData) {
                 final allListings = snapshot.data!;
-                
+
                 return Expanded(
                   child: GridView(
+                    key: const Key('Gridview'),
                     padding: const EdgeInsets.all(16),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
