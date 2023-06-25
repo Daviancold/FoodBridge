@@ -71,9 +71,7 @@ void main() {
       // Verify that the location preview is displayed
       expect(find.byType(Stack), findsOneWidget);
 
-      // TODO: Add additional assertions to verify the expected behavior after tapping the button
     });
 
-    // Add more tests for other scenarios and methods in the widget
   });
 }
