@@ -1,15 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodbridge_project/widgets/ratings.dart';
 import '../../models/listing.dart';
 import '../listings_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
 
     Stream<List<Listing>> readUserListings() {
@@ -99,6 +105,22 @@ class ProfileScreen extends ConsumerWidget {
                                 maxLines: 1,
                                 style: Theme.of(context).textTheme.bodyMedium!),
                           ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Ratings:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontSize: 14),
+                          ),
+                          const SizedBox(width: 4),
+                          AverageRatings(userId: user.email!,),
                         ],
                       ),
                       const SizedBox(

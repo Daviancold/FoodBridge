@@ -64,6 +64,8 @@ void main() {
         address: '123 Main St',
         addressImageUrl: 'path/to/address/image.jpg',
         isExpired: false,
+        isDonorReviewed: false,
+        isRecipientReviewed: false,
       );
 
       final json = listing.toJson();

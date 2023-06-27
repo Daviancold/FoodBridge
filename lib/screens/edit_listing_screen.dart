@@ -9,6 +9,7 @@ import '../widgets/image_input/edit_image_input.dart';
 import '../widgets/firestore_service.dart';
 import '../widgets/location_input/edit_location_input.dart';
 import '../widgets/utils.dart';
+import 'donation_guidelines_screen.dart';
 
 class EditListingScreen extends StatefulWidget {
   const EditListingScreen(
@@ -243,8 +244,7 @@ class _EditListingScreenState extends State<EditListingScreen> {
           _urlLink = _editedSelectedImage;
         } else {
           await imageService.deleteFileByUrl(_image);
-          _urlLink =
-              await imageService.uploadImage(_editedSelectedImage);
+          _urlLink = await imageService.uploadImage(_editedSelectedImage);
         }
         final data = {
           'additionalNotes': _editedAdditionalInfo,
@@ -310,6 +310,18 @@ class _EditListingScreenState extends State<EditListingScreen> {
           'Edit Listing',
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const DonationGuidelines()),
+              );
+            },
+            icon: const Icon(Icons.info),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
