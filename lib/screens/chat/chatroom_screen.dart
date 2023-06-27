@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/screens/rate_donor_screen.dart';
-import 'package:foodbridge_project/screens/rate_recipient_screen.dart';
+import 'package:foodbridge_project/screens/ratings_screen/rate_donor_screen.dart';
+import 'package:foodbridge_project/screens/ratings_screen/rate_recipient_screen.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/chat_widgets/chat_messages.dart';
 import '../../widgets/chat_widgets/new_message.dart';

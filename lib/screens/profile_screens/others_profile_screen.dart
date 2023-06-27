@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:foodbridge_project/screens/report_screens/report_user.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import '../../models/listing.dart';
+import '../../widgets/ratings.dart';
 import '../listings_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -88,6 +89,24 @@ class OthersProfileScreen extends ConsumerWidget {
                       const SizedBox(
                         height: 8,
                       ),
+                      Row(
+                        children: [
+                          Text(
+                            'Ratings:',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(fontSize: 14),
+                          ),
+                          const SizedBox(width: 4),
+                          AverageRatings(
+                            userId: userId,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
@@ -101,7 +120,10 @@ class OthersProfileScreen extends ConsumerWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ReportUser(userName: userName, userId: userId,),
+                              builder: (context) => ReportUser(
+                                userName: userName,
+                                userId: userId,
+                              ),
                             ),
                           );
                         },
