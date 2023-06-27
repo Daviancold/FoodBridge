@@ -138,6 +138,8 @@ class _ListingScreenState extends State<ListingScreen> {
               builder: (context) => ChatScreen(
                     chatId: chatId,
                     listingId: listingId,
+                    chatPartner: widget.listing.userId,
+                    chatPartnerUserName: widget.listing.userName,
                   )),
         );
       } else {
@@ -147,6 +149,7 @@ class _ListingScreenState extends State<ListingScreen> {
         });
         Map<String, dynamic> chatData = {
           'participants': [widget.listing.userId, user.email],
+          'participantsUserName': [widget.listing.userName, user.displayName],
           'listing': widget.listing.id,
           'chatId': '',
           'hasMessages': false,
@@ -169,6 +172,8 @@ class _ListingScreenState extends State<ListingScreen> {
               builder: (context) => ChatScreen(
                     chatId: newChatId,
                     listingId: widget.listing.id,
+                    chatPartner: widget.listing.userId,
+                    chatPartnerUserName: widget.listing.userName,
                   )),
         );
         bool haveMessages = await _hasMessagesSubcollection(newChatId);

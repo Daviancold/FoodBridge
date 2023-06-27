@@ -1,18 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/chat_widgets/chat_messages.dart';
 import '../../widgets/chat_widgets/new_message.dart';
+import '../report_screens/report_listing.dart';
+import '../report_screens/report_user.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({Key? key, required this.chatId, required this.listingId})
+  const ChatScreen(
+      {Key? key,
+      required this.chatId,
+      required this.listingId,
+      required this.chatPartner,
+      required this.chatPartnerUserName,
+      })
       : super(key: key);
 
   final String chatId;
   final String listingId;
+  final String chatPartner;
+  final String chatPartnerUserName;
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     //Retrieves information about listing
     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       future: FirebaseFirestore.instance
@@ -40,6 +52,73 @@ class ChatScreen extends StatelessWidget {
               'Chat',
               style: Theme.of(context).textTheme.titleLarge,
             ),
+            actions: user!.email == listing['userId']
+                ? [
+                    PopupMenuButton<String>(
+                      onSelected: (value) {
+                        // Handle option selection
+                        if (value == 'option1') {
+                          // Handle option 1
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportUser(
+                                userName: chatPartnerUserName,
+                                userId: chatPartner,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => [
+                        const PopupMenuItem<String>(
+                          value: 'option1',
+                          child: Text('Report User'),
+                        ),
+                      ],
+                    ),
+                  ]
+                : [
+                    PopupMenuButton<String>(
+                      onSelected: (value) {
+                        // Handle option selection
+                        if (value == 'option1') {
+                          // Handle option 1
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportListing(
+                                userName: listing['userName'],
+                                userId: listing['userId'],
+                                listingId: listing['id'],
+                              ),
+                            ),
+                          );
+                        } else if (value == 'option2') {
+                          // Handle option 2
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportUser(
+                                userName: listing['userName'],
+                                userId: listing['userId'],
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => [
+                        const PopupMenuItem<String>(
+                          value: 'option1',
+                          child: Text('Report Listing'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'option2',
+                          child: Text('Report User'),
+                        ),
+                      ],
+                    ),
+                  ],
           ),
           body: Column(
             children: [

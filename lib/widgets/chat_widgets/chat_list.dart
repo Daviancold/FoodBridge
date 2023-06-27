@@ -36,8 +36,10 @@ class AllChatList extends StatelessWidget {
         final documents = snapshot.data!.docs;
 
         // Filter the documents that have the 'messages' subcollection
-        final loadedMessagesList = documents.where((doc) =>
-            doc.reference.collection('messages').snapshots().isBroadcast).toList();
+        final loadedMessagesList = documents
+            .where((doc) =>
+                doc.reference.collection('messages').snapshots().isBroadcast)
+            .toList();
 
         return ListView.builder(
           //padding: const EdgeInsets.all(8),
@@ -52,9 +54,11 @@ class AllChatList extends StatelessWidget {
             String chatId = messageData['chatId'].trim();
 
             // Extract data from messageData to display on list
-            //of chat cards 
+            //of chat cards
             String latestMessage = '';
-            List<dynamic> myArray = messageData['participants'];
+            List<dynamic> participantsId = messageData['participants'];
+            List<dynamic> participantsUserName =
+                messageData['participantsUserName'];
             DocumentReference parentDocRef = messageSnapshot.reference;
             CollectionReference subcollectionRef =
                 parentDocRef.collection('messages');
@@ -93,8 +97,13 @@ class AllChatList extends StatelessWidget {
                 }
 
                 if (snapshot.connectionState == ConnectionState.done) {
-                  final String chatPartner =
-                      myArray[0] == user.email ? myArray[1] : myArray[0];
+                  final String chatPartner = participantsId[0] == user.email
+                      ? participantsId[1]
+                      : participantsId[0];
+                  final String chatPartnerUserName =
+                      participantsUserName[0] == user.displayName
+                          ? participantsUserName[1]
+                          : participantsUserName[0];
                   Map<String, dynamic> data =
                       snapshot.data!.data() as Map<String, dynamic>;
                   String? imageUrl = data['image'];
@@ -110,7 +119,7 @@ class AllChatList extends StatelessWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
-                      title: Text(chatPartner),
+                      title: Text(chatPartnerUserName),
                       subtitle: Text(
                         latestMessage,
                         overflow: TextOverflow.ellipsis,
@@ -170,6 +179,8 @@ class AllChatList extends StatelessWidget {
                               builder: (context) => ChatScreen(
                                     chatId: chatId,
                                     listingId: listingId,
+                                    chatPartner: chatPartner,
+                                    chatPartnerUserName: chatPartnerUserName,
                                   )),
                         );
                       },
