@@ -164,6 +164,8 @@ class Listing {
     required this.userPhoto,
     required this.addressImageUrl,
     required this.isExpired,
+    required this.isDonorReviewed,
+    required this.isRecipientReviewed,
   });
   // : isAvailable = DateTime.now().isAfter(expiryDate),
   //       userId = FirebaseAuth.instance.currentUser!.email.toString();
@@ -183,7 +185,9 @@ class Listing {
   final double lat;
   final double lng;
   final String address;
-  final String addressImageUrl; //
+  final String addressImageUrl;
+  final bool isDonorReviewed;
+  final bool isRecipientReviewed;
 
   static Listing fromJson(Map<String, dynamic> json) => Listing(
         id: json['id'],
@@ -203,6 +207,8 @@ class Listing {
         address: json['address'],
         addressImageUrl: json['addressImageUrl'],
         additionalNotes: json['additionalNotes'],
+        isDonorReviewed: json['isDonorReviewed'],
+        isRecipientReviewed: json['isRecipientReviewed']
       );
 
   Map<String, dynamic> toJson() => {
@@ -223,5 +229,7 @@ class Listing {
         'address': address,
         'addressImageUrl': addressImageUrl,
         'userPhoto' : userPhoto,
+        'isDonorReviewed': isDonorReviewed,
+        'isRecipientReviewed': isRecipientReviewed,
       };
 }

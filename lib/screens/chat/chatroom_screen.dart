@@ -1,21 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:foodbridge_project/screens/rate_donor_screen.dart';
+import 'package:foodbridge_project/screens/rate_recipient_screen.dart';
 import 'package:intl/intl.dart';
 import '../../widgets/chat_widgets/chat_messages.dart';
 import '../../widgets/chat_widgets/new_message.dart';
 import '../report_screens/report_listing.dart';
 import '../report_screens/report_user.dart';
 
-class ChatScreen extends StatelessWidget {
-  const ChatScreen(
-      {Key? key,
-      required this.chatId,
-      required this.listingId,
-      required this.chatPartner,
-      required this.chatPartnerUserName,
-      })
-      : super(key: key);
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({
+    Key? key,
+    required this.chatId,
+    required this.listingId,
+    required this.chatPartner,
+    required this.chatPartnerUserName,
+  }) : super(key: key);
 
   final String chatId;
   final String listingId;
@@ -23,13 +24,18 @@ class ChatScreen extends StatelessWidget {
   final String chatPartnerUserName;
 
   @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     //Retrieves information about listing
     return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       future: FirebaseFirestore.instance
           .collection('Listings')
-          .doc(listingId)
+          .doc(widget.listingId)
           .get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -43,6 +49,14 @@ class ChatScreen extends StatelessWidget {
         }
 
         final listing = snapshot.data!.data()!;
+        bool isOffered =
+            listing['offeredDonationTo']?.contains(widget.chatPartner) ?? false;
+        bool offeredTo =
+            listing['offeredDonationTo']?.contains(user!.email) ?? false;
+        bool canReviewRecipient = listing['donatedTo'] == (widget.chatPartner);
+        bool canReviewDonor = listing['donatedTo'] == (user!.email);
+        bool isDonorReviewed = listing['isDonorReviewed'];
+        bool isRecipientReviewed = listing['isRecipientReviewed'];
         Timestamp expiryTimestamp = listing['expiryDate'];
         DateTime expiryDate = expiryTimestamp.toDate();
 
@@ -63,8 +77,8 @@ class ChatScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ReportUser(
-                                userName: chatPartnerUserName,
-                                userId: chatPartner,
+                                userName: widget.chatPartnerUserName,
+                                userId: widget.chatPartner,
                               ),
                             ),
                           );
@@ -132,77 +146,195 @@ class ChatScreen extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Container(
-                        height: 120,
-                        width: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: NetworkImage(listing['image']),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              listing['itemName'],
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                      Row(
+                        children: [
+                          Container(
+                            height: 120,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: NetworkImage(listing['image']),
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Main category: ${listing['mainCategory'].split('.').last}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Subcategory: ${listing['subCategory'].split('.').last}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Location: ${listing['address'].split('.').last}',
-                              style: const TextStyle(fontSize: 12),
-                              overflow: TextOverflow.visible,
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Available:',
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
                                 Text(
-                                  listing['isAvailable'] ? 'Yes' : 'No',
+                                  listing['itemName'],
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Main category: ${listing['mainCategory'].split('.').last}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Subcategory: ${listing['subCategory'].split('.').last}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Location: ${listing['address'].split('.').last}',
+                                  style: const TextStyle(fontSize: 12),
+                                  overflow: TextOverflow.visible,
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Available:',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      listing['isAvailable'] ? 'Yes' : 'No',
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Expiry Date: ${DateFormat('MM/dd/yyyy').format(expiryDate)}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Donor: ${listing['userName'].toString()}',
                                   style: const TextStyle(fontSize: 12),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Expiry Date: ${DateFormat('MM/dd/yyyy').format(expiryDate)}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Donor: ${listing['userName'].toString()}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          user.email == listing['userId']
+                              ? ElevatedButton.icon(
+                                  onPressed: isOffered
+                                      ? null
+                                      : () {
+                                          // Add an extra field of type array and add a string to it
+                                          List<String> offeredDonationTo =
+                                              List.from(listing[
+                                                      'offeredDonationTo'] ??
+                                                  []);
+                                          offeredDonationTo
+                                              .add(widget.chatPartner);
+
+                                          // Update the 'listing' map with the modified array
+                                          Map<String, dynamic> updatedOffers = {
+                                            ...listing,
+                                            'offeredDonationTo':
+                                                offeredDonationTo,
+                                          };
+
+                                          // Update the Firestore document with the modified 'listing'
+                                          FirebaseFirestore.instance
+                                              .collection('Listings')
+                                              .doc(widget.listingId)
+                                              .update(updatedOffers)
+                                              .then((_) {
+                                            print(
+                                                'Array field updated successfully');
+                                          }).catchError((error) {
+                                            print(
+                                                'Error updating array field: $error');
+                                          });
+                                          setState(() {
+                                            //refresh
+                                          });
+                                        },
+                                  icon: const Icon(Icons.done),
+                                  label: const Text('Offer donation'),
+                                )
+                              : ElevatedButton.icon(
+                                  onPressed:
+                                      (offeredTo && listing['isAvailable'])
+                                          ? () {
+                                              FirebaseFirestore.instance
+                                                  .collection('Listings')
+                                                  .doc(widget.listingId)
+                                                  .update({
+                                                'isAvailable': false,
+                                                'donatedTo': user.email,
+                                              });
+                                              setState(() {
+                                                //refresh
+                                              });
+                                            }
+                                          : null,
+                                  icon: const Icon(Icons.done),
+                                  label: const Text('Accept donation'),
+                                ),
+                          const Spacer(),
+                          user.email == listing['userId']
+                              ? ElevatedButton.icon(
+                                  onPressed: (canReviewRecipient &&
+                                          (isRecipientReviewed == false))
+                                      ? () async {
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RateRecipientScreen(
+                                                      userId:
+                                                          widget.chatPartner,
+                                                      userName: widget
+                                                          .chatPartnerUserName,
+                                                      listingId:
+                                                          widget.listingId,
+                                                    )),
+                                          );
+                                          setState(() {
+                                            //refresh
+                                          });
+                                        }
+                                      : null,
+                                  icon: const Icon(Icons.rate_review),
+                                  label: const Text('Give ratings'),
+                                )
+                              : ElevatedButton.icon(
+                                  onPressed: (canReviewDonor &&
+                                          (isDonorReviewed == false))
+                                      ? () async {
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RateDonorScreen(
+                                                      userId:
+                                                          widget.chatPartner,
+                                                      userName: widget
+                                                          .chatPartnerUserName,
+                                                      listingId:
+                                                          widget.listingId,
+                                                    )),
+                                          );
+                                          setState(() {
+                                            //refresh
+                                          });
+                                        }
+                                      : null,
+                                  icon: const Icon(Icons.rate_review),
+                                  label: const Text('Give ratings'),
+                                )
+                        ],
                       )
                     ],
                   ),
@@ -211,13 +343,13 @@ class ChatScreen extends StatelessWidget {
               //All text messages/ text bubbles
               Expanded(
                 child: ChatMessages(
-                  chatId: chatId,
+                  chatId: widget.chatId,
                 ),
               ),
               //text field to key in new
               //message or text
               NewMessage(
-                chatId: chatId,
+                chatId: widget.chatId,
               ),
             ],
           ),
