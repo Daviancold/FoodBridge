@@ -226,7 +226,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         children: [
                           user.email == listing['userId']
                               ? ElevatedButton.icon(
-                                  onPressed: isOffered
+                                  onPressed: (isOffered || (listing['isAvailable'] == false))
                                       ? null
                                       : () {
                                           // Add an extra field of type array and add a string to it
