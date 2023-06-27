@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:foodbridge_project/screens/donation_guidelines_screen.dart';
 import 'package:foodbridge_project/widgets/image_input/image_input.dart';
 import 'package:foodbridge_project/widgets/location_input/location_input.dart';
 import 'package:intl/intl.dart';
@@ -256,6 +257,17 @@ class _NewListingScreenState extends State<NewListingScreen> {
           'Add New Listing',
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DonationGuidelines()),
+              );
+            },
+            icon: const Icon(Icons.info),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../widgets/chat_widgets/chat_messages.dart';
 import '../../widgets/chat_widgets/new_message.dart';
 
@@ -30,6 +31,8 @@ class ChatScreen extends StatelessWidget {
         }
 
         final listing = snapshot.data!.data()!;
+        Timestamp expiryTimestamp = listing['expiryDate'];
+        DateTime expiryDate = expiryTimestamp.toDate();
 
         return Scaffold(
           appBar: AppBar(
@@ -94,8 +97,24 @@ class ChatScreen extends StatelessWidget {
                               overflow: TextOverflow.visible,
                             ),
                             const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Text(
+                                  'Available:',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  listing['isAvailable'] ? 'Yes' : 'No',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
                             Text(
-                              'Available: ${listing['isAvailable'].toString()}',
+                              'Expiry Date: ${DateFormat('MM/dd/yyyy').format(expiryDate)}',
                               style: const TextStyle(fontSize: 12),
                             ),
                             const SizedBox(height: 8),

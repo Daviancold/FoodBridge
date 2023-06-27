@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodbridge_project/screens/report_screens/report_user.dart';
 import 'package:foodbridge_project/widgets/profile_appbar.dart';
 import '../../models/listing.dart';
 import '../listings_list_screen.dart';
@@ -96,7 +97,14 @@ class OthersProfileScreen extends ConsumerWidget {
                           'Report',
                           style: TextStyle(fontSize: 24),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReportUser(userName: userName, userId: userId,),
+                            ),
+                          );
+                        },
                       )
                     ],
                   ),
