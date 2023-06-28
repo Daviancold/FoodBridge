@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:foodbridge_project/screens/review_screen.dart';
 import 'package:foodbridge_project/widgets/ratings.dart';
 import '../../models/listing.dart';
 import '../listings_list_screen.dart';
@@ -17,6 +19,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
+
+    void _navigateToReviewsScreen(BuildContext context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReviewsScreen(
+            userId: user.email!,
+          ),
+        ),
+      );
+    }
 
     Stream<List<Listing>> readUserListings() {
       final now = DateTime.now();
@@ -112,15 +125,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       Row(
                         children: [
-                          Text(
-                            'Ratings:',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(fontSize: 14),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      _navigateToReviewsScreen(context);
+                                    },
+                                  text: 'Ratings:',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        fontSize: 14,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(width: 4),
-                          AverageRatings(userId: user.email!,),
+                          AverageRatings(
+                            userId: user.email!,
+                          ),
                         ],
                       ),
                       const SizedBox(

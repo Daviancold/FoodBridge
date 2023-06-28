@@ -49,7 +49,7 @@ class _RateRecipientScreenState extends State<RateRecipientScreen> {
           'easeOfDealRating': _rating2,
           'sincerityRating': _rating3,
           'review': _review,
-          'reviewedBy': user!.email,
+          'reviewedBy': user!.displayName,
         });
 
         FirebaseFirestore.instance

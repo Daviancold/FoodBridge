@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:foodbridge_project/screens/report_screens/report_user.dart';
@@ -7,6 +8,8 @@ import '../../models/listing.dart';
 import '../../widgets/ratings.dart';
 import '../listings_list_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../review_screen.dart';
 
 class OthersProfileScreen extends ConsumerWidget {
   const OthersProfileScreen({
@@ -23,6 +26,17 @@ class OthersProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = FirebaseAuth.instance.currentUser!;
+
+    void _navigateToReviewsScreen(BuildContext context) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReviewsScreen(
+            userId: userId,
+          ),
+        ),
+      );
+    }
 
     Stream<List<Listing>> readUserListings() {
       final now = DateTime.now();
@@ -91,12 +105,25 @@ class OthersProfileScreen extends ConsumerWidget {
                       ),
                       Row(
                         children: [
-                          Text(
-                            'Ratings:',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium!
-                                .copyWith(fontSize: 14),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      _navigateToReviewsScreen(context);
+                                    },
+                                  text: 'Ratings:',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        fontSize: 14,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(width: 4),
                           AverageRatings(

@@ -144,25 +144,35 @@ class AllChatList extends StatelessWidget {
                                 showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                    content: const SizedBox(
+                                    content: SizedBox(
                                       height: 16,
                                       width: 16,
                                       child: Center(
-                                        child: Text('Delete Chat?'),
+                                        child: Text('Delete Chat?',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .copyWith(color: Colors.black, fontSize: 16)),
                                       ),
                                     ),
                                     actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(ctx);
-                                          },
-                                          child: const Text('No')),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(ctx);
-                                          _deleteChat(chatId);
-                                        },
-                                        child: const Text('Yes'),
+                                      ButtonBar(
+                                        alignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(ctx);
+                                              },
+                                              child: const Text('No')),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(ctx);
+                                              _deleteChat(chatId);
+                                            },
+                                            child: const Text('Yes'),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
