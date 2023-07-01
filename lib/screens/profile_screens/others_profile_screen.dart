@@ -138,10 +138,10 @@ class OthersProfileScreen extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
                         ),
-                        icon: const Icon(Icons.warning, size: 32),
+                        icon: const Icon(Icons.warning, size: 32, color: Colors.white,),
                         label: const Text(
                           'Report',
-                          style: TextStyle(fontSize: 24),
+                          style: TextStyle(fontSize: 24, color: Colors.white),
                         ),
                         onPressed: () {
                           Navigator.push(

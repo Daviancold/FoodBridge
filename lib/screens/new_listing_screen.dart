@@ -262,7 +262,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const DonationGuidelines()),
+                MaterialPageRoute(
+                    builder: (context) => const DonationGuidelines()),
               );
             },
             icon: const Icon(Icons.info),
@@ -450,8 +451,8 @@ class _NewListingScreenState extends State<NewListingScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.cancel),
-                      label: const Text('Cancel'),
+                      icon: const Icon(Icons.cancel, color: Colors.white,),
+                      label: const Text('Cancel', style: TextStyle(color: Colors.white),),
                     ),
                     const Spacer(),
                     ElevatedButton.icon(
@@ -464,11 +465,18 @@ class _NewListingScreenState extends State<NewListingScreen> {
                           ? const SizedBox(
                               height: 8,
                               width: 8,
-                              child: CircularProgressIndicator(),
+                              child: CircularProgressIndicator(color: Colors.white,),
                             )
-                          : const Icon(Icons.save),
-                      label:
-                          _isSaving ? const Text('Saving') : const Text('Save'),
+                          : const Icon(Icons.save, color: Colors.white,),
+                      label: _isSaving
+                          ? const Text(
+                              'Saving',
+                              style: TextStyle(color: Colors.white),
+                            )
+                          : const Text(
+                              'Save',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ],
                 ),

@@ -119,10 +119,11 @@ class AllChatList extends StatelessWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
-                      title: Text(chatPartnerUserName),
+                      title: Text(chatPartnerUserName, style: TextStyle(color: Colors.white),),
                       subtitle: Text(
                         latestMessage,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.white),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -178,7 +179,7 @@ class AllChatList extends StatelessWidget {
                                   ),
                                 );
                               },
-                              icon: Icon(Icons.delete))
+                              icon: const Icon(Icons.delete, color: Colors.white))
                         ],
                       ),
                       // Customize the appearance and behavior of the ListTile as needed

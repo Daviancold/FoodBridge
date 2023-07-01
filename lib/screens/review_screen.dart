@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/models/user.dart';
 
 import '../widgets/review_list.dart';
 

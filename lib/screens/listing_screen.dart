@@ -366,10 +366,10 @@ class _ListingScreenState extends State<ListingScreen> {
                                       );
                                     }
                                   : null,
-                              icon: const Icon(Icons.done),
+                              icon: const Icon(Icons.done, color: Colors.white,),
                               label: widget.listing.isAvailable
-                                  ? const Text('Mark as donated')
-                                  : const Text('Item has been donated'),
+                                  ? const Text('Mark as donated', style: TextStyle(color: Colors.white),)
+                                  : const Text('Item has been donated', style: TextStyle(color: Colors.white),),
                             ),
                             const SizedBox(
                               width: 8,
@@ -391,8 +391,8 @@ class _ListingScreenState extends State<ListingScreen> {
                                       );
                                     }
                                   : null,
-                              icon: const Icon(Icons.edit),
-                              label: const Text('Edit listing'),
+                              icon: const Icon(Icons.edit, color: Colors.white,),
+                              label: const Text('Edit listing', style: TextStyle(color: Colors.white),),
                             ),
                             const SizedBox(
                               width: 8,
@@ -450,8 +450,8 @@ class _ListingScreenState extends State<ListingScreen> {
                                   ),
                                 );
                               },
-                              icon: const Icon(Icons.delete),
-                              label: const Text('Delete listing'),
+                              icon: const Icon(Icons.delete, color: Colors.white,),
+                              label: const Text('Delete listing', style: TextStyle(color: Colors.white),),
                             ),
                           ],
                         )

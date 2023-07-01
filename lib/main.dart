@@ -6,8 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-var kColorScheme = ColorScheme.fromSeed(
-  seedColor: Color.fromARGB(255, 192, 94, 19),
+const ColorScheme kColorScheme = ColorScheme(
+  primary: Color(0xFF272643),
+  secondary: Color(0xFF2C698D),
+  tertiary: Color(0xFF53C6C6),
+  surface: Color(0xFFFFFFFF),
+  background: Color(0xFFE3F6F5),
+  error: Colors.red, // Customize the error color if needed
+  onPrimary: Colors.white, // Customize the onPrimary text color if needed
+  onSecondary: Colors.white, // Customize the onSecondary text color if needed
+  onSurface: Colors.black, // Customize the onSurface text color if needed
+  onBackground: Colors.black, // Customize the onBackground text color if needed
+  onError: Colors.white, // Customize the onError text color if needed
+  brightness: Brightness.light, // Set the brightness of the color scheme
 );
 
 Future main() async {
@@ -39,8 +50,8 @@ class MyApp extends StatelessWidget {
             colorScheme: kColorScheme,
             appBarTheme: const AppBarTheme().copyWith(
               centerTitle: true,
-              backgroundColor: kColorScheme.onPrimaryContainer,
-              foregroundColor: kColorScheme.primaryContainer,
+              backgroundColor: kColorScheme.primary,
+              foregroundColor: kColorScheme.onPrimaryContainer,
             ),
             cardTheme: const CardTheme().copyWith(
               color: kColorScheme.secondaryContainer,

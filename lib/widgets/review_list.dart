@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 
 class ReviewsList extends StatelessWidget {
   const ReviewsList({super.key, required this.userId});
@@ -14,6 +15,7 @@ class ReviewsList extends StatelessWidget {
           .collection('users')
           .doc(userId)
           .collection('reviews')
+          .orderBy('createdAt', descending: true)
           .snapshots(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) {
@@ -21,16 +23,21 @@ class ReviewsList extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-          return const Text('No reviews found');
+          return const Center(child: Text('No reviews found'));
         }
         return ListView.builder(
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (BuildContext context, int index) {
             final reviewData = snapshot.data!.docs[index].data();
+
+            Timestamp timestampValue = reviewData['createdAt'];
+
+            String formattedDate =
+                DateFormat('dd/MM/yyyy').format(timestampValue.toDate());
 
             // Customize how you want to display each review document
             return Container(
@@ -50,6 +57,10 @@ class ReviewsList extends StatelessWidget {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(formattedDate),
                     const SizedBox(
                       height: 8,
                     ),

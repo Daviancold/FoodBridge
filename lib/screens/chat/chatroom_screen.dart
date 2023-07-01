@@ -173,22 +173,23 @@ class _ChatScreenState extends State<ChatScreen> {
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
+                                    color: Colors.white
                                   ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Main category: ${listing['mainCategory'].split('.').last}',
-                                  style: const TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Subcategory: ${listing['subCategory'].split('.').last}',
-                                  style: const TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Location: ${listing['address'].split('.').last}',
-                                  style: const TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12, color: Colors.white),
                                   overflow: TextOverflow.visible,
                                 ),
                                 const SizedBox(height: 8),
@@ -196,26 +197,26 @@ class _ChatScreenState extends State<ChatScreen> {
                                   children: [
                                     const Text(
                                       'Available:',
-                                      style: TextStyle(fontSize: 12),
+                                      style: TextStyle(fontSize: 12, color: Colors.white),
                                     ),
                                     const SizedBox(
                                       width: 8,
                                     ),
                                     Text(
                                       listing['isAvailable'] ? 'Yes' : 'No',
-                                      style: const TextStyle(fontSize: 12),
+                                      style: const TextStyle(fontSize: 12, color: Colors.white),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Expiry Date: ${DateFormat('MM/dd/yyyy').format(expiryDate)}',
-                                  style: const TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Donor: ${listing['userName'].toString()}',
-                                  style: const TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12, color: Colors.white),
                                 ),
                               ],
                             ),
@@ -260,8 +261,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                             //refresh
                                           });
                                         },
-                                  icon: const Icon(Icons.done),
-                                  label: const Text('Offer donation'),
+                                  icon: const Icon(Icons.done, color: Colors.white),
+                                  label: const Text('Offer donation',style: TextStyle(color: Colors.white),),
                                 )
                               : ElevatedButton.icon(
                                   onPressed:
@@ -279,8 +280,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                               });
                                             }
                                           : null,
-                                  icon: const Icon(Icons.done),
-                                  label: const Text('Accept donation'),
+                                  icon: const Icon(Icons.done, color: Colors.white),
+                                  label: const Text('Accept donation', style: TextStyle(color: Colors.white),),
                                 ),
                           const Spacer(),
                           user.email == listing['userId']
@@ -306,8 +307,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                           });
                                         }
                                       : null,
-                                  icon: const Icon(Icons.rate_review),
-                                  label: const Text('Give ratings'),
+                                  icon: const Icon(Icons.rate_review, color: Colors.white),
+                                  label: const Text('Give ratings', style: TextStyle(color: Colors.white),),
                                 )
                               : ElevatedButton.icon(
                                   onPressed: (canReviewDonor &&
@@ -331,8 +332,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                           });
                                         }
                                       : null,
-                                  icon: const Icon(Icons.rate_review),
-                                  label: const Text('Give ratings'),
+                                  icon: const Icon(Icons.rate_review, color: Colors.white),
+                                  label: const Text('Give ratings', style: TextStyle(color: Colors.white),),
                                 )
                         ],
                       )

@@ -50,6 +50,7 @@ class _RateRecipientScreenState extends State<RateRecipientScreen> {
           'sincerityRating': _rating3,
           'review': _review,
           'reviewedBy': user!.displayName,
+          'createdAt': Timestamp.now(),
         });
 
         FirebaseFirestore.instance
@@ -122,6 +123,7 @@ class _RateRecipientScreenState extends State<RateRecipientScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Sincerity: '),
+                  const SizedBox(width: 22),
                   for (int i = 1; i <= 5; i++)
                     GestureDetector(
                       onTap: () {
@@ -159,7 +161,7 @@ class _RateRecipientScreenState extends State<RateRecipientScreen> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _submitRating,
-                child: Text('Submit'),
+                child: Text('Submit',style: TextStyle(color: Colors.white),),
               ),
             ],
           ),
