@@ -135,8 +135,8 @@ class _TabsScreenState extends State<TabsScreen> {
                           });
                         });
                       },
-                      icon: const Icon(Icons.filter_alt),
-                      label: const Text('Filter'),
+                      icon: const Icon(Icons.filter_alt, color: Colors.white,),
+                      label: const Text('Filter', style: TextStyle(color: Colors.white),),
                     ),
                   ),
                 ],

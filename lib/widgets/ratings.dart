@@ -1,17 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AverageRatings extends StatefulWidget {
-  const AverageRatings({super.key, required this.userId});
+  const AverageRatings({Key? key, required this.userId}) : super(key: key);
 
   final String userId;
+
   @override
   State<AverageRatings> createState() => _AverageRatingsState();
 }
 
 class _AverageRatingsState extends State<AverageRatings> {
-
-  Future<String> calculateAverageRating() async {
+  Future<double> calculateAverageRating() async {
     final DocumentReference userDoc =
         FirebaseFirestore.instance.collection('users').doc(widget.userId);
 
@@ -31,23 +32,41 @@ class _AverageRatingsState extends State<AverageRatings> {
 
       if (reviewCount > 0) {
         final double averageRating = totalRating / reviewCount;
-        final String formattedRating = averageRating.toStringAsFixed(2);
-        return '$formattedRating / 5';
+        return averageRating;
       }
     }
 
-    return 'No reviews yet';
+    return 0.0;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
+    return FutureBuilder<double>(
       future: calculateAverageRating(),
-      initialData: 'Loading',
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return Text(
-          snapshot.data ?? 'No reviews yet',
-        );
+      builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasData) {
+          final double averageRating = snapshot.data!;
+          print('avg rating is $averageRating');
+          if (averageRating <= 0.0) {
+            return const Text('No reviews yet');
+          } else {
+            return RatingBarIndicator(
+              rating: averageRating,
+              itemBuilder: (BuildContext context, int index) => const Icon(
+                Icons.star,
+                color: Colors.yellow,
+              ),
+              itemCount: 5,
+              itemSize: 20.0,
+              unratedColor: Colors.grey,
+              direction: Axis.horizontal,
+            );
+          }
+        } else {
+          return const Text('No reviews yet');
+        }
       },
     );
   }

@@ -66,10 +66,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(50),
                 ),
-                icon: const Icon(Icons.lock_open, size: 32),
+                icon: const Icon(Icons.lock_open, size: 32, color: Colors.white,),
                 label: const Text(
                   'Sign In',
-                  style: TextStyle(fontSize: 24),
+                  style: TextStyle(fontSize: 24, color: Colors.white,),
                 ),
                 onPressed: signIn,
               ),

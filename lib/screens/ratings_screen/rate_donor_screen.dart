@@ -49,7 +49,8 @@ class _RateDonorScreenState extends State<RateDonorScreen> {
           'easeOfDealRating': _rating2,
           'sincerityRating': _rating3,
           'review': _review,
-          'reviewedBy': user!.email,
+          'reviewedBy': user!.displayName,
+          'createdAt': Timestamp.now(),
         });
 
         FirebaseFirestore.instance
@@ -122,6 +123,7 @@ class _RateDonorScreenState extends State<RateDonorScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Sincerity: '),
+                  const SizedBox(width: 22,),
                   for (int i = 1; i <= 5; i++)
                     GestureDetector(
                       onTap: () {
@@ -159,7 +161,7 @@ class _RateDonorScreenState extends State<RateDonorScreen> {
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _submitRating,
-                child: Text('Submit'),
+                child: Text('Submit', style: TextStyle(color: Colors.white),),
               ),
             ],
           ),

@@ -95,7 +95,7 @@ class _FilterWidgetState extends State<FilterWidget> {
               return ExpansionTile(
                 title: Text(
                   category.name,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                 ),
                 children: category.subcategories.map((subcategory) {
                   if (subcategory.options != null &&
@@ -122,7 +122,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                   selectedDietaryNeeds.clear();
                   setState(() {});
                 },
-                child: const Text('Reset'),
+                child: const Text('Reset', style: TextStyle(color: Colors.white),),
               ),
               const SizedBox(
                 width: 30,
@@ -134,7 +134,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                     //'Dietary Needs': selectedDietaryNeeds,
                   });
                 },
-                child: const Text('Done'),
+                child: const Text('Done', style: TextStyle(color: Colors.white),),
               ),
             ],
           ),
@@ -148,11 +148,11 @@ class _FilterWidgetState extends State<FilterWidget> {
     return ExpansionTile(
       title: Text(
         subcategory.name,
-        style: const TextStyle(color: Colors.white),
+        style: const TextStyle(color: Colors.black),
       ),
       children: subcategory.options!.map((option) {
         return CheckboxListTile(
-          title: Text(option, style: const TextStyle(color: Colors.white)),
+          title: Text(option, style: const TextStyle(color: Colors.black)),
           value: _isSubcategorySelected(category, subcategory, option),
           onChanged: (value) {
             setState(() {
@@ -172,7 +172,7 @@ class _FilterWidgetState extends State<FilterWidget> {
 
     return CheckboxListTile(
       title: Text(subcategory.name,
-          style: TextStyle(color: isGreyedOut ? Colors.grey : Colors.white)),
+          style: TextStyle(color: isGreyedOut ? Colors.grey : Colors.black)),
       value: isAnyOptionSelected,
       onChanged: (value) {
         setState(() {
@@ -190,7 +190,7 @@ class _FilterWidgetState extends State<FilterWidget> {
           ? Colors.grey
           : null, // Set the active color to grey for "Dietary Needs"
       checkColor: isDietaryNeedsSubcategory
-          ? Colors.white
+          ? Colors.black
           : null, // Set the check color to white for "Dietary Needs"
     );
   }
