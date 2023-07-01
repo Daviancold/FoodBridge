@@ -48,17 +48,22 @@ class _AverageRatingsState extends State<AverageRatings> {
           return const CircularProgressIndicator();
         } else if (snapshot.hasData) {
           final double averageRating = snapshot.data!;
-          return RatingBarIndicator(
-            rating: averageRating,
-            itemBuilder: (BuildContext context, int index) => const Icon(
-              Icons.star,
-              color: Colors.yellow,
-            ),
-            itemCount: 5,
-            itemSize: 20.0,
-            unratedColor: Colors.grey,
-            direction: Axis.horizontal,
-          );
+          print('avg rating is $averageRating');
+          if (averageRating <= 0.0) {
+            return const Text('No reviews yet');
+          } else {
+            return RatingBarIndicator(
+              rating: averageRating,
+              itemBuilder: (BuildContext context, int index) => const Icon(
+                Icons.star,
+                color: Colors.yellow,
+              ),
+              itemCount: 5,
+              itemSize: 20.0,
+              unratedColor: Colors.grey,
+              direction: Axis.horizontal,
+            );
+          }
         } else {
           return const Text('No reviews yet');
         }
