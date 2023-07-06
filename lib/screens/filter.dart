@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:foodbridge_project/models/listing.dart';
-import 'package:foodbridge_project/screens/tabs_screen.dart';
 
 List<String> selectedOptions = []; // Stores selection
 
@@ -145,7 +143,7 @@ class _FilterWidgetState extends State<FilterWidget> {
                 selectedOptions.clear();
                 setState(() {});
               },
-              child: Text('Clear'),
+              child: const Text('Clear'),
             ),
             const SizedBox(
               width: 30,
@@ -154,7 +152,7 @@ class _FilterWidgetState extends State<FilterWidget> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         ),

@@ -6,9 +6,11 @@ import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
 import 'package:foodbridge_project/screens/edit_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screens/others_profile_screen.dart';
 import 'package:foodbridge_project/screens/report_screens/report_listing.dart';
+import 'package:foodbridge_project/widgets/like_button.dart';
 import 'package:foodbridge_project/widgets/loading.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import '../widgets/like_button.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -238,11 +240,10 @@ class _ListingScreenState extends State<ListingScreen> {
                               color: Colors.grey.shade400,
                               iconSize: 32,
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.favorite_border),
-                              color: Colors.grey.shade400,
-                              iconSize: 32,
+                            LikeButton(
+                              onTap: () {},
+                              isLiked: false,
+                              iconSize: 34,
                             ),
                           ],
                         ),
@@ -366,10 +367,19 @@ class _ListingScreenState extends State<ListingScreen> {
                                       );
                                     }
                                   : null,
-                              icon: const Icon(Icons.done, color: Colors.white,),
+                              icon: const Icon(
+                                Icons.done,
+                                color: Colors.white,
+                              ),
                               label: widget.listing.isAvailable
-                                  ? const Text('Mark as donated', style: TextStyle(color: Colors.white),)
-                                  : const Text('Item has been donated', style: TextStyle(color: Colors.white),),
+                                  ? const Text(
+                                      'Mark as donated',
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  : const Text(
+                                      'Item has been donated',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                             ),
                             const SizedBox(
                               width: 8,
@@ -391,8 +401,14 @@ class _ListingScreenState extends State<ListingScreen> {
                                       );
                                     }
                                   : null,
-                              icon: const Icon(Icons.edit, color: Colors.white,),
-                              label: const Text('Edit listing', style: TextStyle(color: Colors.white),),
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                'Edit listing',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                             const SizedBox(
                               width: 8,
@@ -450,8 +466,14 @@ class _ListingScreenState extends State<ListingScreen> {
                                   ),
                                 );
                               },
-                              icon: const Icon(Icons.delete, color: Colors.white,),
-                              label: const Text('Delete listing', style: TextStyle(color: Colors.white),),
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                'Delete listing',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ],
                         )

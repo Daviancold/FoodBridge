@@ -19,6 +19,7 @@ class ListingsScreen extends StatefulWidget {
 class _ListingsScreenState extends State<ListingsScreen> {
   @override
   Widget build(BuildContext context) {
+    print('testing');
     Widget buildListing(Listing listing) => ListingGridItem(
           data: listing,
           isYourListing: widget.isYourListing,

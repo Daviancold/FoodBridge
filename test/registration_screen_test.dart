@@ -17,8 +17,8 @@ void main() {
     testWidgets('Attempt Wrong Email', (WidgetTester tester) async {
       // Build our app and trigger a frame.
       await tester.pumpWidget(const AuthPage());
-      expect(findsWidgets, )
-      await tester.tap();
+      expect(findsWidgets);
+      //await tester.tap();
       // Verify that our counter starts at 0.
       expect(find.byWidget(TextFormField()), findsNWidgets(4));
       expect(find.text('1'), findsNothing);

@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/screens/listing_screen.dart';
+import 'package:foodbridge_project/widgets/like_button.dart';
 import '../models/listing.dart';
 import 'package:intl/intl.dart';
 
 final formatter = DateFormat.yMd();
 
-class ListingGridItem extends StatelessWidget {
+class ListingGridItem extends StatefulWidget {
   const ListingGridItem({
     super.key,
     required this.data,
@@ -15,12 +18,77 @@ class ListingGridItem extends StatelessWidget {
   final Listing data;
   final bool isYourListing;
 
+  @override
+  State<ListingGridItem> createState() => _ListingGridItemState();
+}
+
+class _ListingGridItemState extends State<ListingGridItem> {
   String get formattedDate {
-    return formatter.format(data.expiryDate);
+    return formatter.format(widget.data.expiryDate);
+  }
+
+  bool isLiked = false;
+  var currentUser = FirebaseAuth.instance.currentUser!.email;
+
+  void handleLikes() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser)
+        .collection('likes')
+        .doc(widget.data.id)
+        .get()
+        .then((snapshot) {
+      if (!snapshot.exists || snapshot.data()!['isLiked'] == false) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser)
+            .collection('likes')
+            .doc(widget.data.id)
+            .set({
+          'isLiked': true,
+        });
+      } else {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser)
+            .collection('likes')
+            .doc(widget.data.id)
+            .set({
+          'isLiked': false,
+        });
+      }
+      setState(() {
+        isLiked = !isLiked;
+      });
+    });
+  }
+
+  void setupLikes() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser)
+        .collection('likes')
+        .doc(widget.data.id)
+        .get()
+        .then((snapshot) {
+      if (!snapshot.exists || snapshot.data()!['isLiked'] == false) {
+        isLiked = false;
+      } else {
+        isLiked = true;
+      }
+      setState(() {
+        return;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    setupLikes();
+    super.initState();
   }
 
   //UI layout for each grid item
-  //that is used for grid view
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -29,8 +97,8 @@ class ListingGridItem extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => ListingScreen(
-              listing: data,
-              isYourListing: isYourListing,
+              listing: widget.data,
+              isYourListing: widget.isYourListing,
             ),
           ),
         );
@@ -55,12 +123,12 @@ class ListingGridItem extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      data.image,
+                      widget.data.image,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                data.expiryDate.isAfter(DateTime.now())
+                widget.data.expiryDate.isAfter(DateTime.now())
                     ? Container()
                     : Positioned(
                         bottom: 0,
@@ -82,7 +150,7 @@ class ListingGridItem extends StatelessWidget {
                           ),
                         ),
                       ),
-                data.isAvailable
+                widget.data.isAvailable
                     ? Container()
                     : Positioned(
                         bottom: 0,
@@ -118,7 +186,7 @@ class ListingGridItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Item: ${data.itemName}',
+                          'Item: ${widget.data.itemName}',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -129,12 +197,12 @@ class ListingGridItem extends StatelessWidget {
                           maxLines: 1,
                         ),
                         Text(
-                          'Address: ${data.address}',
+                          'Address: ${widget.data.address}',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
                         Text(
-                          'Donor: ${data.userName}',
+                          'Donor: ${widget.data.userName}',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
@@ -142,12 +210,9 @@ class ListingGridItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.favorite_border,
-                    color: Colors.grey.shade400,
-                  ),
+                LikeButton(
+                  isLiked: isLiked,
+                  onTap: handleLikes,
                 ),
               ],
             )
