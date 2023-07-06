@@ -15,11 +15,18 @@ import '../widgets/like_button.dart';
 final formatter = DateFormat.yMd();
 
 class ListingScreen extends StatefulWidget {
-  const ListingScreen(
-      {super.key, required this.listing, required this.isYourListing});
+  const ListingScreen({
+    super.key,
+    required this.listing,
+    required this.isYourListing,
+    required this.handleLikes,
+    required this.isLiked,
+  });
 
   final Listing listing;
   final bool isYourListing;
+  final Function() handleLikes;
+  final bool isLiked;
 
   @override
   State<ListingScreen> createState() => _ListingScreenState();
@@ -99,6 +106,16 @@ class _ListingScreenState extends State<ListingScreen> {
     docListing.update({
       'isAvailable': false,
     });
+  }
+
+  // Bring forward Like Status of item listing into the screen, and storing in
+  // local variable of the screen widget for use
+  late bool _isLiked;
+  
+  @override
+  void initState() {
+    _isLiked = widget.isLiked;
+    super.initState();
   }
 
   @override
@@ -241,8 +258,13 @@ class _ListingScreenState extends State<ListingScreen> {
                               iconSize: 32,
                             ),
                             LikeButton(
-                              onTap: () {},
-                              isLiked: false,
+                              isLiked: _isLiked,
+                              onTap: () {
+                                widget.handleLikes();
+                                setState(() {
+                                  _isLiked = !_isLiked;
+                                });
+                              },
                               iconSize: 34,
                             ),
                           ],

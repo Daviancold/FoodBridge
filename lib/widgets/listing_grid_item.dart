@@ -57,9 +57,6 @@ class _ListingGridItemState extends State<ListingGridItem> {
           'isLiked': false,
         });
       }
-      setState(() {
-        isLiked = !isLiked;
-      });
     });
   }
 
@@ -99,9 +96,15 @@ class _ListingGridItemState extends State<ListingGridItem> {
             builder: (context) => ListingScreen(
               listing: widget.data,
               isYourListing: widget.isYourListing,
+              handleLikes: handleLikes,
+              isLiked: isLiked,
             ),
           ),
-        );
+        ).whenComplete(() {
+          setState(() {
+            setupLikes();
+          });
+        });
       },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(16),
@@ -212,7 +215,12 @@ class _ListingGridItemState extends State<ListingGridItem> {
                 ),
                 LikeButton(
                   isLiked: isLiked,
-                  onTap: handleLikes,
+                  onTap: () {
+                    handleLikes();
+                    setState(() {
+                      isLiked = !isLiked;
+                    });
+                  },
                 ),
               ],
             )
