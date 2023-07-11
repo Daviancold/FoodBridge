@@ -31,6 +31,7 @@ void main() {
         home: ListingsScreen(
           availListings: Stream<List<Listing>>.empty(),
           isYourListing: false,
+          isFavouritesScreen: false,
         ),
       ),
     );
@@ -47,6 +48,7 @@ void main() {
         home: ListingsScreen(
           availListings: Stream.error('error message'),
           isYourListing: false,
+          isFavouritesScreen: false,
         ),
       ),
     );
@@ -135,6 +137,7 @@ void main() {
           body: ListingsScreen(
             availListings: mockFetchListings(),
             isYourListing: false,
+            isFavouritesScreen: false,
           ),
         ),
       ),

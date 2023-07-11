@@ -178,6 +178,7 @@ class OthersProfileScreen extends ConsumerWidget {
             child: ListingsScreen(
               availListings: readUserListings(),
               isYourListing: false,
+              isFavouritesScreen: false,
             ),
           ),
         ],

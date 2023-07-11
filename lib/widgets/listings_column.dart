@@ -80,6 +80,7 @@ class ListingsColumn extends StatelessWidget {
           child: ListingsScreen(
             availListings: readListings(itemName),
             isYourListing: false,
+            isFavouritesScreen: false,
           ),
         ),
       ],

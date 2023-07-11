@@ -111,7 +111,7 @@ class _ListingScreenState extends State<ListingScreen> {
   // Bring forward Like Status of item listing into the screen, and storing in
   // local variable of the screen widget for use
   late bool _isLiked;
-  
+
   @override
   void initState() {
     _isLiked = widget.isLiked;
@@ -244,7 +244,7 @@ class _ListingScreenState extends State<ListingScreen> {
                       ),
                       //Chat button and favorites button
                       Positioned(
-                        right: 16,
+                        right: 26,
                         bottom: 16,
                         child: Row(
                           children: [

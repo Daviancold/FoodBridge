@@ -13,10 +13,12 @@ class ListingGridItem extends StatefulWidget {
     super.key,
     required this.data,
     required this.isYourListing,
+    required this.isFavouritesScreen,
   });
 
   final Listing data;
   final bool isYourListing;
+  final bool isFavouritesScreen;
 
   @override
   State<ListingGridItem> createState() => _ListingGridItemState();
@@ -46,6 +48,7 @@ class _ListingGridItemState extends State<ListingGridItem> {
             .doc(widget.data.id)
             .set({
           'isLiked': true,
+          'expiryDate': widget.data.expiryDate,
         });
       } else {
         FirebaseFirestore.instance
@@ -73,9 +76,7 @@ class _ListingGridItemState extends State<ListingGridItem> {
       } else {
         isLiked = true;
       }
-      setState(() {
-        return;
-      });
+      setState(() {});
     });
   }
 
@@ -101,9 +102,7 @@ class _ListingGridItemState extends State<ListingGridItem> {
             ),
           ),
         ).whenComplete(() {
-          setState(() {
-            setupLikes();
-          });
+          setupLikes();
         });
       },
       splashColor: Theme.of(context).primaryColor,
@@ -217,9 +216,11 @@ class _ListingGridItemState extends State<ListingGridItem> {
                   isLiked: isLiked,
                   onTap: () {
                     handleLikes();
-                    setState(() {
-                      isLiked = !isLiked;
-                    });
+                    if (!widget.isFavouritesScreen) {
+                      setState(() {
+                        isLiked = !isLiked;
+                      });
+                    }
                   },
                 ),
               ],

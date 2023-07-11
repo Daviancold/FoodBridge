@@ -188,6 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: ListingsScreen(
               availListings: readUserListings(),
               isYourListing: true,
+              isFavouritesScreen: false,
             ),
           ),
         ],

@@ -7,10 +7,12 @@ class ListingsScreen extends StatefulWidget {
     super.key,
     required this.availListings,
     required this.isYourListing,
+    required this.isFavouritesScreen,
   });
 
   final Stream<List<Listing>> availListings;
   final bool isYourListing;
+  final bool isFavouritesScreen;
 
   @override
   State<ListingsScreen> createState() => _ListingsScreenState();
@@ -22,6 +24,8 @@ class _ListingsScreenState extends State<ListingsScreen> {
     Widget buildListing(Listing listing) => ListingGridItem(
           data: listing,
           isYourListing: widget.isYourListing,
+          isFavouritesScreen: widget.isFavouritesScreen,
+
         );
 
     return Column(
@@ -38,12 +42,15 @@ class _ListingsScreenState extends State<ListingsScreen> {
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-                return const Center(
+                return const Expanded(
+                  child: Center(
                     child: Text(
-                  'No available listings',
-                  style: TextStyle(color: Colors.black),
-                  key: Key('No available listings text'),
-                ));
+                      'No available listings',
+                      style: TextStyle(color: Colors.black),
+                      key: Key('No available listings text'),
+                    ),
+                  ),
+                );
               } else if (snapshot.hasData) {
                 final allListings = snapshot.data!;
 
