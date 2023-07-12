@@ -3,65 +3,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class AverageRatings extends StatefulWidget {
-  const AverageRatings({Key? key, required this.userId}) : super(key: key);
+  AverageRatings({Key? key, required this.rating}) : super(key: key);
 
-  final String userId;
+  Future<double> rating;
 
   @override
   State<AverageRatings> createState() => _AverageRatingsState();
 }
 
 class _AverageRatingsState extends State<AverageRatings> {
-  Future<double> calculateAverageRating() async {
-    final DocumentReference userDoc =
-        FirebaseFirestore.instance.collection('users').doc(widget.userId);
-
-    final CollectionReference reviewsCollection = userDoc.collection('reviews');
-
-    final QuerySnapshot reviewsSnapshot = await reviewsCollection.get();
-
-    if (reviewsSnapshot.docs.isNotEmpty) {
-      double totalRating = 0.0;
-      int reviewCount = 0;
-
-      for (final QueryDocumentSnapshot reviewDoc in reviewsSnapshot.docs) {
-        final double avgRating = reviewDoc['avgRating']?.toDouble() ?? 0.0;
-        totalRating += avgRating;
-        reviewCount++;
-      }
-
-      if (reviewCount > 0) {
-        final double averageRating = totalRating / reviewCount;
-        return averageRating;
-      }
-    }
-
-    return 0.0;
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<double>(
-      future: calculateAverageRating(),
+      future: widget.rating,
       builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return const Text(
+            key: Key('Something went wrong'),
+            'Something went wrong',
+          );
         } else if (snapshot.hasData) {
           final double averageRating = snapshot.data!;
           print('avg rating is $averageRating');
           if (averageRating <= 0.0) {
-            return const Text('No reviews yet');
+            return const Text(
+              key: Key('No reviews yet'),
+              'No reviews yet',
+            );
           } else {
-            return RatingBarIndicator(
-              rating: averageRating,
-              itemBuilder: (BuildContext context, int index) => const Icon(
-                Icons.star,
-                color: Colors.yellow,
+            return Container(
+              key: Key('rating'),
+              child: RatingBarIndicator(
+                rating: averageRating,
+                itemBuilder: (BuildContext context, int index) => const Icon(
+                  Icons.star,
+                  color: Colors.yellow,
+                ),
+                itemCount: 5,
+                itemSize: 20.0,
+                unratedColor: Colors.grey,
+                direction: Axis.horizontal,
               ),
-              itemCount: 5,
-              itemSize: 20.0,
-              unratedColor: Colors.grey,
-              direction: Axis.horizontal,
             );
           }
         } else {

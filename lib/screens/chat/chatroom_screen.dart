@@ -32,11 +32,18 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     //Retrieves information about listing
-    return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      future: FirebaseFirestore.instance
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
           .collection('Listings')
           .doc(widget.listingId)
-          .get(),
+          .snapshots(),
+
+      //     FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      // future: FirebaseFirestore.instance
+      //     .collection('Listings')
+      //     .doc(widget.listingId)
+      //     .get(),
+      
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -171,25 +178,27 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Text(
                                   listing['itemName'],
                                   style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white
-                                  ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Main category: ${listing['mainCategory'].split('.').last}',
-                                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Subcategory: ${listing['subCategory'].split('.').last}',
-                                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Location: ${listing['address'].split('.').last}',
-                                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
                                   overflow: TextOverflow.visible,
                                 ),
                                 const SizedBox(height: 8),
@@ -197,26 +206,30 @@ class _ChatScreenState extends State<ChatScreen> {
                                   children: [
                                     const Text(
                                       'Available:',
-                                      style: TextStyle(fontSize: 12, color: Colors.white),
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.white),
                                     ),
                                     const SizedBox(
                                       width: 8,
                                     ),
                                     Text(
                                       listing['isAvailable'] ? 'Yes' : 'No',
-                                      style: const TextStyle(fontSize: 12, color: Colors.white),
+                                      style: const TextStyle(
+                                          fontSize: 12, color: Colors.white),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Expiry Date: ${DateFormat('MM/dd/yyyy').format(expiryDate)}',
-                                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   'Donor: ${listing['userName'].toString()}',
-                                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
                                 ),
                               ],
                             ),
@@ -227,7 +240,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         children: [
                           user.email == listing['userId']
                               ? ElevatedButton.icon(
-                                  onPressed: (isOffered || (listing['isAvailable'] == false))
+                                  onPressed: (isOffered ||
+                                          (listing['isAvailable'] == false))
                                       ? null
                                       : () {
                                           // Add an extra field of type array and add a string to it
@@ -261,8 +275,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                             //refresh
                                           });
                                         },
-                                  icon: const Icon(Icons.done, color: Colors.white),
-                                  label: const Text('Offer donation',style: TextStyle(color: Colors.white),),
+                                  icon: const Icon(Icons.done,
+                                      color: Colors.white),
+                                  label: const Text(
+                                    'Offer donation',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 )
                               : ElevatedButton.icon(
                                   onPressed:
@@ -280,8 +298,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                               });
                                             }
                                           : null,
-                                  icon: const Icon(Icons.done, color: Colors.white),
-                                  label: const Text('Accept donation', style: TextStyle(color: Colors.white),),
+                                  icon: const Icon(Icons.done,
+                                      color: Colors.white),
+                                  label: const Text(
+                                    'Accept donation',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 ),
                           const Spacer(),
                           user.email == listing['userId']
@@ -307,8 +329,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                           });
                                         }
                                       : null,
-                                  icon: const Icon(Icons.rate_review, color: Colors.white),
-                                  label: const Text('Give ratings', style: TextStyle(color: Colors.white),),
+                                  icon: const Icon(Icons.rate_review,
+                                      color: Colors.white),
+                                  label: const Text(
+                                    'Give ratings',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 )
                               : ElevatedButton.icon(
                                   onPressed: (canReviewDonor &&
@@ -332,8 +358,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                           });
                                         }
                                       : null,
-                                  icon: const Icon(Icons.rate_review, color: Colors.white),
-                                  label: const Text('Give ratings', style: TextStyle(color: Colors.white),),
+                                  icon: const Icon(Icons.rate_review,
+                                      color: Colors.white),
+                                  label: const Text(
+                                    'Give ratings',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 )
                         ],
                       )

@@ -23,6 +23,9 @@ void main() {
         'lng': -122.4194,
         'address': '123 Main St',
         'addressImageUrl': 'path/to/address/image.jpg',
+        'isRecipientReviewed': false,
+        'isDonorReviewed': false,
+        'isExpired': false,
       };
 
       final listing = Listing.fromJson(json);

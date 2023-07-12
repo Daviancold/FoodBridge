@@ -27,6 +27,34 @@ class OthersProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = FirebaseAuth.instance.currentUser!;
 
+        Future<double> calculateAverageRating() async {
+      final DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(userId);
+
+      final CollectionReference reviewsCollection =
+          userDoc.collection('reviews');
+
+      final QuerySnapshot reviewsSnapshot = await reviewsCollection.get();
+
+      if (reviewsSnapshot.docs.isNotEmpty) {
+        double totalRating = 0.0;
+        int reviewCount = 0;
+
+        for (final QueryDocumentSnapshot reviewDoc in reviewsSnapshot.docs) {
+          final double avgRating = reviewDoc['avgRating']?.toDouble() ?? 0.0;
+          totalRating += avgRating;
+          reviewCount++;
+        }
+
+        if (reviewCount > 0) {
+          final double averageRating = totalRating / reviewCount;
+          return averageRating;
+        }
+      }
+
+      return 0.0;
+    }
+
     void _navigateToReviewsScreen(BuildContext context) {
       Navigator.push(
         context,
@@ -127,7 +155,7 @@ class OthersProfileScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 4),
                           AverageRatings(
-                            userId: userId,
+                            rating: calculateAverageRating(),
                           ),
                         ],
                       ),

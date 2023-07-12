@@ -47,10 +47,11 @@ void main() {
       expect(getLocationButton, findsOneWidget);
 
       await tester.tap(getLocationButton);
+      //expect(find.byType(CircularProgressIndicator), findsOneWidget);
       await tester.pump();
 
-      // Verify that the CircularProgressIndicator is displayed
-      //expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      
+      // await tester.pumpAndSettle();
 
       // Simulate the completion of fetching the current location
       // Set the location data or mock the API response accordingly
@@ -63,7 +64,7 @@ void main() {
       // })));
 
       // Wait for the widget to rebuild after fetching the location
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       // Verify that the CircularProgressIndicator is no longer displayed
       expect(find.byType(CircularProgressIndicator), findsNothing);

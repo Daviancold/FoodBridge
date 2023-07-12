@@ -34,12 +34,14 @@ class ChatMessages extends StatelessWidget {
 
         if (!chatSnapshots.hasData || chatSnapshots.data!.docs.isEmpty) {
           return const Center(
+            key: Key('No messages found.'),
             child: Text('No messages found.'),
           );
         }
 
         if (chatSnapshots.hasError) {
           return const Center(
+            key: Key('Something went wrong...'),
             child: Text('Something went wrong...'),
           );
         }
@@ -47,6 +49,7 @@ class ChatMessages extends StatelessWidget {
         final loadedMessages = chatSnapshots.data!.docs;
 
         return ListView.builder(
+          key: Key('messages'),
           padding: const EdgeInsets.only(
             bottom: 40,
             left: 13,

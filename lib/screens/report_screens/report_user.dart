@@ -170,25 +170,27 @@ class _ReportUserState extends State<ReportUser> {
               Row(
                 children: [
                   ElevatedButton.icon(
+                    key: const Key('B1'),
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.cancel),
-                    label: const Text('Cancel'),
+                    icon: const Icon(Icons.cancel, color: Colors.white,),
+                    label: const Text('Cancel',style: TextStyle(color: Colors.white),),
                   ),
                   const Spacer(),
                   ElevatedButton.icon(
+                    key: const Key('B2'),
                     onPressed: _isSaving ? null : _submitForm,
                     icon: _isSaving
                         ? const SizedBox(
                             height: 8,
                             width: 8,
-                            child: CircularProgressIndicator(),
+                            child: CircularProgressIndicator(color: Colors.white,),
                           )
-                        : const Icon(Icons.upload),
+                        : const Icon(Icons.upload, color: Colors.white,),
                     label: _isSaving
-                        ? const Text('Submitting')
-                        : const Text('Submit'),
+                        ? const Text('Submitting', style: TextStyle(color: Colors.white),)
+                        : const Text('Submit', style: TextStyle(color: Colors.white),),
                   ),
                 ],
               ),

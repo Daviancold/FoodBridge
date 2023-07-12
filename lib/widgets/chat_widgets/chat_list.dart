@@ -123,7 +123,7 @@ class AllChatList extends StatelessWidget {
                       subtitle: Text(
                         latestMessage,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
