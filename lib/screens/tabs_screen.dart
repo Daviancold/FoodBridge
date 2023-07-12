@@ -104,7 +104,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                 ),
                               )
                             : Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   width: double.infinity,
                                   child: Text(
                                     'Searched for: $itemName',
@@ -146,6 +146,7 @@ class _TabsScreenState extends State<TabsScreen> {
           child: ListingsScreen(
             availListings: readListings(itemName),
             isYourListing: false,
+            isFavouritesScreen: false,
           ),
         ),
       ],
@@ -192,7 +193,7 @@ class _TabsScreenState extends State<TabsScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const LikesScreen()),
-            );
+            ).whenComplete(() => setState(() {}));
           },
           icon: const Icon(Icons.favorite_border),
         ),

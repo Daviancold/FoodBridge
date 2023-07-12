@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/screens/donation_guidelines_screen.dart';
@@ -8,7 +7,6 @@ import 'package:foodbridge_project/widgets/location_input/location_input.dart';
 import 'package:intl/intl.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import '../widgets/firestore_service.dart';
-import '../widgets/utils.dart';
 
 class NewListingScreen extends StatefulWidget {
   const NewListingScreen({super.key});
