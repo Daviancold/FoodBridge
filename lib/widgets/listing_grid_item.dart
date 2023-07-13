@@ -179,51 +179,53 @@ class _ListingGridItemState extends State<ListingGridItem> {
             const SizedBox(
               height: 8,
             ),
-            Row(
-              children: [
-                DefaultTextStyle(
-                  style: const TextStyle(fontSize: 10, color: Colors.black),
-                  child: Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Item: ${widget.data.itemName}',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        // Text(listing.location.name),
-                        Text(
-                          'Expiry date: $formattedDate',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        Text(
-                          'Address: ${widget.data.address}',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        Text(
-                          'Donor: ${widget.data.userName}',
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ],
+            Expanded(
+              child: Row(
+                children: [
+                  DefaultTextStyle(
+                    style: const TextStyle(fontSize: 10, color: Colors.black),
+                    child: Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Item: ${widget.data.itemName}',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          // Text(listing.location.name),
+                          Text(
+                            'Expiry date: $formattedDate',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          Text(
+                            'Address: ${widget.data.address}',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                          Text(
+                            'Donor: ${widget.data.userName}',
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                LikeButton(
-                  isLiked: isLiked,
-                  onTap: () {
-                    handleLikes();
-                    if (!widget.isFavouritesScreen) {
-                      setState(() {
-                        isLiked = !isLiked;
-                      });
-                    }
-                  },
-                ),
-              ],
+                  LikeButton(
+                    isLiked: isLiked,
+                    onTap: () {
+                      handleLikes();
+                      if (!widget.isFavouritesScreen) {
+                        setState(() {
+                          isLiked = !isLiked;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
             )
           ],
         ),

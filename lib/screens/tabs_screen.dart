@@ -212,7 +212,7 @@ class _TabsScreenState extends State<TabsScreen> {
     //checks the page selected in navigation bar
     if (selectedPageIndex == 2) {
       activeScreen = const ProfileScreen();
-      activeAppBar = ProfileAppBar(context);
+      activeAppBar = ProfileAppBar(context, true, 'nil', 'nil');
     }
 
     return Scaffold(

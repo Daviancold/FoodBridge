@@ -26,6 +26,7 @@ void main() {
         home: ListingsScreen(
           availListings: mockStream,
           isYourListing: false,
+          isFavouritesScreen: false,
         ),
       ),
     );
@@ -46,6 +47,7 @@ void main() {
         home: ListingsScreen(
           availListings: mockStream,
           isYourListing: false,
+          isFavouritesScreen: false,
         ),
       ),
     );
@@ -113,6 +115,7 @@ void main() {
           body: ListingsScreen(
             availListings: mockStream,
             isYourListing: false,
+            isFavouritesScreen: false,
           ),
         ),
       ),

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../screens/profile_screens/others_profile_screen.dart';
+
 // A MessageBubble for showing a single chat message on the ChatScreen.
 class MessageBubble extends StatelessWidget {
   // Create a message bubble which is meant to be the first in the sequence.
   const MessageBubble.first({
     super.key,
     required this.userImage,
+    required this.userId,
     required this.username,
     required this.message,
     required this.isMe,
@@ -18,7 +21,8 @@ class MessageBubble extends StatelessWidget {
     required this.isMe,
   })  : isFirstInSequence = false,
         userImage = null,
-        username = null;
+        username = null,
+        userId = null;
 
   // Whether or not this message bubble is the first in a sequence of messages
   // from the same user.
@@ -34,6 +38,7 @@ class MessageBubble extends StatelessWidget {
   // Username of the user.
   // Not required if the message is not the first in a sequence.
   final String? username;
+  final String? userId;
   final String message;
 
   // Controls how the MessageBubble will be aligned.
@@ -50,12 +55,25 @@ class MessageBubble extends StatelessWidget {
             top: 15,
             // Align user image to the right, if the message is from me.
             right: isMe ? 0 : null,
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                userImage!,
+            child: GestureDetector(
+              onTap: isMe ? null : () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OthersProfileScreen(
+                            userId: userId!,
+                            userName: username!,
+                            userPhoto: userImage!,
+                          )),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  userImage!,
+                ),
+                backgroundColor: theme.colorScheme.primary.withAlpha(180),
+                radius: 23,
               ),
-              backgroundColor: theme.colorScheme.primary.withAlpha(180),
-              radius: 23,
             ),
           ),
         Container(

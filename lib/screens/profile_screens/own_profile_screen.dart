@@ -179,24 +179,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          size: 32,
-                          color: Colors.white,
-                        ),
-                        label: const Text(
-                          'Sign Out',
-                          style: TextStyle(fontSize: 24, color: Colors.white),
-                        ),
-                        onPressed: () => FirebaseAuth.instance.signOut(),
-                      ),
                     ],
                   ),
                 ),

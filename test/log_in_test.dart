@@ -26,7 +26,7 @@ void main() {
       password: 'password123',
     )).thenThrow(FirebaseAuthException(
       code: 'error',
-      message: 'Given String is null or empty',
+      message: 'Given String is empty or null',
     ));
 
     // Trigger the sign in with an empty email field

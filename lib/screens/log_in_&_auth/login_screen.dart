@@ -111,8 +111,13 @@ class _LoginWidgetState extends State<LoginWidget> {
       );
     } on FirebaseAuthException catch (e) {
       print(e);
-
-      Utils.showSnackBar(e.message);
+      if (e.message == 'Given String is empty or null') {
+        Utils.showSnackBar('Missing email and/or password');
+      } else if (e.message == 'The email address is badly formatted.') {
+        Utils.showSnackBar('Invalid email format');
+      } else if (e.message == 'The password is invalid or the user does not have a password.' || e.message == 'There is no user record corresponding to this identifier. The user may have been deleted.') {
+        Utils.showSnackBar('Invalid email or password');
+      }
     }
 
     // Navigator.of(context) not working!

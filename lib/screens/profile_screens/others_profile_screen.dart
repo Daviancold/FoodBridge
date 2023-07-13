@@ -27,7 +27,7 @@ class OthersProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = FirebaseAuth.instance.currentUser!;
 
-        Future<double> calculateAverageRating() async {
+    Future<double> calculateAverageRating() async {
       final DocumentReference userDoc =
           FirebaseFirestore.instance.collection('users').doc(userId);
 
@@ -90,7 +90,7 @@ class OthersProfileScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: ProfileAppBar(context),
+      appBar: ProfileAppBar(context, false, userName, userId),
       body: Column(
         children: [
           Container(
@@ -159,30 +159,6 @@ class OthersProfileScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                        ),
-                        icon: const Icon(Icons.warning, size: 32, color: Colors.white,),
-                        label: const Text(
-                          'Report',
-                          style: TextStyle(fontSize: 24, color: Colors.white),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReportUser(
-                                userName: userName,
-                                userId: userId,
-                              ),
-                            ),
-                          );
-                        },
-                      )
                     ],
                   ),
                 ),
