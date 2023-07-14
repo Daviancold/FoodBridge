@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NewMessage extends StatefulWidget {
-  const NewMessage({super.key, required this.chatId});
+  const NewMessage(
+      {super.key, required this.chatId, required this.chatPartnerId});
 
   final String chatId;
+  final String chatPartnerId;
 
   @override
   State<NewMessage> createState() {
@@ -43,6 +45,7 @@ class _NewMessageState extends State<NewMessage> {
       'userId': user.email,
       'userName': user.displayName,
       'userImage': user.photoURL,
+      'sendTo': widget.chatPartnerId,
     });
 
     FirebaseFirestore.instance

@@ -10,7 +10,6 @@ import 'package:foodbridge_project/widgets/like_button.dart';
 import 'package:foodbridge_project/widgets/loading.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import '../widgets/like_button.dart';
 
 final formatter = DateFormat.yMd();
 

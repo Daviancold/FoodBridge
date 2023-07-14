@@ -1,4 +1,7 @@
+import 'package:android_id/android_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
@@ -18,10 +21,6 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  void refreshScreen() {
-    setState(() {});
-  }
-
   String itemName = "";
   int selectedPageIndex = 0;
   List<String> editedFoodTypes = [];
@@ -80,6 +79,46 @@ class _TabsScreenState extends State<TabsScreen> {
     );
   }
 
+  void setupPushNotifications() async {
+    final fcm = FirebaseMessaging.instance;
+
+    await fcm.requestPermission();
+
+    final String? token = await fcm.getToken();
+
+    if (token != null) {
+      String userEmail = FirebaseAuth.instance.currentUser!.email.toString();
+      const androidId = AndroidId();
+      String? deviceId = await androidId.getId();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userEmail)
+          .collection('tokens')
+          .doc(deviceId)
+          .get()
+          .then((snapshot) {
+        if (snapshot.data() == null ||
+            snapshot.data()!['DeviceToken'] != token) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userEmail)
+              .collection('tokens')
+              .doc(deviceId)
+              .set({
+            'DeviceToken': token,
+          });
+        }
+      });
+    }
+    print(token);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupPushNotifications();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget activeScreen = Column(
@@ -135,8 +174,14 @@ class _TabsScreenState extends State<TabsScreen> {
                           });
                         });
                       },
-                      icon: const Icon(Icons.filter_alt, color: Colors.white,),
-                      label: const Text('Filter', style: TextStyle(color: Colors.white),),
+                      icon: const Icon(
+                        Icons.filter_alt,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'Filter',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],

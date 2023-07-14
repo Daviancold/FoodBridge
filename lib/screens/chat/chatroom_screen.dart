@@ -381,6 +381,7 @@ class _ChatScreenState extends State<ChatScreen> {
               //message or text
               NewMessage(
                 chatId: widget.chatId,
+                chatPartnerId: widget.chatPartner,
               ),
             ],
           ),

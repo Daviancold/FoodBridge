@@ -119,7 +119,7 @@ class AllChatList extends StatelessWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
-                      title: Text(chatPartnerUserName, style: TextStyle(color: Colors.white),),
+                      title: Text(chatPartnerUserName, style: const TextStyle(color: Colors.white),),
                       subtitle: Text(
                         latestMessage,
                         overflow: TextOverflow.ellipsis,
