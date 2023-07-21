@@ -105,6 +105,7 @@ class _ListingGridItemState extends State<ListingGridItem> {
           ),
         ).whenComplete(() {
           setupLikes();
+          setState(() {});
         });
       },
       splashColor: Theme.of(context).primaryColor,

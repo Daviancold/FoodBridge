@@ -1,8 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:foodbridge_project/screens/chat/chatroom_screen.dart';
+import 'package:foodbridge_project/widgets/notification_tile.dart';
+import 'package:foodbridge_project/models/listing.dart';
+import 'package:foodbridge_project/screens/listing_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -57,6 +59,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   itemCount: loadedNotifications.length,
                   itemBuilder: (context, index) {
                     final notificationData = loadedNotifications[index].data();
+                    final notificationID = loadedNotifications[index].id;
                     if (notificationData['type'] == 'chat') {
                       final listingID = notificationData['ListingId'];
                       final chatID = notificationData['chatId'];
@@ -65,105 +68,110 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           notificationData['chatPartnerName'];
                       final message = notificationData['messageContent'];
                       final listingImage = notificationData['listingPicture'];
-                      final notificationID = loadedNotifications[index].id;
 
-                      return Card(
-                        margin: const EdgeInsets.all(4.0),
-                        child: ListTile(
-                          title: Text(
-                            'New Message From $chatPartnerUserName',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            message,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              listingImage != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          listingImage,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                              IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (ctx) => AlertDialog(
-                                        content: SizedBox(
-                                          height: 16,
-                                          width: 16,
-                                          child: Center(
-                                            child: Text(
-                                              'Delete Notification?',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleLarge!
-                                                  .copyWith(
-                                                      color: Colors.black,
-                                                      fontSize: 16),
-                                            ),
-                                          ),
-                                        ),
-                                        actions: [
-                                          ButtonBar(
-                                            alignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(ctx);
-                                                },
-                                                child: const Text('No'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(ctx);
-                                                  _deleteNotification(
-                                                      notificationID:
-                                                          notificationID,
-                                                      all: false);
-                                                },
-                                                child: const Text('Yes'),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.delete,
-                                      color: Colors.white))
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChatScreen(
-                                  chatId: chatID,
-                                  listingId: listingID,
-                                  chatPartner: chatPartner,
-                                  chatPartnerUserName: chatPartnerUserName,
-                                ),
+                      return NotificationTile(
+                        titleText: 'New Message From $chatPartnerUserName',
+                        subtitleText: message,
+                        listingImage: listingImage,
+                        notificationID: notificationID,
+                        onTapFunction: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(
+                                chatId: chatID,
+                                listingId: listingID,
+                                chatPartner: chatPartner,
+                                chatPartnerUserName: chatPartnerUserName,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       );
                     } else if (notificationData['type'] == 'expiredItem') {
-                      // Expired item tiles
+                      final String itemName = notificationData['itemName'];
+                      final String itemExpiryDate =
+                          notificationData['itemExpiryDate'];
+                      final listingImage = notificationData['listingPicture'];
+                      final String userEmail = notificationData['userId'];
+                      final String listingID = notificationData['ListingId'];
+                      dynamic isLiked;
+                      return NotificationTile(
+                        titleText: 'An Item You Liked Has Expired',
+                        subtitleText:
+                            '$itemName has expired on $itemExpiryDate',
+                        listingImage: listingImage,
+                        notificationID: notificationID,
+                        onTapFunction: () async {
+                          Listing listingData = await FirebaseFirestore.instance
+                              .collection('Listings')
+                              .doc(listingID)
+                              .get()
+                              .then((doc) => Listing.fromJson(
+                                  doc.data() as Map<String, dynamic>));
+                          await FirebaseFirestore.instance
+                              .collection('users')
+                              .doc(userEmail)
+                              .collection('likes')
+                              .doc(listingID)
+                              .get()
+                              .then((snapshot) {
+                            if (!snapshot.exists ||
+                                snapshot.data()!['isLiked'] == false) {
+                              isLiked = false;
+                            } else {
+                              isLiked = true;
+                            }
+                            setState(() {});
+                          });
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ListingScreen(
+                                listing: listingData,
+                                isYourListing: false,
+                                handleLikes: () async {
+                                  await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(userEmail)
+                                      .collection('likes')
+                                      .doc(listingID)
+                                      .get()
+                                      .then((snapshot) {
+                                    if (!snapshot.exists ||
+                                        snapshot.data()!['isLiked'] == false) {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userEmail)
+                                          .collection('likes')
+                                          .doc(listingID)
+                                          .set({
+                                        'isLiked': true,
+                                        'expiryDate': listingData.expiryDate,
+                                        'isExpired': listingData.expiryDate
+                                                .isAfter(DateTime.now())
+                                            ? false
+                                            : true,
+                                      });
+                                    } else {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userEmail)
+                                          .collection('likes')
+                                          .doc(listingID)
+                                          .set({
+                                        'isLiked': false,
+                                      });
+                                    }
+                                  });
+                                },
+                                isLiked: isLiked,
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     }
                   },
                 );
@@ -208,7 +216,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         TextButton(
                           onPressed: () {
                             Navigator.pop(ctx);
-                            _deleteNotification(all: true);
+                            _deleteNotification();
                           },
                           child: const Text('Yes'),
                         ),
@@ -229,27 +237,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 }
 
-void _deleteNotification({String? notificationID, required bool all}) {
-  all == true
-      ? FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .collection('notifications')
-          .get()
-          .then((snapshot) {
-          for (DocumentSnapshot ds in snapshot.docs) {
-            ds.reference.delete();
-          }
-        }).catchError((error) {
-          print('Failed to delete document: $error');
-        })
-      : FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .collection('notifications')
-          .doc(notificationID)
-          .delete()
-          .catchError((error) {
-          print('Failed to delete document: $error');
-        });
+void _deleteNotification() {
+  FirebaseFirestore.instance
+      .collection('users')
+      .doc(FirebaseAuth.instance.currentUser!.email)
+      .collection('notifications')
+      .get()
+      .then((snapshot) {
+    for (DocumentSnapshot ds in snapshot.docs) {
+      ds.reference.delete();
+    }
+  }).catchError((error) {
+    print('Failed to delete document: $error');
+  });
 }

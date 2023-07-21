@@ -95,7 +95,14 @@ exports.listingNotifications = functions.firestore
 
       try {
         const tokenDocs = await db.collection("users").doc(emailID).collection("tokens").get();
-        const itemName = (await db.collection("Listings").doc(listingID).get()).data()?.itemName; // Use get() to access the document data
+        const itemName = (await db.collection("Listings").doc(listingID).get()).data()?.itemName.toString(); // Use get() to access the document data
+        
+        const listingInfo = await db
+        .collection('Listings')
+        .doc(listingID)
+        .get();
+
+        const listingPicture = listingInfo.data().image;
 
         if (tokenDocs.empty) {
           console.log("No Devices");
@@ -111,30 +118,35 @@ exports.listingNotifications = functions.firestore
             body: `${itemName} has expired on ${itemExpiryDate}`,
           },
           data: {
-            type: 'expiredItem'
-            
+            type: 'expiredItem',
+            ListingId: listingID,
+            userId: emailID,
+            itemName: itemName,
+            itemExpiryDate: itemExpiryDate, 
+            listingPicture: listingPicture,
           },
           tokens: allDeviceTokens,
         };
 
         return admin
-        .messaging()
-        .sendEachForMulticast(message)
-        .then((response) => {
-          console.log("Successfully sent message:", response);
-          return null;
-        })
-        .catch((error) => {
-          console.log("Error sending message:", error);
-          return null;
-        });
-    } catch (error) {
-      console.log("Error retrieving tokens:", error);
-      return null;
+          .messaging()
+          .sendEachForMulticast(message)
+          .then((response) => {
+            console.log("Successfully sent message:", response);
+            return null;
+          })
+          .catch((error) => {
+            console.log("Error sending message:", error);
+            return null;
+          });
+      } catch (error) {
+        console.log("Error retrieving tokens:", error);
+        return null;
+      }
     }
-  }
 });
 
-exports.scheduledFunctionCrontab = onSchedule("0 0 * * *", async (event) => {
-  // check for expiry Dates
-});
+//exports.scheduledFunctionCrontab = onSchedule("0 0 * * *", async (event) => {
+//  // check for expiry Dates
+//});
+''

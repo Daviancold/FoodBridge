@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
+import 'package:foodbridge_project/screens/listing_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screens/own_profile_screen.dart';
 import 'package:foodbridge_project/widgets/filter_mapping.dart';
@@ -77,7 +78,7 @@ class _TabsScreenState extends State<TabsScreen> {
     Navigator.push<Listing>(
       context,
       MaterialPageRoute(builder: (context) => const NewListingScreen()),
-    );
+    ).whenComplete(() => setState(() {}));
   }
 
   void setupPushNotifications() async {
@@ -120,15 +121,13 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 
   void _generalMessages(RemoteMessage message) {
-    if (message.data['type'] == 'chat') {
-      message.data['receivedAt'] = DateTime.now();
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .collection('notifications')
-          .doc()
-          .set(message.data);
-    }
+    message.data['receivedAt'] = DateTime.now();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection('notifications')
+        .doc()
+        .set(message.data);
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
@@ -137,7 +136,7 @@ class _TabsScreenState extends State<TabsScreen> {
     _generalMessages(message);
   }
 
-  void _handleMessage(RemoteMessage message) {
+  void _handleMessage(RemoteMessage message) async {
     _generalMessages(message);
     if (message.data['type'] == 'chat') {
       Navigator.push(
@@ -148,6 +147,55 @@ class _TabsScreenState extends State<TabsScreen> {
             listingId: message.data['ListingId'],
             chatPartner: message.data['chatPartnerId'],
             chatPartnerUserName: message.data['chatPartnerName'],
+          ),
+        ),
+      );
+    } else if (message.data['type'] == 'expiredItem') {
+      Listing listingData = await FirebaseFirestore.instance
+          .collection('Listings')
+          .doc(message.data['ListingId'])
+          .get()
+          .then((doc) => Listing.fromJson(doc.data() as Map<String, dynamic>));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListingScreen(
+            listing: listingData,
+            isYourListing: false,
+            handleLikes: () async {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(message.data['userId'])
+                  .collection('likes')
+                  .doc(message.data['ListingId'])
+                  .get()
+                  .then((snapshot) {
+                if (!snapshot.exists || snapshot.data()!['isLiked'] == false) {
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(message.data['userId'])
+                      .collection('likes')
+                      .doc(message.data['ListingId'])
+                      .set({
+                    'isLiked': true,
+                    'expiryDate': listingData.expiryDate,
+                    'isExpired': listingData.expiryDate.isAfter(DateTime.now())
+                        ? false
+                        : true,
+                  });
+                } else {
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(message.data['userId'])
+                      .collection('likes')
+                      .doc(message.data['ListingId'])
+                      .set({
+                    'isLiked': false,
+                  });
+                }
+              });
+            },
+            isLiked: true,
           ),
         ),
       );
@@ -266,6 +314,8 @@ class _TabsScreenState extends State<TabsScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => const NotificationsScreen()),
+          ).whenComplete(
+            () => setState(() {}),
           );
         },
         icon: const Icon(Icons.notifications_none),
