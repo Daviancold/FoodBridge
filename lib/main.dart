@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 const ColorScheme kColorScheme = ColorScheme(
   primary: Color(0xFF272643),
@@ -21,7 +22,16 @@ const ColorScheme kColorScheme = ColorScheme(
   brightness: Brightness.light, // Set the brightness of the color scheme
 );
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.data['type']}");
+}
+
 Future main() async {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   WidgetsFlutterBinding.ensureInitialized();
   //await FirebaseAppCheck.instance.activate();
   await Firebase.initializeApp();

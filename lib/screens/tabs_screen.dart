@@ -13,6 +13,7 @@ import 'chat/chat_list_screen.dart';
 import 'favorites_screen.dart';
 import 'notifications_screen.dart';
 import '../widgets/filter.dart';
+import 'chat/chatroom_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -109,14 +110,74 @@ class _TabsScreenState extends State<TabsScreen> {
           });
         }
       });
+      // Configure the onMessage and onBackgroundMessage handlers
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print("Foreground Message Data: ${message.data}");
+        _handleForegroundMessage(message);
+      });
     }
     print(token);
+  }
+
+  void _generalMessages(RemoteMessage message) {
+    if (message.data['type'] == 'chat') {
+      message.data['receivedAt'] = DateTime.now();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .collection('notifications')
+          .doc()
+          .set(message.data);
+    }
+  }
+
+  void _handleForegroundMessage(RemoteMessage message) {
+    // Handle data payload in the foreground
+    // Your custom logic here
+    _generalMessages(message);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    _generalMessages(message);
+    if (message.data['type'] == 'chat') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            chatId: message.data['chatId'],
+            listingId: message.data['ListingId'],
+            chatPartner: message.data['chatPartnerId'],
+            chatPartnerUserName: message.data['chatPartnerName'],
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
   }
 
   @override
   void initState() {
     super.initState();
     setupPushNotifications();
+    // Run code required to handle interacted messages in an async function
+    // as initState() must not be async
+    setupInteractedMessage();
   }
 
   @override

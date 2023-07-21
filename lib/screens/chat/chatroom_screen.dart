@@ -73,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
               'Chat',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            actions: user!.email == listing['userId']
+            actions: user.email == listing['userId']
                 ? [
                     PopupMenuButton<String>(
                       onSelected: (value) {
@@ -382,6 +382,8 @@ class _ChatScreenState extends State<ChatScreen> {
               NewMessage(
                 chatId: widget.chatId,
                 chatPartnerId: widget.chatPartner,
+                chatPartnerName: widget.chatPartnerUserName,
+                listingId: widget.listingId,
               ),
             ],
           ),
