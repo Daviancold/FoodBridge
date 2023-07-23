@@ -146,7 +146,9 @@ exports.listingNotifications = functions.firestore
     }
 });
 
-//exports.scheduledFunctionCrontab = onSchedule("0 0 * * *", async (event) => {
-//  // check for expiry Dates
-//});
-''
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('0 0 * * *')
+  .timeZone('America/New_York') // Users can choose timezone - default is America/Los_Angeles
+  .onRun((context) => {
+  console.log('This will be run every day at 11:05 AM Eastern!');
+  return null;
+});

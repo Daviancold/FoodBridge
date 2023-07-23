@@ -31,10 +31,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 Future main() async {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   //await FirebaseAppCheck.instance.activate();
   await Firebase.initializeApp();
+  await FirebaseMessaging.instance.requestPermission();
 
   runApp(
     const ProviderScope(

@@ -84,8 +84,6 @@ class _TabsScreenState extends State<TabsScreen> {
   void setupPushNotifications() async {
     final fcm = FirebaseMessaging.instance;
 
-    await fcm.requestPermission();
-
     final String? token = await fcm.getToken();
 
     if (token != null) {
