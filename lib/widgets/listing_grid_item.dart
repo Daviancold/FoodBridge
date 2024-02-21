@@ -49,6 +49,8 @@ class _ListingGridItemState extends State<ListingGridItem> {
             .set({
           'isLiked': true,
           'expiryDate': widget.data.expiryDate,
+          'isExpired':
+              widget.data.expiryDate.isAfter(DateTime.now()) ? false : true,
         });
       } else {
         FirebaseFirestore.instance
@@ -103,6 +105,7 @@ class _ListingGridItemState extends State<ListingGridItem> {
           ),
         ).whenComplete(() {
           setupLikes();
+          setState(() {});
         });
       },
       splashColor: Theme.of(context).primaryColor,

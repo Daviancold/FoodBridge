@@ -54,6 +54,9 @@ dependencies:
   mockito: ^5.4.2
   mocktail: ^0.3.0
   flutter_rating_bar: ^4.0.1
+  firebase_messaging: ^14.6.4
+  android_id: ^0.2.0
+  device_info_plus: ^8.2.0
 
 
 dev_dependencies:

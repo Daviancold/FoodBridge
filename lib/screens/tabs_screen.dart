@@ -1,6 +1,10 @@
+import 'package:android_id/android_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:foodbridge_project/models/listing.dart';
+import 'package:foodbridge_project/screens/listing_screen.dart';
 import 'package:foodbridge_project/screens/new_listing_screen.dart';
 import 'package:foodbridge_project/screens/profile_screens/own_profile_screen.dart';
 import 'package:foodbridge_project/widgets/filter_mapping.dart';
@@ -10,6 +14,7 @@ import 'chat/chat_list_screen.dart';
 import 'favorites_screen.dart';
 import 'notifications_screen.dart';
 import '../widgets/filter.dart';
+import 'chat/chatroom_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -18,10 +23,6 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  void refreshScreen() {
-    setState(() {});
-  }
-
   String itemName = "";
   int selectedPageIndex = 0;
   List<String> editedFoodTypes = [];
@@ -77,7 +78,152 @@ class _TabsScreenState extends State<TabsScreen> {
     Navigator.push<Listing>(
       context,
       MaterialPageRoute(builder: (context) => const NewListingScreen()),
-    );
+    ).whenComplete(() => setState(() {}));
+  }
+
+  void setupPushNotifications() async {
+    final fcm = FirebaseMessaging.instance;
+
+    final String? token = await fcm.getToken();
+
+    if (token != null) {
+      String userEmail = FirebaseAuth.instance.currentUser!.email.toString();
+      const androidId = AndroidId();
+      String? deviceId = await androidId.getId();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userEmail)
+          .collection('tokens')
+          .doc(deviceId)
+          .get()
+          .then((snapshot) {
+        if (snapshot.data() == null ||
+            snapshot.data()!['DeviceToken'] != token) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userEmail)
+              .collection('tokens')
+              .doc(deviceId)
+              .set({
+            'DeviceToken': token,
+          });
+        }
+      });
+      // Configure the onMessage and onBackgroundMessage handlers
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        print("Foreground Message Data: ${message.data}");
+        _handleForegroundMessage(message);
+      });
+    }
+    print(token);
+  }
+
+  void _generalMessages(RemoteMessage message) {
+    message.data['receivedAt'] = DateTime.now();
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection('notifications')
+        .doc()
+        .set(message.data);
+  }
+
+  void _handleForegroundMessage(RemoteMessage message) {
+    // Handle data payload in the foreground
+    // Your custom logic here
+    _generalMessages(message);
+  }
+
+  void _handleMessage(RemoteMessage message) async {
+    _generalMessages(message);
+    if (message.data['type'] == 'chat') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            chatId: message.data['chatId'],
+            listingId: message.data['ListingId'],
+            chatPartner: message.data['chatPartnerId'],
+            chatPartnerUserName: message.data['chatPartnerName'],
+          ),
+        ),
+      );
+    } else if (message.data['type'] == 'expiredItem') {
+      Listing listingData = await FirebaseFirestore.instance
+          .collection('Listings')
+          .doc(message.data['ListingId'])
+          .get()
+          .then((doc) => Listing.fromJson(doc.data() as Map<String, dynamic>));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListingScreen(
+            listing: listingData,
+            isYourListing: false,
+            handleLikes: () async {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(message.data['userId'])
+                  .collection('likes')
+                  .doc(message.data['ListingId'])
+                  .get()
+                  .then((snapshot) {
+                if (!snapshot.exists || snapshot.data()!['isLiked'] == false) {
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(message.data['userId'])
+                      .collection('likes')
+                      .doc(message.data['ListingId'])
+                      .set({
+                    'isLiked': true,
+                    'expiryDate': listingData.expiryDate,
+                    'isExpired': listingData.expiryDate.isAfter(DateTime.now())
+                        ? false
+                        : true,
+                  });
+                } else {
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(message.data['userId'])
+                      .collection('likes')
+                      .doc(message.data['ListingId'])
+                      .set({
+                    'isLiked': false,
+                  });
+                }
+              });
+            },
+            isLiked: true,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupPushNotifications();
+    // Run code required to handle interacted messages in an async function
+    // as initState() must not be async
+    setupInteractedMessage();
   }
 
   @override
@@ -135,8 +281,14 @@ class _TabsScreenState extends State<TabsScreen> {
                           });
                         });
                       },
-                      icon: const Icon(Icons.filter_alt, color: Colors.white,),
-                      label: const Text('Filter', style: TextStyle(color: Colors.white),),
+                      icon: const Icon(
+                        Icons.filter_alt,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'Filter',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -160,6 +312,8 @@ class _TabsScreenState extends State<TabsScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => const NotificationsScreen()),
+          ).whenComplete(
+            () => setState(() {}),
           );
         },
         icon: const Icon(Icons.notifications_none),

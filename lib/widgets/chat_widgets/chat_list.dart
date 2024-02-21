@@ -119,7 +119,11 @@ class AllChatList extends StatelessWidget {
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
-                      title: Text(chatPartnerUserName, style: TextStyle(color: Colors.white),),
+                      title: Text(
+                        chatPartnerUserName,
+                        style: const TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
                       subtitle: Text(
                         latestMessage,
                         overflow: TextOverflow.ellipsis,
@@ -153,7 +157,9 @@ class AllChatList extends StatelessWidget {
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .titleLarge!
-                                                .copyWith(color: Colors.black, fontSize: 16)),
+                                                .copyWith(
+                                                    color: Colors.black,
+                                                    fontSize: 16)),
                                       ),
                                     ),
                                     actions: [
@@ -179,7 +185,8 @@ class AllChatList extends StatelessWidget {
                                   ),
                                 );
                               },
-                              icon: const Icon(Icons.delete, color: Colors.white))
+                              icon:
+                                  const Icon(Icons.delete, color: Colors.white))
                         ],
                       ),
                       // Customize the appearance and behavior of the ListTile as needed

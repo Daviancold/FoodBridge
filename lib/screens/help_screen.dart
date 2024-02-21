@@ -65,7 +65,7 @@ class HelpScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ReceiveGuide(),
+                    builder: (context) => const ReceiveGuide(),
                   ),
                 );
               },
